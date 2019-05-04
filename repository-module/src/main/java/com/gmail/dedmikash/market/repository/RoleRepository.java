@@ -5,6 +5,6 @@ import com.gmail.dedmikash.market.repository.model.Role;
 
 import java.sql.Connection;
 
-public interface RoleRepository {
+public interface RoleRepository extends GenericRepository{
     Role read(Connection connection, Long id) throws StatementException;
 }

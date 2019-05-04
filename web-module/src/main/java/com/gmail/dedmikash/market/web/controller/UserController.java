@@ -8,7 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -29,13 +32,14 @@ public class UserController {
         return "users";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "/login";
+    @PostMapping("/delete_users")
+    public String deleteUsers(@RequestParam(value = "delete", required = false) Long[] ids) {
+        if (ids == null) {
+            return "redirect:/users/1";
+        }
+        logger.info("Deleting users with ids: {} ", Arrays.toString(ids));
+        userService.deleteUsersByIds(ids);
+        return "redirect:/users/1";
     }
 
-    @GetMapping("/")
-    public String slash() {
-        return "redirect:/login";
-    }
 }

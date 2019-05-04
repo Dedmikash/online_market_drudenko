@@ -12,4 +12,6 @@ public interface UserService {
     List<UserDTO> getUsersBatch(int page);
 
     int countPages();
+
+    void deleteUsersByIds(Long[] ids);
 }

@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.ADDING_USER_NO_ID_OBTAINED_ERROR_MESSAGE;
@@ -21,16 +22,16 @@ import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMess
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.QUERY_FAILED_ERROR_MESSAGE;
 
 @Repository
-public class UserRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRepository {
     private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
     private static final int BATCH_SIZE = 10;
 
     @Override
     public User add(Connection connection, User user) throws StatementException {
-        String insertTableSQL = "INSERT INTO user (username,password,name,surname,patronymic,role_id,blocked,deleted)" +
+        String insertQuery = "INSERT INTO user (username,password,name,surname,patronymic,role_id,blocked,deleted)" +
                 " VALUES (?,?,?,?,?,(SELECT id FROM role WHERE name=?),?,?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                insertTableSQL,
+                insertQuery,
                 Statement.RETURN_GENERATED_KEYS
         )) {
             preparedStatement.setString(1, user.getUsername());
@@ -55,14 +56,14 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, insertTableSQL), e);
+            throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, insertQuery), e);
         }
     }
 
     @Override
     public User readByUsername(Connection connection, String username) throws StatementException {
-        String selectTableSQL = "SELECT *,r.name AS role_name FROM user u JOIN role r ON u.role_id=r.id WHERE username=? AND deleted=0";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(selectTableSQL)) {
+        String selectQuery = "SELECT *,r.name AS role_name FROM user u JOIN role r ON u.role_id=r.id WHERE username=? AND deleted=0";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
             preparedStatement.setString(1, username);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -71,17 +72,17 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, selectTableSQL), e);
+            throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, selectQuery), e);
         }
         return null;
     }
 
     @Override
     public List<User> readPage(Connection connection, int page) throws StatementException {
-        String selectTableSQL = "SELECT *,r.name AS role_name FROM user u JOIN role r ON u.role_id=r.id" +
+        String selectQuery = "SELECT *,r.name AS role_name FROM user u JOIN role r ON u.role_id=r.id" +
                 " WHERE deleted=0 ORDER BY username LIMIT ?,?";
         List<User> userList = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(selectTableSQL)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
             preparedStatement.setInt(1, -BATCH_SIZE + page * BATCH_SIZE);
             preparedStatement.setInt(2, BATCH_SIZE);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -91,15 +92,15 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, selectTableSQL), e);
+            throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, selectQuery), e);
         }
         return userList;
     }
 
     @Override
     public int countPages(Connection connection) throws StatementException {
-        String countTableSQL = "SELECT ceil(COUNT(*)/?) AS pages FROM user WHERE deleted=0";
-        try (PreparedStatement preparedStatement = connection.prepareStatement(countTableSQL)) {
+        String countQuery = "SELECT ceil(COUNT(*)/?) AS pages FROM user WHERE deleted=0";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(countQuery)) {
             preparedStatement.setInt(1, BATCH_SIZE);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -108,9 +109,30 @@ public class UserRepositoryImpl implements UserRepository {
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
-            throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, countTableSQL), e);
+            throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, countQuery), e);
         }
         return 1;
+    }
+
+    @Override
+    public void softDeleteByIds(Connection connection, Long[] ids) throws StatementException {
+        StringBuilder updateQueryBuilder = new StringBuilder("UPDATE user SET deleted=1 WHERE ");
+        for (int i = 0; i < ids.length; i++) {
+            updateQueryBuilder.append("id=? OR ");
+        }
+        String updateQuery = updateQueryBuilder.substring(0, updateQueryBuilder.length() - 4);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            for (int i = 1; i < ids.length + 1; i++) {
+                preparedStatement.setLong(i, ids[i - 1]);
+            }
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Soft deleting users with ids: " + Arrays.toString(ids) + " - failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, updateQuery), e);
+        }
     }
 
     private User getUser(ResultSet resultSet) throws SQLException {

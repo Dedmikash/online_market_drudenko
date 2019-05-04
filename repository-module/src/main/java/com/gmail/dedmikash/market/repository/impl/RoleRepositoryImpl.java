@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.QUERY_FAILED_ERROR_MESSAGE;
 
 @Repository
-public class RoleRepositoryImpl implements RoleRepository {
+public class RoleRepositoryImpl extends GenericRepositoryImpl implements RoleRepository {
     private static final Logger logger = LoggerFactory.getLogger(RoleRepositoryImpl.class);
 
     @Override

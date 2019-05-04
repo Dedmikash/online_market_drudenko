@@ -82,4 +82,9 @@ public class UserDTO {
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
+
+    @Override
+    public String toString() {
+        return "\'username\'";
+    }
 }

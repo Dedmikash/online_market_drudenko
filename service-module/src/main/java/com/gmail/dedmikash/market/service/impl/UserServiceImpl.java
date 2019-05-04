@@ -2,9 +2,7 @@ package com.gmail.dedmikash.market.service.impl;
 
 import com.gmail.dedmikash.market.repository.RoleRepository;
 import com.gmail.dedmikash.market.repository.UserRepository;
-import com.gmail.dedmikash.market.repository.connection.ConnectionService;
 import com.gmail.dedmikash.market.repository.exception.StatementException;
-import com.gmail.dedmikash.market.repository.model.Role;
 import com.gmail.dedmikash.market.repository.model.User;
 import com.gmail.dedmikash.market.service.UserService;
 import com.gmail.dedmikash.market.service.converter.RoleConverter;
@@ -27,19 +25,16 @@ import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMess
 @Service
 public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-    private final ConnectionService connectionService;
     private final UserConverter userConverter;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final RoleConverter roleConverter;
 
 
-    public UserServiceImpl(ConnectionService connectionService,
-                           UserConverter userConverter,
+    public UserServiceImpl(UserConverter userConverter,
                            UserRepository userRepository,
                            RoleRepository roleRepository,
                            RoleConverter roleConverter) {
-        this.connectionService = connectionService;
         this.userConverter = userConverter;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -49,7 +44,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void add(UserDTO userDTO) {
         User user = userConverter.fromDTO(userDTO);
-        try (Connection connection = connectionService.getConnection()) {
+        try (Connection connection = userRepository.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 userRepository.add(connection, user);
@@ -67,13 +62,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO readByUsername(String username) {
-        try (Connection connection = connectionService.getConnection()) {
+        try (Connection connection = userRepository.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 User user = userRepository.readByUsername(connection, username);
                 UserDTO readedUserDTO = userConverter.toDTO(user);
-                Role role = roleRepository.read(connection, user.getRole().getId());
-                readedUserDTO.setRoleDTO(roleConverter.toDTO(role));
                 connection.commit();
                 return readedUserDTO;
             } catch (StatementException e) {
@@ -89,21 +82,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getUsersBatch(int page) {
-        try (Connection connection = connectionService.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                List<UserDTO> userDTOList = new ArrayList<>();
-                List<User> userList = userRepository.readPage(connection, page);
-                userList.forEach(user -> userDTOList.add(userConverter.toDTO(user)));
-                connection.commit();
-                return userDTOList;
-            } catch (StatementException e) {
-                connection.rollback();
-                logger.error(e.getMessage(), e);
-                throw new QueryFailedException(QUERY_FAILED_ERROR_MESSAGE, e);
-            }
-        } catch (
-                SQLException e) {
+        try (Connection connection = userRepository.getConnection()) {
+            return getPageOfUsers(page, connection);
+        } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
         }
@@ -111,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public int countPages() {
-        try (Connection connection = connectionService.getConnection()) {
+        try (Connection connection = userRepository.getConnection()) {
             try {
                 connection.setAutoCommit(false);
                 int numberOfPages = userRepository.countPages(connection);
@@ -122,10 +103,42 @@ public class UserServiceImpl implements UserService {
                 logger.error(e.getMessage(), e);
                 throw new QueryFailedException(QUERY_FAILED_ERROR_MESSAGE, e);
             }
-        } catch (
-                SQLException e) {
+        } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
+        }
+    }
+
+    @Override
+    public void deleteUsersByIds(Long[] ids) {
+        try (Connection connection = userRepository.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                userRepository.softDeleteByIds(connection, ids);
+                connection.commit();
+            } catch (StatementException e) {
+                connection.rollback();
+                logger.error(e.getMessage(), e);
+                throw new QueryFailedException(QUERY_FAILED_ERROR_MESSAGE, e);
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
+        }
+    }
+
+    private List<UserDTO> getPageOfUsers(int page, Connection connection) throws SQLException {
+        try {
+            connection.setAutoCommit(false);
+            List<UserDTO> userDTOList = new ArrayList<>();
+            List<User> userList = userRepository.readPage(connection, page);
+            userList.forEach(user -> userDTOList.add(userConverter.toDTO(user)));
+            connection.commit();
+            return userDTOList;
+        } catch (StatementException e) {
+            connection.rollback();
+            logger.error(e.getMessage(), e);
+            throw new QueryFailedException(QUERY_FAILED_ERROR_MESSAGE, e);
         }
     }
 }

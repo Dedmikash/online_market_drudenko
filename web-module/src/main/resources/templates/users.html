@@ -13,27 +13,35 @@
     </span>
 </header>
 <h1>Users List</h1>
-<table>
-    <tr>
-        <th>Name</th>
-        <th>Surname</th>
-        <th>Patronymic</th>
-        <th>Email</th>
-        <th>Role</th>
-    </tr>
-    <th:block th:each="user : ${users}">
+<form th:action="@{/delete_users}" method="post">
+    <table>
         <tr>
-            <td th:text="${user.name}">...</td>
-            <td th:text="${user.surname}">...</td>
-            <td th:text="${user.patronymic}">...</td>
-            <td th:text="${user.username}">...</td>
-            <td th:text="${user.roleDTO.name}">...</td>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Patronymic</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Delete</th>
         </tr>
+        <th:block th:each="user,stat : ${users}">
+            <tr>
+                <td th:text="${user.name}">...</td>
+                <td th:text="${user.surname}">...</td>
+                <td th:text="${user.patronymic}">...</td>
+                <td th:text="${user.username}">...</td>
+                <td th:text="${user.roleDTO.name}">...</td>
+                <div th:unless="${user.blocked}">
+                    <td><input type="checkbox" name="delete" th:value="${user.id}"/></td>
+                </div>
+            </tr>
+        </th:block>
+    </table>
+    <th:block th:each="i:${#numbers.sequence(1,pages)}">
+        <a th:href="@{/users/{page}(page=${i})}"><span th:text="${i}">...</span></a>
     </th:block>
-</table>
-<th:block th:each="i:${#numbers.sequence(1,pages)}">
-    <a th:href="@{/users/{page}(page=${i})}"><span th:text="${i}">...</span></a>
-</th:block>
+    <br>
+    <input type="submit" value="Delete selected">
+</form>
 </body>
 </html>
 
