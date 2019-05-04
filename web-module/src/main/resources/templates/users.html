@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Users</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<h1>Users List</h1>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>Patronymic</th>
+        <th>Email</th>
+        <th>Role</th>
+    </tr>
+    <th:block th:each="user : ${users}">
+        <tr>
+            <td th:text="${user.name}">...</td>
+            <td th:text="${user.surname}">...</td>
+            <td th:text="${user.patronymic}">...</td>
+            <td th:text="${user.username}">...</td>
+            <td th:text="${user.roleDTO.name}">...</td>
+        </tr>
+    </th:block>
+</table>
+<th:block th:each="i:${#numbers.sequence(1,pages)}">
+    <a th:href="@{/users/{page}(page=${i})}"><span th:text="${i}">...</span></a>
+</th:block>
+</body>
+</html>
+

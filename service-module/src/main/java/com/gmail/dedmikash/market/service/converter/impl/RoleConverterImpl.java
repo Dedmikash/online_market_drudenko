@@ -1,0 +1,16 @@
+package com.gmail.dedmikash.market.service.converter.impl;
+
+import com.gmail.dedmikash.market.repository.model.Role;
+import com.gmail.dedmikash.market.service.converter.RoleConverter;
+import com.gmail.dedmikash.market.service.model.RoleDTO;
+import org.springframework.stereotype.Component;
+
+@Component
+public class RoleConverterImpl implements RoleConverter {
+    @Override
+    public RoleDTO toDTO(Role role) {
+        RoleDTO roleDTO = new RoleDTO();
+        roleDTO.setName(role.getName());
+        return roleDTO;
+    }
+}
