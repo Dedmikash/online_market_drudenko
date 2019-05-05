@@ -1,23 +1,24 @@
 package com.gmail.dedmikash.market.service.impl;
 
-import com.gmail.dedmikash.market.repository.RoleRepository;
 import com.gmail.dedmikash.market.repository.UserRepository;
 import com.gmail.dedmikash.market.repository.exception.StatementException;
 import com.gmail.dedmikash.market.repository.model.User;
 import com.gmail.dedmikash.market.service.UserService;
-import com.gmail.dedmikash.market.service.converter.RoleConverter;
 import com.gmail.dedmikash.market.service.converter.UserConverter;
 import com.gmail.dedmikash.market.service.exception.DataBaseConnectionException;
 import com.gmail.dedmikash.market.service.exception.QueryFailedException;
 import com.gmail.dedmikash.market.service.model.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.NO_CONNECTION_ERROR_MESSAGE;
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.QUERY_FAILED_ERROR_MESSAGE;
@@ -27,18 +28,15 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserConverter userConverter;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final RoleConverter roleConverter;
+    private final PasswordEncoder passwordEncoder;
 
 
     public UserServiceImpl(UserConverter userConverter,
                            UserRepository userRepository,
-                           RoleRepository roleRepository,
-                           RoleConverter roleConverter) {
+                           PasswordEncoder passwordEncoder) {
         this.userConverter = userConverter;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.roleConverter = roleConverter;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -47,6 +45,7 @@ public class UserServiceImpl implements UserService {
         try (Connection connection = userRepository.getConnection()) {
             try {
                 connection.setAutoCommit(false);
+                user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
                 userRepository.add(connection, user);
                 connection.commit();
             } catch (StatementException e) {
@@ -68,6 +67,7 @@ public class UserServiceImpl implements UserService {
                 User user = userRepository.readByUsername(connection, username);
                 UserDTO readedUserDTO = userConverter.toDTO(user);
                 connection.commit();
+                logger.info(BCrypt.hashpw("123", BCrypt.gensalt(12))); //TODO
                 return readedUserDTO;
             } catch (StatementException e) {
                 connection.rollback();
@@ -115,6 +115,42 @@ public class UserServiceImpl implements UserService {
             try {
                 connection.setAutoCommit(false);
                 userRepository.softDeleteByIds(connection, ids);
+                connection.commit();
+            } catch (StatementException e) {
+                connection.rollback();
+                logger.error(e.getMessage(), e);
+                throw new QueryFailedException(QUERY_FAILED_ERROR_MESSAGE, e);
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
+        }
+    }
+
+    @Override
+    public void changeUsersPasswordsByIds(Long[] ids) {
+        /*try (Connection connection = userRepository.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                userRepository.changePasswordsByIds(connection, ids);
+                connection.commit();
+            } catch (StatementException e) {
+                connection.rollback();
+                logger.error(e.getMessage(), e);
+                throw new QueryFailedException(QUERY_FAILED_ERROR_MESSAGE, e);
+            }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
+        }*/
+    }
+
+    @Override
+    public void changeUsersRolesById(Map<Long, String> changes) {
+        try (Connection connection = userRepository.getConnection()) {
+            try {
+                connection.setAutoCommit(false);
+                userRepository.changeRolesByIds(connection, changes);
                 connection.commit();
             } catch (StatementException e) {
                 connection.rollback();

@@ -16,6 +16,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.ADDING_USER_NO_ID_OBTAINED_ERROR_MESSAGE;
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.ADDING_USER_NO_ROWS_AFFECTED_ERROR_MESSAGE;
@@ -132,6 +133,25 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, updateQuery), e);
+        }
+    }
+
+    @Override
+    public void changeRolesByIds(Connection connection, Map<Long, String> changes) throws StatementException {
+        for (Map.Entry<Long, String> entry : changes.entrySet()) {
+            String updateQuery = "UPDATE user SET role_id=(SELECT id FROM role WHERE name=?) WHERE id=?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+                preparedStatement.setString(1, entry.getValue());
+                preparedStatement.setLong(2, entry.getKey());
+                int affectedRows = preparedStatement.executeUpdate();
+                if (affectedRows == 0) {
+                    throw new SQLException("Changing role of user with id: " + entry.getKey() + "- on:"
+                            + entry.getValue() + " - failed, no rows affected.");
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+                throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, updateQuery), e);
+            }
         }
     }
 

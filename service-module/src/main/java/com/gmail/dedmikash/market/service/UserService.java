@@ -3,6 +3,7 @@ package com.gmail.dedmikash.market.service;
 import com.gmail.dedmikash.market.service.model.UserDTO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
     void add(UserDTO userDTO);
@@ -14,4 +15,8 @@ public interface UserService {
     int countPages();
 
     void deleteUsersByIds(Long[] ids);
+
+    void changeUsersPasswordsByIds(Long[] ids);
+
+    void changeUsersRolesById(Map<Long, String> changes);
 }

@@ -10,12 +10,6 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserConverterImpl implements UserConverter {
-    private final PasswordEncoder passwordEncoder;
-
-    public UserConverterImpl(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-
     @Override
     public UserDTO toDTO(User user) {
         UserDTO userDTO = new UserDTO();
@@ -38,7 +32,7 @@ public class UserConverterImpl implements UserConverter {
         User user = new User();
         user.setId(userDTO.getId());
         user.setUsername(userDTO.getUsername());
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setPassword(userDTO.getPassword());
         user.setName(userDTO.getName());
         user.setSurname(userDTO.getSurname());
         user.setPatronymic(userDTO.getPatronymic());

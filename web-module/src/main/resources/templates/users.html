@@ -13,7 +13,7 @@
     </span>
 </header>
 <h1>Users List</h1>
-<form th:action="@{/delete_users}" method="post">
+<form th:action="@{/users/change_pass}" method="post">
     <table>
         <tr>
             <th>Name</th>
@@ -22,6 +22,7 @@
             <th>Email</th>
             <th>Role</th>
             <th>Delete</th>
+            <th>Pass</th>
         </tr>
         <th:block th:each="user,stat : ${users}">
             <tr>
@@ -29,10 +30,21 @@
                 <td th:text="${user.surname}">...</td>
                 <td th:text="${user.patronymic}">...</td>
                 <td th:text="${user.username}">...</td>
-                <td th:text="${user.roleDTO.name}">...</td>
-                <div th:unless="${user.blocked}">
-                    <td><input type="checkbox" name="delete" th:value="${user.id}"/></td>
-                </div>
+                <td th:if="${user.blocked}" th:text="${user.roleDTO.name}">...</td>
+                <td th:unless="${user.blocked}">
+                    <select class="dropdown" name="change_role">
+                        <option th:each="role : ${roles}" th:if="${role.name} == ${user.roleDTO.name}" selected
+                                th:text="${role.name}"
+                                th:value="${user.id}+','+${user.roleDTO.name}+','+${role.name}"></option>
+                        <option th:each="role : ${roles}" th:unless="${role.name} == ${user.roleDTO.name}"
+                                th:text="${role.name}"
+                                th:value="${user.id}+','+${user.roleDTO.name}+','+${role.name}"></option>
+                    </select>
+                </td>
+                <td th:if="${user.blocked}" align="center"><input type="checkbox" disabled="disabled"/></td>
+                <td th:unless="${user.blocked}" align="center"><input type="checkbox" name="delete"
+                                                                      th:value="${user.id}"/></td>
+                <td align="center"><input type="checkbox" name="change_pass" th:value="${user.id}"/></td>
             </tr>
         </th:block>
     </table>
@@ -40,7 +52,9 @@
         <a th:href="@{/users/{page}(page=${i})}"><span th:text="${i}">...</span></a>
     </th:block>
     <br>
-    <input type="submit" value="Delete selected">
+    <input type="submit" value="Change roles" th:formaction="@{/users/change_roles}">
+    <input type="submit" value="Delete selected" th:formaction="@{/users/delete_users}">
+    <input type="submit" value="Change selected passwords">
 </form>
 </body>
 </html>

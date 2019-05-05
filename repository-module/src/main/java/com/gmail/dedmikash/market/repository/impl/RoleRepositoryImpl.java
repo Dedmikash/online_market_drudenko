@@ -11,6 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.QUERY_FAILED_ERROR_MESSAGE;
 
@@ -19,20 +21,20 @@ public class RoleRepositoryImpl extends GenericRepositoryImpl implements RoleRep
     private static final Logger logger = LoggerFactory.getLogger(RoleRepositoryImpl.class);
 
     @Override
-    public Role read(Connection connection, Long id) throws StatementException {
-        String selectTableSQL = "SELECT * FROM role WHERE id=?";
+    public List<Role> readAll(Connection connection) throws StatementException {
+        String selectTableSQL = "SELECT * FROM role";
+        List<Role> roles = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectTableSQL)) {
-            preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return getRole(resultSet);
+                while (resultSet.next()) {
+                    roles.add(getRole(resultSet));
                 }
             }
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, selectTableSQL), e);
         }
-        return null;
+        return roles;
     }
 
     private Role getRole(ResultSet resultSet) throws SQLException {
