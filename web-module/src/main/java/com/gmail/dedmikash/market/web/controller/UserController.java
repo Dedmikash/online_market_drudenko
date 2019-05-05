@@ -68,12 +68,12 @@ public class UserController {
     }
 
     @PostMapping("/users/change_pass")
-    public String changePasswords(@RequestParam(value = "change_pass", required = false) Long[] ids) {
-        if (ids == null) {
+    public String changePasswords(@RequestParam(value = "change_pass", required = false) String[] usernames) {
+        if (usernames == null) {
             return "redirect:/users/1";
         }
-        userService.changeUsersPasswordsByIds(ids);
-        logger.info("Changing passwords of users with ids: {} ", Arrays.toString(ids));
+        userService.changeUsersPasswordsByUsernames(usernames);
+        logger.info("Changing passwords of users with usernames: {} ", Arrays.toString(usernames));
         return "redirect:/users/1";
     }
 }

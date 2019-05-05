@@ -8,6 +8,7 @@ import com.gmail.dedmikash.market.service.converter.UserConverter;
 import com.gmail.dedmikash.market.service.exception.DataBaseConnectionException;
 import com.gmail.dedmikash.market.service.exception.QueryFailedException;
 import com.gmail.dedmikash.market.service.model.UserDTO;
+import com.gmail.dedmikash.market.service.util.RandomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,14 +31,17 @@ public class UserServiceImpl implements UserService {
     private final UserConverter userConverter;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final RandomService randomService;
 
 
     public UserServiceImpl(UserConverter userConverter,
                            UserRepository userRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           RandomService randomService) {
         this.userConverter = userConverter;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.randomService = randomService;
     }
 
     @Override
@@ -67,7 +72,6 @@ public class UserServiceImpl implements UserService {
                 User user = userRepository.readByUsername(connection, username);
                 UserDTO readedUserDTO = userConverter.toDTO(user);
                 connection.commit();
-                logger.info(BCrypt.hashpw("123", BCrypt.gensalt(12))); //TODO
                 return readedUserDTO;
             } catch (StatementException e) {
                 connection.rollback();
@@ -128,11 +132,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUsersPasswordsByIds(Long[] ids) {
-        /*try (Connection connection = userRepository.getConnection()) {
+    public void changeUsersPasswordsByUsernames(String[] usernames) {
+        try (Connection connection = userRepository.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                userRepository.changePasswordsByIds(connection, ids);
+                Map<String, String> newPasswords = new HashMap<>();
+                for (String username : usernames) {
+                    newPasswords.put(username, randomService.getNewPassword());
+                }
+                Map<String, String> newHashes = new HashMap<>();
+                for (Map.Entry<String, String> entry : newPasswords.entrySet()) {
+                    newHashes.put(entry.getKey(), BCrypt.hashpw(entry.getValue(), BCrypt.gensalt(12)));
+                }
+                userRepository.changePasswordsByUsernames(connection, newHashes);
+                for (Map.Entry<String, String> entry : newPasswords.entrySet()) {
+                    logger.info("Password of user with username: {} - was changed to: {}. Email has been sent."
+                            , entry.getKey(), entry.getValue());
+                }
                 connection.commit();
             } catch (StatementException e) {
                 connection.rollback();
@@ -142,7 +158,7 @@ public class UserServiceImpl implements UserService {
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
-        }*/
+        }
     }
 
     @Override

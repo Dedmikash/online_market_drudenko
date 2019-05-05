@@ -5,7 +5,6 @@ import com.gmail.dedmikash.market.repository.model.User;
 import com.gmail.dedmikash.market.service.converter.UserConverter;
 import com.gmail.dedmikash.market.service.model.RoleDTO;
 import com.gmail.dedmikash.market.service.model.UserDTO;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -33,8 +32,8 @@ public class UserConverterImpl implements UserConverter {
         user.setId(userDTO.getId());
         user.setUsername(userDTO.getUsername());
         user.setPassword(userDTO.getPassword());
-        user.setName(userDTO.getName());
         user.setSurname(userDTO.getSurname());
+        user.setName(userDTO.getName());
         user.setPatronymic(userDTO.getPatronymic());
         Role role = new Role();
         role.setName(userDTO.getRoleDTO().getName());

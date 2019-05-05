@@ -155,6 +155,25 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
         }
     }
 
+    @Override
+    public void changePasswordsByUsernames(Connection connection, Map<String, String> newHashes) throws StatementException {
+        for (Map.Entry<String, String> entry : newHashes.entrySet()) {
+            String updateQuery = "UPDATE user SET password=? WHERE username=?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+                preparedStatement.setString(1, entry.getValue());
+                preparedStatement.setString(2, entry.getKey());
+                int affectedRows = preparedStatement.executeUpdate();
+                if (affectedRows == 0) {
+                    throw new SQLException("Changing password of user with username: " + entry.getKey()
+                            + " - failed, no rows affected.");
+                }
+            } catch (SQLException e) {
+                logger.error(e.getMessage(), e);
+                throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, updateQuery), e);
+            }
+        }
+    }
+
     private User getUser(ResultSet resultSet) throws SQLException {
         User user = new User();
         user.setId(resultSet.getLong("id"));

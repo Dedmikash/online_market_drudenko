@@ -19,4 +19,6 @@ public interface UserRepository extends GenericRepository {
     void softDeleteByIds(Connection connection, Long[] ids) throws StatementException;
 
     void changeRolesByIds(Connection connection, Map<Long, String> changes) throws StatementException;
+
+    void changePasswordsByUsernames(Connection connection, Map<String, String> newHashes) throws StatementException;
 }

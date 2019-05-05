@@ -44,7 +44,7 @@
                 <td th:if="${user.blocked}" align="center"><input type="checkbox" disabled="disabled"/></td>
                 <td th:unless="${user.blocked}" align="center"><input type="checkbox" name="delete"
                                                                       th:value="${user.id}"/></td>
-                <td align="center"><input type="checkbox" name="change_pass" th:value="${user.id}"/></td>
+                <td align="center"><input type="checkbox" name="change_pass" th:value="${user.username}"/></td>
             </tr>
         </th:block>
     </table>
@@ -56,6 +56,8 @@
     <input type="submit" value="Delete selected" th:formaction="@{/users/delete_users}">
     <input type="submit" value="Change selected passwords">
 </form>
+<a th:href="@{/users/add}">Add user</a><br>
+<a th:href="@{/reviews}">Site reviews</a>
 </body>
 </html>
 

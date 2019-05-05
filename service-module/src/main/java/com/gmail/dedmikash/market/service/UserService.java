@@ -16,7 +16,7 @@ public interface UserService {
 
     void deleteUsersByIds(Long[] ids);
 
-    void changeUsersPasswordsByIds(Long[] ids);
+    void changeUsersPasswordsByUsernames(String[] usernames);
 
     void changeUsersRolesById(Map<Long, String> changes);
 }
