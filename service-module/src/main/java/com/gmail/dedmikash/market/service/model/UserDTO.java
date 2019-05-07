@@ -1,11 +1,29 @@
 package com.gmail.dedmikash.market.service.model;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.*;
+
 public class UserDTO {
     private Long id;
+    @NotNull(message = USERNAME_EMPTY)
+    @Size(min = 1, max = 50, message = USERNAME_SIZE_NOT_VALID)
+    @Pattern(regexp = EMAIL_REGEX, message = USERNAME_PATTERN_NOT_VALID)
     private String username;
     private String password;
+    @NotNull(message = NAME_EMPTY)
+    @Size(min = 1, max = 20, message = NAME_SIZE_NOT_VALID)
+    @Pattern(regexp = LATIN_REGEX, message = NAME_PATTERN_NOT_VALID)
     private String name;
+    @NotNull(message = SURNAME_EMPTY)
+    @Size(min = 1, max = 40, message = SURNAME_SIZE_NOT_VALID)
+    @Pattern(regexp = LATIN_REGEX, message = SURNAME_PATTERN_NOT_VALID)
     private String surname;
+    @NotNull(message = PATRONYMIC_EMPTY)
+    @Size(min = 1, max = 40, message = PATRONYMIC_SIZE_NOT_VALID)
+    @Pattern(regexp = LATIN_REGEX, message = PATRONYMIC_PATTERN_NOT_VALID)
     private String patronymic;
     private RoleDTO roleDTO;
     private Boolean blocked;

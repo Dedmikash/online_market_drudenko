@@ -12,7 +12,6 @@ import com.gmail.dedmikash.market.service.util.RandomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
@@ -30,17 +29,14 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserConverter userConverter;
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final RandomService randomService;
 
 
     public UserServiceImpl(UserConverter userConverter,
                            UserRepository userRepository,
-                           PasswordEncoder passwordEncoder,
                            RandomService randomService) {
         this.userConverter = userConverter;
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
         this.randomService = randomService;
     }
 
@@ -50,8 +46,14 @@ public class UserServiceImpl implements UserService {
         try (Connection connection = userRepository.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+                String password = randomService.getNewPassword();
+                String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
+                user.setPassword(hash);
+                user.setDeleted(false);
+                user.setBlocked(false);
                 userRepository.add(connection, user);
+                logger.info("User: {} - was created. Password: {} - has been sent on email.",
+                        userDTO.getUsername(), password);
                 connection.commit();
             } catch (StatementException e) {
                 connection.rollback();
@@ -70,6 +72,9 @@ public class UserServiceImpl implements UserService {
             try {
                 connection.setAutoCommit(false);
                 User user = userRepository.readByUsername(connection, username);
+                if (user == null) {
+                    return null;
+                }
                 UserDTO readedUserDTO = userConverter.toDTO(user);
                 connection.commit();
                 return readedUserDTO;

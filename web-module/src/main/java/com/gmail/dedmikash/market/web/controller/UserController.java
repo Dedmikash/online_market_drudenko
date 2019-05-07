@@ -8,15 +8,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -63,7 +67,7 @@ public class UserController {
             }
         }
         userService.changeUsersRolesById(validChanges);
-        logger.info("Changing roles of users with ids:: {} ", validChanges.keySet());
+        logger.info("Changing roles of users with ids: {} ", validChanges.keySet());
         return "redirect:/users/1";
     }
 
@@ -75,5 +79,41 @@ public class UserController {
         userService.changeUsersPasswordsByUsernames(usernames);
         logger.info("Changing passwords of users with usernames: {} ", Arrays.toString(usernames));
         return "redirect:/users/1";
+    }
+
+    @GetMapping("/users/add")
+    public String addUser(UserDTO userDTO, Model model) {
+        List<RoleDTO> roleDTOList = roleService.getRoles();
+        model.addAttribute("roles", roleDTOList);
+        return "usersadd";
+    }
+
+    @PostMapping("/users/add")
+    public String addUser(
+            @Valid UserDTO userDTO,
+            BindingResult result,
+            Model model) {
+        if (result.hasErrors()) {
+            List<RoleDTO> roleDTOList = roleService.getRoles();
+            model.addAttribute("roles", roleDTOList);
+            logger.info("Not valid user adding: {}", result.getFieldErrors().stream()
+                    .map(fieldError -> fieldError.getField().concat(" : ")
+                            .concat(Objects.requireNonNull(fieldError.getRejectedValue()).toString())
+                            .concat(" - ").concat(Objects.requireNonNull(fieldError.getDefaultMessage())))
+                    .collect(Collectors.toList()).toString());
+            return "usersadd";
+        } else {
+            if (userService.readByUsername(userDTO.getUsername()) != null) {
+                logger.info("Attempt to create user with same email: {}", userDTO.getUsername());
+                List<RoleDTO> roleDTOList = roleService.getRoles();
+                model.addAttribute("roles", roleDTOList);
+                model.addAttribute("duplicate", "User with such email already exists in DB");
+                return "usersadd";
+            }
+            logger.info("Trying to add user: {} {} {} {} {}", userDTO.getSurname(), userDTO.getName(),
+                    userDTO.getPatronymic(), userDTO.getUsername(), userDTO.getRoleDTO().getName());
+            userService.add(userDTO);
+            return "redirect:/users/1";
+        }
     }
 }
