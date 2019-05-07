@@ -19,7 +19,9 @@ public class UserConverterImpl implements UserConverter {
         userDTO.setSurname(user.getSurname());
         userDTO.setPatronymic(user.getPatronymic());
         RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setName(user.getRole().getName());
+        if (user.getRole() != null) {
+            roleDTO.setName(user.getRole().getName());
+        }
         userDTO.setRoleDTO(roleDTO);
         userDTO.setBlocked(user.getBlocked());
         userDTO.setDeleted(user.getDeleted());

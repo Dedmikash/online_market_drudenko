@@ -24,7 +24,7 @@
             <th>Delete</th>
             <th>Pass</th>
         </tr>
-        <th:block th:each="user,stat : ${users}">
+        <th:block th:each="user : ${users}">
             <tr>
                 <td th:text="${user.name}">...</td>
                 <td th:text="${user.surname}">...</td>
@@ -57,7 +57,7 @@
     <input type="submit" value="Change selected passwords">
 </form>
 <a th:href="@{/users/add}">Add user</a><br>
-<a th:href="@{/reviews}">Site reviews</a>
+<a th:href="@{/reviews/1}">Site reviews</a>
 </body>
 </html>
 

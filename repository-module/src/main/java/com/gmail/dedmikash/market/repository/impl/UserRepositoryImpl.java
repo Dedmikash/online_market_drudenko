@@ -145,7 +145,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
                 preparedStatement.setLong(2, entry.getKey());
                 int affectedRows = preparedStatement.executeUpdate();
                 if (affectedRows == 0) {
-                    throw new SQLException("Changing role of user with id: " + entry.getKey() + "- on:"
+                    throw new SQLException("Changing role of user with id: " + entry.getKey() + " - on: "
                             + entry.getValue() + " - failed, no rows affected.");
                 }
             } catch (SQLException e) {

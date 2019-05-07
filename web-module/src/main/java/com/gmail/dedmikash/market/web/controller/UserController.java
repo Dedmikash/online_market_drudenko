@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
@@ -33,7 +35,7 @@ public class UserController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/users/{page}")
+    @GetMapping("/{page}")
     public String getUsers(@PathVariable("page") int page, Model model) {
         List<UserDTO> userDTOList = userService.getUsersBatch(page);
         List<RoleDTO> roleDTOList = roleService.getRoles();
@@ -44,7 +46,7 @@ public class UserController {
         return "users";
     }
 
-    @PostMapping("/users/delete_users")
+    @PostMapping("/delete_users")
     public String deleteUsers(@RequestParam(value = "delete", required = false) Long[] ids) {
         if (ids == null) {
             return "redirect:/users/1";
@@ -54,7 +56,7 @@ public class UserController {
         return "redirect:/users/1";
     }
 
-    @PostMapping("/users/change_roles")
+    @PostMapping("/change_roles")
     public String changeRoles(@RequestParam(value = "change_role", required = false) String[] changes) {
         if (changes == null) {
             return "redirect:/users/1";
@@ -71,7 +73,7 @@ public class UserController {
         return "redirect:/users/1";
     }
 
-    @PostMapping("/users/change_pass")
+    @PostMapping("/change_pass")
     public String changePasswords(@RequestParam(value = "change_pass", required = false) String[] usernames) {
         if (usernames == null) {
             return "redirect:/users/1";
@@ -81,14 +83,14 @@ public class UserController {
         return "redirect:/users/1";
     }
 
-    @GetMapping("/users/add")
+    @GetMapping("/add")
     public String addUser(UserDTO userDTO, Model model) {
         List<RoleDTO> roleDTOList = roleService.getRoles();
         model.addAttribute("roles", roleDTOList);
         return "usersadd";
     }
 
-    @PostMapping("/users/add")
+    @PostMapping("/add")
     public String addUser(
             @Valid UserDTO userDTO,
             BindingResult result,
