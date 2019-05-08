@@ -35,6 +35,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/users/**", "/reviews/**")
                 .hasAuthority("ADMINISTRATOR")
+                .antMatchers("/403")
+                .permitAll()
                 .and()
                 .formLogin()
                 .loginPage("/login")

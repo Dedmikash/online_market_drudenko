@@ -12,6 +12,6 @@ public class ErrorController {
     @GetMapping("/403")
     public String ERROR403() {
         logger.info("ERROR 403 registered");
-        return "403";
+        return "/403";
     }
 }
