@@ -10,6 +10,17 @@ public class Review {
     private Boolean visible;
     private Boolean deleted;
 
+    public Review() {
+    }
+
+    public Review(User user, String text, Timestamp created, Boolean visible, Boolean deleted) {
+        this.user = user;
+        this.text = text;
+        this.created = created;
+        this.visible = visible;
+        this.deleted = deleted;
+    }
+
     public Long getId() {
         return id;
     }

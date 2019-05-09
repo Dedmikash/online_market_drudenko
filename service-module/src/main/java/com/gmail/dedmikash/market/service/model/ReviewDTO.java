@@ -10,6 +10,17 @@ public class ReviewDTO {
     private Boolean visible;
     private Boolean deleted;
 
+    public ReviewDTO() {
+    }
+
+    public ReviewDTO(UserDTO userDTO, String text, Timestamp created, Boolean visible, Boolean deleted) {
+        this.userDTO = userDTO;
+        this.text = text;
+        this.created = created;
+        this.visible = visible;
+        this.deleted = deleted;
+    }
+
     public Long getId() {
         return id;
     }
