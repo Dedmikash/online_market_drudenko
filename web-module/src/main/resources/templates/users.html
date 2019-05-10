@@ -49,15 +49,15 @@
         </th:block>
     </table>
     <th:block th:each="i:${#numbers.sequence(1,pages)}">
-        <a th:href="@{/users/{page}(page=${i})}"><span th:text="${i}">...</span></a>
+        <a th:href="@{/users?page={page}(page=${i})}"><span th:text="${i}">...</span></a>
     </th:block>
     <br>
     <input type="submit" value="Change roles" th:formaction="@{/users/change_roles}">
-    <input type="submit" value="Delete selected" th:formaction="@{/users/delete_users}">
+    <input type="submit" value="Delete selected" th:formaction="@{/users/delete}">
     <input type="submit" value="Change selected passwords">
 </form>
 <a th:href="@{/users/add}">Add user</a><br>
-<a th:href="@{/reviews/1}">Site reviews</a>
+<a th:href="@{/reviews}">Site reviews</a>
 </body>
 </html>
 

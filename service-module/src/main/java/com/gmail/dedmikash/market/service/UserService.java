@@ -12,7 +12,7 @@ public interface UserService {
 
     List<UserDTO> getUsersBatch(int page);
 
-    int countPages();
+    int getCountOfUsersPages();
 
     void deleteUsersByIds(Long[] ids);
 

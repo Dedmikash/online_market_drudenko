@@ -11,15 +11,15 @@ import com.gmail.dedmikash.market.service.model.UserDTO;
 import com.gmail.dedmikash.market.service.util.RandomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.NO_CONNECTION_ERROR_MESSAGE;
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.QUERY_FAILED_ERROR_MESSAGE;
@@ -30,14 +30,16 @@ public class UserServiceImpl implements UserService {
     private final UserConverter userConverter;
     private final UserRepository userRepository;
     private final RandomService randomService;
+    private final PasswordEncoder passwordEncoder;
 
 
     public UserServiceImpl(UserConverter userConverter,
                            UserRepository userRepository,
-                           RandomService randomService) {
+                           RandomService randomService, PasswordEncoder passwordEncoder) {
         this.userConverter = userConverter;
         this.userRepository = userRepository;
         this.randomService = randomService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -47,10 +49,8 @@ public class UserServiceImpl implements UserService {
             try {
                 connection.setAutoCommit(false);
                 String password = randomService.getNewPassword();
-                String hash = BCrypt.hashpw(password, BCrypt.gensalt(12));
-                user.setPassword(hash);
-                user.setDeleted(false);
-                user.setBlocked(false);
+                String hashedPassword = passwordEncoder.encode(password);
+                user.setPassword(hashedPassword);
                 userRepository.add(connection, user);
                 logger.info("User: {} - was created. Password: {} - has been sent on email.",
                         userDTO.getUsername(), password);
@@ -100,11 +100,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int countPages() {
+    public int getCountOfUsersPages() {
         try (Connection connection = userRepository.getConnection()) {
             try {
                 connection.setAutoCommit(false);
-                int numberOfPages = userRepository.countPages(connection);
+                int numberOfPages = userRepository.getCountOfUsersPages(connection);
                 connection.commit();
                 return numberOfPages;
             } catch (StatementException e) {
@@ -145,11 +145,13 @@ public class UserServiceImpl implements UserService {
                 for (String username : usernames) {
                     newPasswords.put(username, randomService.getNewPassword());
                 }
-                Map<String, String> newHashes = new HashMap<>();
                 for (Map.Entry<String, String> entry : newPasswords.entrySet()) {
-                    newHashes.put(entry.getKey(), BCrypt.hashpw(entry.getValue(), BCrypt.gensalt(12)));
+                    userRepository.changePasswordByUsername(
+                            connection,
+                            entry.getKey(),
+                            passwordEncoder.encode(entry.getValue())
+                    );
                 }
-                userRepository.changePasswordsByUsernames(connection, newHashes);
                 for (Map.Entry<String, String> entry : newPasswords.entrySet()) {
                     logger.info("Password of user with username: {} - was changed to: {}. Email has been sent."
                             , entry.getKey(), entry.getValue());
@@ -187,9 +189,10 @@ public class UserServiceImpl implements UserService {
     private List<UserDTO> getPageOfUsers(int page, Connection connection) throws SQLException {
         try {
             connection.setAutoCommit(false);
-            List<UserDTO> userDTOList = new ArrayList<>();
-            List<User> userList = userRepository.readPage(connection, page);
-            userList.forEach(user -> userDTOList.add(userConverter.toDTO(user)));
+            List<UserDTO> userDTOList = userRepository.getUsers(connection, page)
+                    .stream()
+                    .map(userConverter::toDTO)
+                    .collect(Collectors.toList());
             connection.commit();
             return userDTOList;
         } catch (StatementException e) {

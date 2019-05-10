@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,31 +34,34 @@ public class UserController {
         this.roleService = roleService;
     }
 
-    @GetMapping("/{page}")
-    public String getUsers(@PathVariable("page") int page, Model model) {
+    @GetMapping
+    public String getUsers(@RequestParam(name = "page", required = false) Integer page, Model model) {
+        if (page == null) {
+            page = 1;
+        }
         List<UserDTO> userDTOList = userService.getUsersBatch(page);
         List<RoleDTO> roleDTOList = roleService.getRoles();
         model.addAttribute("users", userDTOList);
         model.addAttribute("roles", roleDTOList);
-        model.addAttribute("pages", userService.countPages());
+        model.addAttribute("pages", userService.getCountOfUsersPages());
         logger.info("Getting users {}, page {}", userDTOList, page);
         return "users";
     }
 
-    @PostMapping("/delete_users")
+    @PostMapping("/delete")
     public String deleteUsers(@RequestParam(value = "delete", required = false) Long[] ids) {
         if (ids == null) {
-            return "redirect:/users/1";
+            return "redirect:/users";
         }
         logger.info("Deleting users with ids: {} ", Arrays.toString(ids));
         userService.deleteUsersByIds(ids);
-        return "redirect:/users/1";
+        return "redirect:/users";
     }
 
     @PostMapping("/change_roles")
     public String changeRoles(@RequestParam(value = "change_role", required = false) String[] changes) {
         if (changes == null) {
-            return "redirect:/users/1";
+            return "redirect:/users";
         }
         Map<Long, String> validChanges = new HashMap<>();
         for (String change : changes) {
@@ -70,17 +72,17 @@ public class UserController {
         }
         userService.changeUsersRolesById(validChanges);
         logger.info("Changing roles of users with ids: {} ", validChanges.keySet());
-        return "redirect:/users/1";
+        return "redirect:/users";
     }
 
     @PostMapping("/change_pass")
     public String changePasswords(@RequestParam(value = "change_pass", required = false) String[] usernames) {
         if (usernames == null) {
-            return "redirect:/users/1";
+            return "redirect:/users";
         }
         userService.changeUsersPasswordsByUsernames(usernames);
         logger.info("Changing passwords of users with usernames: {} ", Arrays.toString(usernames));
-        return "redirect:/users/1";
+        return "redirect:/users";
     }
 
     @GetMapping("/add")
@@ -98,11 +100,7 @@ public class UserController {
         if (result.hasErrors()) {
             List<RoleDTO> roleDTOList = roleService.getRoles();
             model.addAttribute("roles", roleDTOList);
-            logger.info("Not valid user adding: {}", result.getFieldErrors().stream()
-                    .map(fieldError -> fieldError.getField().concat(" : ")
-                            .concat(Objects.requireNonNull(fieldError.getRejectedValue()).toString())
-                            .concat(" - ").concat(Objects.requireNonNull(fieldError.getDefaultMessage())))
-                    .collect(Collectors.toList()).toString());
+            logNotValidUserAdding(result);
             return "usersadd";
         } else {
             if (userService.readByUsername(userDTO.getUsername()) != null) {
@@ -115,7 +113,15 @@ public class UserController {
             logger.info("Trying to add user: {} {} {} {} {}", userDTO.getSurname(), userDTO.getName(),
                     userDTO.getPatronymic(), userDTO.getUsername(), userDTO.getRoleDTO().getName());
             userService.add(userDTO);
-            return "redirect:/users/1";
+            return "redirect:/users";
         }
+    }
+
+    private void logNotValidUserAdding(BindingResult result) {
+        logger.info("Not valid user adding: {}", result.getFieldErrors().stream()
+                .map(fieldError -> fieldError.getField().concat(" : ")
+                        .concat(Objects.requireNonNull(fieldError.getRejectedValue()).toString())
+                        .concat(" - ").concat(Objects.requireNonNull(fieldError.getDefaultMessage())))
+                .collect(Collectors.toList()).toString());
     }
 }

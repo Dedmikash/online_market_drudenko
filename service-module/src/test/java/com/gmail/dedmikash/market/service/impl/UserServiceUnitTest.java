@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.sql.Connection;
 import java.util.Arrays;
@@ -30,11 +31,13 @@ public class UserServiceUnitTest {
     private Connection connection;
     @Mock
     private RandomService randomService;
+    @Mock
+    private PasswordEncoder passwordEncoder;
     private UserService userService;
 
     @Before
     public void init() {
-        userService = new UserServiceImpl(userConverter, userRepository, randomService);
+        userService = new UserServiceImpl(userConverter, userRepository, randomService, passwordEncoder);
     }
 
     @Test
@@ -68,7 +71,7 @@ public class UserServiceUnitTest {
         User secondUser = new User();
         secondUser.setUsername("test2");
         List<User> userList = Arrays.asList(firstUser, secondUser);
-        when(userRepository.readPage(connection, 5)).thenReturn(userList);
+        when(userRepository.getUsers(connection, 5)).thenReturn(userList);
         UserDTO firstUserDTO = new UserDTO();
         firstUserDTO.setUsername("test1");
         UserDTO secondUserDTO = new UserDTO();

@@ -30,7 +30,7 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
                 " JOIN user u ON r.user_id=u.id WHERE r.deleted=0 ORDER BY created LIMIT ?,?";
         List<Review> reviewList = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
-            preparedStatement.setInt(1, -BATCH_SIZE + page * BATCH_SIZE);
+            preparedStatement.setInt(1, getSQLLimit(page));
             preparedStatement.setInt(2, BATCH_SIZE);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
@@ -45,7 +45,7 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
     }
 
     @Override
-    public int countPages(Connection connection) throws StatementException {
+    public int getCountOfReviewsPages(Connection connection) throws StatementException {
         String countQuery = "SELECT ceil(COUNT(*)/?) AS pages FROM review WHERE deleted=0";
         try (PreparedStatement preparedStatement = connection.prepareStatement(countQuery)) {
             preparedStatement.setInt(1, BATCH_SIZE);
@@ -63,11 +63,8 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
 
     @Override
     public void softDeleteByIds(Connection connection, Long[] ids) throws StatementException {
-        StringBuilder updateQueryBuilder = new StringBuilder("UPDATE review SET deleted=1 WHERE ");
-        for (int i = 0; i < ids.length; i++) {
-            updateQueryBuilder.append("id=? OR ");
-        }
-        String updateQuery = updateQueryBuilder.substring(0, updateQueryBuilder.length() - 4);
+        StringBuilder updateQueryBuilder = new StringBuilder("UPDATE review SET deleted=1 WHERE id IN (");
+        String updateQuery = buildUpdateQueryWithIds(ids, updateQueryBuilder);
         try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
             for (int i = 1; i < ids.length + 1; i++) {
                 preparedStatement.setLong(i, ids[i - 1]);
@@ -114,5 +111,16 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
         review.setVisible(resultSet.getBoolean("visible"));
         review.setDeleted(resultSet.getBoolean("deleted"));
         return review;
+    }
+
+    private int getSQLLimit(int page) {
+        return -BATCH_SIZE + page * BATCH_SIZE;
+    }
+
+    private String buildUpdateQueryWithIds(Long[] ids, StringBuilder updateQueryBuilder) {
+        for (int i = 0; i < ids.length; i++) {
+            updateQueryBuilder.append("?,");
+        }
+        return updateQueryBuilder.substring(0, updateQueryBuilder.length() - 1).concat(")");
     }
 }

@@ -29,8 +29,8 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
 
     @Override
     public User add(Connection connection, User user) throws StatementException {
-        String insertQuery = "INSERT INTO user (username,password,name,surname,patronymic,role_id,blocked,deleted)" +
-                " VALUES (?,?,?,?,?,(SELECT id FROM role WHERE name=?),?,?)";
+        String insertQuery = "INSERT INTO user (username,password,name,surname,patronymic,role_id)" +
+                " VALUES (?,?,?,?,?,(SELECT id FROM role WHERE name=?))";
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 insertQuery,
                 Statement.RETURN_GENERATED_KEYS
@@ -41,8 +41,6 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
             preparedStatement.setString(4, user.getSurname());
             preparedStatement.setString(5, user.getPatronymic());
             preparedStatement.setString(6, user.getRole().getName());
-            preparedStatement.setBoolean(7, user.getBlocked());
-            preparedStatement.setBoolean(8, user.getDeleted());
             int affectedRows = preparedStatement.executeUpdate();
             if (affectedRows == 0) {
                 throw new SQLException(String.format(ADDING_USER_NO_ROWS_AFFECTED_ERROR_MESSAGE, user));
@@ -79,7 +77,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
     }
 
     @Override
-    public List<User> readPage(Connection connection, int page) throws StatementException {
+    public List<User> getUsers(Connection connection, int page) throws StatementException {
         String selectQuery = "SELECT *,r.name AS role_name FROM user u JOIN role r ON u.role_id=r.id" +
                 " WHERE deleted=0 ORDER BY username LIMIT ?,?";
         List<User> userList = new ArrayList<>();
@@ -99,7 +97,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
     }
 
     @Override
-    public int countPages(Connection connection) throws StatementException {
+    public int getCountOfUsersPages(Connection connection) throws StatementException {
         String countQuery = "SELECT ceil(COUNT(*)/?) AS pages FROM user WHERE deleted=0";
         try (PreparedStatement preparedStatement = connection.prepareStatement(countQuery)) {
             preparedStatement.setInt(1, BATCH_SIZE);
@@ -117,11 +115,8 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
 
     @Override
     public void softDeleteByIds(Connection connection, Long[] ids) throws StatementException {
-        StringBuilder updateQueryBuilder = new StringBuilder("UPDATE user SET deleted=1 WHERE ");
-        for (int i = 0; i < ids.length; i++) {
-            updateQueryBuilder.append("id=? OR ");
-        }
-        String updateQuery = updateQueryBuilder.substring(0, updateQueryBuilder.length() - 4);
+        StringBuilder updateQueryBuilder = new StringBuilder("UPDATE user SET deleted=1 WHERE id IN (");
+        String updateQuery = buildUpdateQueryWithIds(ids, updateQueryBuilder);
         try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
             for (int i = 1; i < ids.length + 1; i++) {
                 preparedStatement.setLong(i, ids[i - 1]);
@@ -156,21 +151,19 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
     }
 
     @Override
-    public void changePasswordsByUsernames(Connection connection, Map<String, String> newHashes) throws StatementException {
-        for (Map.Entry<String, String> entry : newHashes.entrySet()) {
-            String updateQuery = "UPDATE user SET password=? WHERE username=?";
-            try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
-                preparedStatement.setString(1, entry.getValue());
-                preparedStatement.setString(2, entry.getKey());
-                int affectedRows = preparedStatement.executeUpdate();
-                if (affectedRows == 0) {
-                    throw new SQLException("Changing password of user with username: " + entry.getKey()
-                            + " - failed, no rows affected.");
-                }
-            } catch (SQLException e) {
-                logger.error(e.getMessage(), e);
-                throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, updateQuery), e);
+    public void changePasswordByUsername(Connection connection, String username, String newHashedPassword) throws StatementException {
+        String updateQuery = "UPDATE user SET password=? WHERE username=?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, newHashedPassword);
+            int affectedRows = preparedStatement.executeUpdate();
+            if (affectedRows == 0) {
+                throw new SQLException("Changing password of user with username: " + username
+                        + " - failed, no rows affected.");
             }
+        } catch (SQLException e) {
+            logger.error(e.getMessage(), e);
+            throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, updateQuery), e);
         }
     }
 
@@ -188,5 +181,12 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
         user.setRole(role);
         user.setBlocked(resultSet.getBoolean("blocked"));
         return user;
+    }
+
+    private String buildUpdateQueryWithIds(Long[] ids, StringBuilder updateQueryBuilder) {
+        for (int i = 0; i < ids.length; i++) {
+            updateQueryBuilder.append("?,");
+        }
+        return updateQueryBuilder.substring(0, updateQueryBuilder.length() - 1).concat(")");
     }
 }

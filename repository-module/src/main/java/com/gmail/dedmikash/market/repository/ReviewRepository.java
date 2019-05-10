@@ -10,7 +10,7 @@ import java.util.Map;
 public interface ReviewRepository extends GenericRepository {
     List<Review> readPage(Connection connection, int page) throws StatementException;
 
-    int countPages(Connection connection) throws StatementException;
+    int getCountOfReviewsPages(Connection connection) throws StatementException;
 
     void softDeleteByIds(Connection connection, Long[] ids) throws StatementException;
 

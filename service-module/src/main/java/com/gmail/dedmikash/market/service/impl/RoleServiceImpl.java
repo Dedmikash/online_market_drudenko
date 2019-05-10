@@ -2,7 +2,6 @@ package com.gmail.dedmikash.market.service.impl;
 
 import com.gmail.dedmikash.market.repository.RoleRepository;
 import com.gmail.dedmikash.market.repository.exception.StatementException;
-import com.gmail.dedmikash.market.repository.model.Role;
 import com.gmail.dedmikash.market.service.RoleService;
 import com.gmail.dedmikash.market.service.converter.RoleConverter;
 import com.gmail.dedmikash.market.service.exception.DataBaseConnectionException;
@@ -14,8 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.NO_CONNECTION_ERROR_MESSAGE;
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.QUERY_FAILED_ERROR_MESSAGE;
@@ -44,9 +43,10 @@ public class RoleServiceImpl implements RoleService {
     private List<RoleDTO> getRoles(Connection connection) throws SQLException {
         try {
             connection.setAutoCommit(false);
-            List<RoleDTO> roleDTOList = new ArrayList<>();
-            List<Role> roleList = roleRepository.readAll(connection);
-            roleList.forEach(role -> roleDTOList.add(roleConverter.toDTO(role)));
+            List<RoleDTO> roleDTOList = roleRepository.readAll(connection)
+                    .stream()
+                    .map(roleConverter::toDTO)
+                    .collect(Collectors.toList());
             connection.commit();
             return roleDTOList;
         } catch (StatementException e) {

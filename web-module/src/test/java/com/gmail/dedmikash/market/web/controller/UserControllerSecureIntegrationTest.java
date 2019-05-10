@@ -46,7 +46,7 @@ public class UserControllerSecureIntegrationTest {
     @WithMockUser(authorities = "ADMINISTRATOR")
     @Test
     public void shouldSucceedForUsersPageForAdministrator() throws Exception {
-        mvc.perform(get("/users/1"))
+        mvc.perform(get("/users"))
                 .andExpect(status().isOk());
     }
 
@@ -77,7 +77,7 @@ public class UserControllerSecureIntegrationTest {
     @WithMockUser
     @Test
     public void shouldRedirectOn403PageForDeleteUsersPageForUser() throws Exception {
-        mvc.perform(post("/users/delete_users"))
+        mvc.perform(post("/users/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/403"));
     }
@@ -85,15 +85,15 @@ public class UserControllerSecureIntegrationTest {
     @WithMockUser(authorities = "ADMINISTRATOR")
     @Test
     public void shouldRedirectOnUsersPageForDeleteUsersPageForAdministrator() throws Exception {
-        mvc.perform(post("/users/delete_users"))
+        mvc.perform(post("/users/delete"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/users/1"));
+                .andExpect(redirectedUrl("/users"));
     }
 
     @WithMockUser(authorities = "SALE USER")
     @Test
     public void shouldRedirectOn403PageForDeleteUsersPageForSaleUser() throws Exception {
-        mvc.perform(post("/users/delete_users"))
+        mvc.perform(post("/users/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/403"));
     }
@@ -101,7 +101,7 @@ public class UserControllerSecureIntegrationTest {
     @WithMockUser(authorities = "CUSTOMER USER")
     @Test
     public void shouldRedirectOn403PageForDeleteUsersPageForCustomerUser() throws Exception {
-        mvc.perform(post("/users/delete_users"))
+        mvc.perform(post("/users/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/403"));
     }
@@ -109,7 +109,7 @@ public class UserControllerSecureIntegrationTest {
     @WithMockUser(authorities = "SECURE API USER")
     @Test
     public void shouldRedirectOn403PageForDeleteUsersPageForSecureApiUser() throws Exception {
-        mvc.perform(post("/users/delete_users"))
+        mvc.perform(post("/users/delete"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/403"));
     }
@@ -127,7 +127,7 @@ public class UserControllerSecureIntegrationTest {
     public void shouldRedirectOnUsersPageForChangeRolePageForAdministrator() throws Exception {
         mvc.perform(post("/users/change_roles"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/users/1"));
+                .andExpect(redirectedUrl("/users"));
     }
 
     @WithMockUser(authorities = "SALE USER")
@@ -167,7 +167,7 @@ public class UserControllerSecureIntegrationTest {
     public void shouldRedirectOnUsersPageForChangePasswordPageForAdministrator() throws Exception {
         mvc.perform(post("/users/change_pass"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/users/1"));
+                .andExpect(redirectedUrl("/users"));
     }
 
     @WithMockUser(authorities = "SALE USER")

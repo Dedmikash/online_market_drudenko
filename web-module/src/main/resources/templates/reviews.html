@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <title>Users</title>
+    <title>Reviews</title>
 </head>
 <body>
 <header>
@@ -13,7 +13,7 @@
     </span>
 </header>
 <h1>Site Reviews</h1>
-<form th:action="@{/reviews/delete_reviews}" method="post">
+<form th:action="@{/reviews/delete}" method="post">
     <table>
         <tr>
             <th>Name</th>
@@ -41,13 +41,13 @@
         </th:block>
     </table>
     <th:block th:if="${pages}>0" th:each="i:${#numbers.sequence(1,pages)}">
-        <a th:href="@{/reviews/{page}(page=${i})}"><span th:text="${i}">...</span></a>
+        <a th:href="@{/reviews?page={page}(page=${i})}"><span th:text="${i}">...</span></a>
     </th:block>
     <br>
     <input type="submit" value="Change visibility" th:formaction="@{/reviews/change_visibility}">
     <input type="submit" value="Delete selected">
 </form>
-<a th:href="@{/users/1}">Users</a><br>
+<a th:href="@{/users}">Users</a><br>
 <a th:href="@{/users/add}">Add user</a>
 </body>
 </html>

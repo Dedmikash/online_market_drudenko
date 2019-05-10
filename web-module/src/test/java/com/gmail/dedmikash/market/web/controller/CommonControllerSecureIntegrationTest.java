@@ -40,7 +40,7 @@ public class CommonControllerSecureIntegrationTest {
                 .param("username", "admin@gmail.com")
                 .param("password", "admin"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/users/1"));
+                .andExpect(redirectedUrl("/users"));
     }
 
     @Test

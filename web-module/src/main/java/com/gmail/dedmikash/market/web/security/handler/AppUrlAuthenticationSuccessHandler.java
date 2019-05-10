@@ -14,9 +14,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.gmail.dedmikash.market.web.constant.RolesConstants.ADMIN;
+import static com.gmail.dedmikash.market.web.constant.RolesConstants.CUSTOMER;
+import static com.gmail.dedmikash.market.web.constant.RolesConstants.SALE;
 
 @Component
 public class AppUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -29,16 +33,13 @@ public class AppUrlAuthenticationSuccessHandler implements AuthenticationSuccess
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
         handle(request, response, authentication);
-
         clearAuthenticationAttributes(request);
     }
 
     private void handle(HttpServletRequest request,
                         HttpServletResponse response,
                         Authentication authentication) throws IOException {
-
         String targetUrl = determineTargetUrl(authentication);
-
         if (response.isCommitted()) {
             logger.debug("Response has already been committed. Unable to redirect to {}", targetUrl);
             return;
@@ -48,13 +49,14 @@ public class AppUrlAuthenticationSuccessHandler implements AuthenticationSuccess
 
     private String determineTargetUrl(Authentication authentication) {
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        List<String> stringAuthorities = new ArrayList<>();
-        authorities.forEach(o -> stringAuthorities.add(o.getAuthority()));
-        if (stringAuthorities.contains("ADMINISTRATOR")) {
-            return "/users/1";
-        } else if (authorities.contains("SALE USER")) {
+        List<String> stringAuthorities = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList());
+        if (stringAuthorities.contains(ADMIN)) {
+            return "/users";
+        } else if (stringAuthorities.contains(SALE)) {
             return "/sale"; //TODO
-        } else if (authorities.contains("CUSTOMER USER")) {
+        } else if (stringAuthorities.contains(CUSTOMER)) {
             return "/customer"; //TODO
         } else {
             logger.info("Can't redirect. User : {} - has no valid role.", authentication.getCredentials());
