@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Reviews</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<h1>Site Reviews</h1>
+<form th:action="@{/reviews/delete}" method="post">
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Patronymic</th>
+            <th>Review</th>
+            <th>Created</th>
+            <th>Delete</th>
+            <th>Visible</th>
+        </tr>
+        <th:block th:each="review : ${reviews}">
+            <tr>
+                <td th:text="${review.userDTO.name}">...</td>
+                <td th:text="${review.userDTO.surname}">...</td>
+                <td th:text="${review.userDTO.patronymic}">...</td>
+                <td th:text="${review.text}">...</td>
+                <td th:text="${review.created}">...</td>
+                <td align="center"><input type="checkbox" name="delete" th:value="${review.id}"/></td>
+                <td align="center">
+                    <input type="hidden" name="old_visibility" th:value="${review.id}+' '+${review.visible}">
+                    <input type="checkbox" name="new_visibility" th:value="${review.id}+' '+${true}"
+                           th:checked="${review.visible}"/>
+                </td>
+            </tr>
+        </th:block>
+    </table>
+    <th:block th:if="${pages}>0" th:each="i:${#numbers.sequence(1,pages)}">
+        <a th:href="@{/reviews?page={page}(page=${i})}"><span th:text="${i}">...</span></a>
+    </th:block>
+    <br>
+    <input type="submit" value="Change visibility" th:formaction="@{/reviews/change_visibility}">
+    <input type="submit" value="Delete selected">
+</form>
+<a th:href="@{/users}">Users</a><br>
+<a th:href="@{/users/add}">Add user</a>
+</body>
+</html>
+
