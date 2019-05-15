@@ -7,6 +7,7 @@ import com.gmail.dedmikash.market.service.converter.ReviewConverter;
 import com.gmail.dedmikash.market.service.exception.DataBaseConnectionException;
 import com.gmail.dedmikash.market.service.exception.QueryFailedException;
 import com.gmail.dedmikash.market.service.model.ReviewDTO;
+import com.gmail.dedmikash.market.service.model.assembly.ReviewsWithPages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -33,24 +34,17 @@ public class ReviewServiceImpl implements ReviewService {
         this.reviewRepository = reviewRepository;
     }
 
-    @Override
-    public List<ReviewDTO> getReviewsBatch(int page) {
-        try (Connection connection = reviewRepository.getConnection()) {
-            return getPageOfReviews(page, connection);
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
-        }
-    }
 
     @Override
-    public int getCountOfReviewsPages() {
+    public ReviewsWithPages getReviews(int page) {
         try (Connection connection = reviewRepository.getConnection()) {
             try {
+                ReviewsWithPages reviewsWithPages = new ReviewsWithPages();
                 connection.setAutoCommit(false);
-                int numberOfPages = reviewRepository.getCountOfReviewsPages(connection);
+                reviewsWithPages.setReviewDTOList(getPageOfReviews(page, connection));
+                reviewsWithPages.setCountOfPages(reviewRepository.getCountOfReviewsPages(connection));
                 connection.commit();
-                return numberOfPages;
+                return reviewsWithPages;
             } catch (StatementException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
@@ -111,7 +105,6 @@ public class ReviewServiceImpl implements ReviewService {
                 if (oldVisibility.contains(element)) {
                     oldVisibility.remove(element);
                 } else {
-                    logger.info(element);
                     changes.put(Long.parseLong(element.split(" ")[0]), true);
                 }
             }
@@ -124,19 +117,12 @@ public class ReviewServiceImpl implements ReviewService {
         }
     }
 
-    private List<ReviewDTO> getPageOfReviews(int page, Connection connection) throws SQLException {
-        try {
-            connection.setAutoCommit(false);
-            List<ReviewDTO> reviewDTOList = reviewRepository.readPage(connection, page)
-                    .stream()
-                    .map(reviewConverter::toDTO)
-                    .collect(Collectors.toList());
-            connection.commit();
-            return reviewDTOList;
-        } catch (StatementException e) {
-            connection.rollback();
-            logger.error(e.getMessage(), e);
-            throw new QueryFailedException(QUERY_FAILED_ERROR_MESSAGE, e);
-        }
+    private List<ReviewDTO> getPageOfReviews(int page, Connection connection) throws SQLException, StatementException {
+        List<ReviewDTO> reviewDTOList = reviewRepository.readPage(connection, page)
+                .stream()
+                .map(reviewConverter::toDTO)
+                .collect(Collectors.toList());
+        connection.commit();
+        return reviewDTOList;
     }
 }

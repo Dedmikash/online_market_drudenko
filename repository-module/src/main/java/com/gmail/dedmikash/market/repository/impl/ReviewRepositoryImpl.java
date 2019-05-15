@@ -109,7 +109,7 @@ public class ReviewRepositoryImpl extends GenericRepositoryImpl implements Revie
         review.setText(resultSet.getString("text"));
         review.setCreated(resultSet.getTimestamp("created"));
         review.setVisible(resultSet.getBoolean("visible"));
-        review.setDeleted(resultSet.getBoolean("deleted"));
+        review.setDeleted(resultSet.getBoolean("review_deleted"));
         return review;
     }
 

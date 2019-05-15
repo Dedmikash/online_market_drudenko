@@ -13,8 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
+import static com.gmail.dedmikash.market.web.constant.RolesConstants.ADMIN;
+import static com.gmail.dedmikash.market.web.constant.RolesConstants.CUSTOMER;
+
 @Configuration
-@Order
+@Order(2)
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder encoder;
@@ -34,7 +37,9 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/users/**", "/reviews/**")
-                .hasAuthority("ADMINISTRATOR")
+                .hasAuthority(ADMIN)
+                .antMatchers("/articles/**", "/profile/**")
+                .hasAuthority(CUSTOMER)
                 .antMatchers("/403")
                 .permitAll()
                 .and()

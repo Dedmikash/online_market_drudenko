@@ -8,8 +8,8 @@ public class User {
     private String surname;
     private String patronymic;
     private Role role;
-    private Boolean blocked;
-    private Boolean deleted;
+    private boolean isBlocked;
+    private boolean isDeleted;
 
     public Long getId() {
         return id;
@@ -67,19 +67,19 @@ public class User {
         this.role = role;
     }
 
-    public Boolean getBlocked() {
-        return blocked;
+    public boolean isBlocked() {
+        return isBlocked;
     }
 
-    public void setBlocked(Boolean blocked) {
-        this.blocked = blocked;
+    public void setBlocked(boolean blocked) {
+        isBlocked = blocked;
     }
 
-    public Boolean getDeleted() {
-        return deleted;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

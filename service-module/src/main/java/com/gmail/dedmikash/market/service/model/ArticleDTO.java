@@ -1,25 +1,14 @@
-package com.gmail.dedmikash.market.repository.model;
+package com.gmail.dedmikash.market.service.model;
 
 import java.sql.Timestamp;
 
-public class Review {
+public class ArticleDTO {
     private Long id;
-    private User user;
+    private String name;
+    private UserDTO userDTO;
     private String text;
     private Timestamp created;
-    private boolean isVisible;
     private boolean isDeleted;
-
-    public Review() {
-    }
-
-    public Review(User user, String text, Timestamp created, boolean isVisible, boolean isDeleted) {
-        this.user = user;
-        this.text = text;
-        this.created = created;
-        this.isVisible = isVisible;
-        this.isDeleted = isDeleted;
-    }
 
     public Long getId() {
         return id;
@@ -29,12 +18,20 @@ public class Review {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public String getName() {
+        return name;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public UserDTO getUserDTO() {
+        return userDTO;
+    }
+
+    public void setUserDTO(UserDTO userDTO) {
+        this.userDTO = userDTO;
     }
 
     public String getText() {
@@ -51,14 +48,6 @@ public class Review {
 
     public void setCreated(Timestamp created) {
         this.created = created;
-    }
-
-    public boolean isVisible() {
-        return isVisible;
-    }
-
-    public void setVisible(boolean visible) {
-        isVisible = visible;
     }
 
     public boolean isDeleted() {

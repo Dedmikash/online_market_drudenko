@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = WebModuleApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-public class CommonControllerSecureIntegrationTest {
+public class HomeControllerSecureIntegrationTest {
     @Autowired
     private WebApplicationContext context;
     private MockMvc mvc;

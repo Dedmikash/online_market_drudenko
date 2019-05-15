@@ -7,18 +7,18 @@ public class ReviewDTO {
     private UserDTO userDTO;
     private String text;
     private Timestamp created;
-    private Boolean visible;
-    private Boolean deleted;
+    private boolean isVisible;
+    private boolean isDeleted;
 
     public ReviewDTO() {
     }
 
-    public ReviewDTO(UserDTO userDTO, String text, Timestamp created, Boolean visible, Boolean deleted) {
+    public ReviewDTO(UserDTO userDTO, String text, Timestamp created, boolean isVisible, boolean isDeleted) {
         this.userDTO = userDTO;
         this.text = text;
         this.created = created;
-        this.visible = visible;
-        this.deleted = deleted;
+        this.isVisible = isVisible;
+        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
@@ -53,20 +53,20 @@ public class ReviewDTO {
         this.created = created;
     }
 
-    public Boolean getVisible() {
-        return visible;
+    public boolean isVisible() {
+        return isVisible;
     }
 
-    public void setVisible(Boolean visible) {
-        this.visible = visible;
+    public void setVisible(boolean visible) {
+        this.isVisible = visible;
     }
 
-    public Boolean getDeleted() {
-        return deleted;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
+    public void setDeleted(boolean deleted) {
+        this.isDeleted = deleted;
     }
 
     @Override

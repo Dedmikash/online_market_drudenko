@@ -26,8 +26,8 @@ public class UserDTO {
     @Pattern(regexp = LATIN_REGEX, message = PATRONYMIC_PATTERN_NOT_VALID)
     private String patronymic;
     private RoleDTO roleDTO;
-    private Boolean blocked;
-    private Boolean deleted;
+    private boolean blocked;
+    private boolean deleted;
 
     public Long getId() {
         return id;
@@ -85,19 +85,19 @@ public class UserDTO {
         this.roleDTO = roleDTO;
     }
 
-    public Boolean getBlocked() {
+    public boolean isBlocked() {
         return blocked;
     }
 
-    public void setBlocked(Boolean blocked) {
+    public void setBlocked(boolean blocked) {
         this.blocked = blocked;
     }
 
-    public Boolean getDeleted() {
+    public boolean isDeleted() {
         return deleted;
     }
 
-    public void setDeleted(Boolean deleted) {
+    public void setDeleted(boolean deleted) {
         this.deleted = deleted;
     }
 

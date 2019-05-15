@@ -1,14 +1,12 @@
 package com.gmail.dedmikash.market.service;
 
-import com.gmail.dedmikash.market.service.model.ReviewDTO;
+import com.gmail.dedmikash.market.service.model.assembly.ReviewsWithPages;
 
 import java.util.List;
 import java.util.Set;
 
 public interface ReviewService {
-    List<ReviewDTO> getReviewsBatch(int page);
-
-    int getCountOfReviewsPages();
+    ReviewsWithPages getReviews(int page);
 
     void deleteReviewsByIds(Long[] ids);
 

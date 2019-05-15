@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 import static com.gmail.dedmikash.market.web.constant.RolesConstants.ADMIN;
 import static com.gmail.dedmikash.market.web.constant.RolesConstants.CUSTOMER;
-import static com.gmail.dedmikash.market.web.constant.RolesConstants.SALE;
 
 @Component
 public class AppUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -54,10 +53,8 @@ public class AppUrlAuthenticationSuccessHandler implements AuthenticationSuccess
                 .collect(Collectors.toList());
         if (stringAuthorities.contains(ADMIN)) {
             return "/users";
-        } else if (stringAuthorities.contains(SALE)) {
-            return "/sale"; //TODO
         } else if (stringAuthorities.contains(CUSTOMER)) {
-            return "/customer"; //TODO
+            return "/articles";
         } else {
             logger.info("Can't redirect. User : {} - has no valid role.", authentication.getCredentials());
             return "redirect:/login?role";

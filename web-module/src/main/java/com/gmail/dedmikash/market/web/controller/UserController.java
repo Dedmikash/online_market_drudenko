@@ -4,6 +4,7 @@ import com.gmail.dedmikash.market.service.RoleService;
 import com.gmail.dedmikash.market.service.UserService;
 import com.gmail.dedmikash.market.service.model.RoleDTO;
 import com.gmail.dedmikash.market.service.model.UserDTO;
+import com.gmail.dedmikash.market.service.model.assembly.UsersWithPagesAndRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -35,16 +36,12 @@ public class UserController {
     }
 
     @GetMapping
-    public String getUsers(@RequestParam(name = "page", required = false) Integer page, Model model) {
-        if (page == null) {
-            page = 1;
-        }
-        List<UserDTO> userDTOList = userService.getUsersBatch(page);
-        List<RoleDTO> roleDTOList = roleService.getRoles();
-        model.addAttribute("users", userDTOList);
-        model.addAttribute("roles", roleDTOList);
-        model.addAttribute("pages", userService.getCountOfUsersPages());
-        logger.info("Getting users {}, page {}", userDTOList, page);
+    public String getUsers(@RequestParam(name = "page", defaultValue = "1") Integer page, Model model) {
+        UsersWithPagesAndRoles usersWithPagesAndRoles = userService.getUsers(page);
+        model.addAttribute("users", usersWithPagesAndRoles.getUserDTOList());
+        model.addAttribute("roles", usersWithPagesAndRoles.getRoleDTOList());
+        model.addAttribute("pages", usersWithPagesAndRoles.getCountOfPages());
+        logger.info("Getting users {}, page {}", usersWithPagesAndRoles.getUserDTOList(), page);
         return "users";
     }
 
@@ -85,14 +82,14 @@ public class UserController {
         return "redirect:/users";
     }
 
-    @GetMapping("/add")
+    @GetMapping("/new")
     public String addUser(UserDTO userDTO, Model model) {
         List<RoleDTO> roleDTOList = roleService.getRoles();
         model.addAttribute("roles", roleDTOList);
         return "usersadd";
     }
 
-    @PostMapping("/add")
+    @PostMapping("/new")
     public String addUser(
             @Valid UserDTO userDTO,
             BindingResult result,

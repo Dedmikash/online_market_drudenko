@@ -23,8 +23,8 @@ public class UserConverterImpl implements UserConverter {
             roleDTO.setName(user.getRole().getName());
         }
         userDTO.setRoleDTO(roleDTO);
-        userDTO.setBlocked(user.getBlocked());
-        userDTO.setDeleted(user.getDeleted());
+        userDTO.setBlocked(user.isBlocked());
+        userDTO.setDeleted(user.isDeleted());
         return userDTO;
     }
 
@@ -38,10 +38,12 @@ public class UserConverterImpl implements UserConverter {
         user.setName(userDTO.getName());
         user.setPatronymic(userDTO.getPatronymic());
         Role role = new Role();
-        role.setName(userDTO.getRoleDTO().getName());
+        if (userDTO.getRoleDTO() != null) {
+            role.setName(userDTO.getRoleDTO().getName());
+        }
         user.setRole(role);
-        user.setBlocked(userDTO.getBlocked());
-        user.setDeleted(userDTO.getDeleted());
+        user.setBlocked(userDTO.isBlocked());
+        user.setDeleted(userDTO.isDeleted());
         return user;
     }
 }

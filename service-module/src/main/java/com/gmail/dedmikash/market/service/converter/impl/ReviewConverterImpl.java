@@ -21,8 +21,8 @@ public class ReviewConverterImpl implements ReviewConverter {
         reviewDTO.setUserDTO(userConverter.toDTO(review.getUser()));
         reviewDTO.setText(review.getText());
         reviewDTO.setCreated(review.getCreated());
-        reviewDTO.setVisible(review.getVisible());
-        reviewDTO.setDeleted(review.getVisible());
+        reviewDTO.setVisible(review.isVisible());
+        reviewDTO.setDeleted(review.isDeleted());
         return reviewDTO;
     }
 }
