@@ -20,7 +20,7 @@ import java.util.Map;
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.QUERY_FAILED_ERROR_MESSAGE;
 
 @Repository
-public class ReviewRepositoryImpl extends GenericRepositoryImpl implements ReviewRepository {
+public class ReviewRepositoryImpl extends GenericRepositoryImpl<Long, Review> implements ReviewRepository {
     private static final Logger logger = LoggerFactory.getLogger(ReviewRepositoryImpl.class);
     private static final int BATCH_SIZE = 10;
 

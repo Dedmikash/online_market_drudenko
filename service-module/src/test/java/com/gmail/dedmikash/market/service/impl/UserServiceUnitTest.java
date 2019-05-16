@@ -1,11 +1,9 @@
 package com.gmail.dedmikash.market.service.impl;
 
-import com.gmail.dedmikash.market.repository.RoleRepository;
 import com.gmail.dedmikash.market.repository.UserRepository;
 import com.gmail.dedmikash.market.repository.exception.StatementException;
 import com.gmail.dedmikash.market.repository.model.User;
 import com.gmail.dedmikash.market.service.UserService;
-import com.gmail.dedmikash.market.service.converter.RoleConverter;
 import com.gmail.dedmikash.market.service.converter.UserConverter;
 import com.gmail.dedmikash.market.service.model.UserDTO;
 import com.gmail.dedmikash.market.service.util.RandomService;
@@ -30,10 +28,6 @@ public class UserServiceUnitTest {
     @Mock
     private UserConverter userConverter;
     @Mock
-    private RoleRepository roleRepository;
-    @Mock
-    private RoleConverter roleConverter;
-    @Mock
     private Connection connection;
     @Mock
     private RandomService randomService;
@@ -43,7 +37,7 @@ public class UserServiceUnitTest {
 
     @Before
     public void init() {
-        userService = new UserServiceImpl(userConverter, userRepository, roleRepository, roleConverter, randomService, passwordEncoder);
+        userService = new UserServiceImpl(userConverter, userRepository, randomService, passwordEncoder);
     }
 
     @Test
@@ -84,7 +78,7 @@ public class UserServiceUnitTest {
         secondUserDTO.setUsername("test2");
         when(userConverter.toDTO(firstUser)).thenReturn(firstUserDTO);
         when(userConverter.toDTO(secondUser)).thenReturn(secondUserDTO);
-        Assert.assertEquals("test1", userService.getUsers(5).getUserDTOList().get(0).getUsername());
-        Assert.assertEquals("test2", userService.getUsers(5).getUserDTOList().get(1).getUsername());
+        Assert.assertEquals("test1", userService.getUsers(5).getList().get(0).getUsername());
+        Assert.assertEquals("test2", userService.getUsers(5).getList().get(1).getUsername());
     }
 }

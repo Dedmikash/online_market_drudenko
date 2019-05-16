@@ -23,7 +23,7 @@ import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMess
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.QUERY_FAILED_ERROR_MESSAGE;
 
 @Repository
-public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRepository {
+public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implements UserRepository {
     private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
     private static final int BATCH_SIZE = 10;
 
@@ -82,7 +82,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
                 " WHERE deleted=0 ORDER BY username LIMIT ?,?";
         List<User> userList = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
-            preparedStatement.setInt(1, -BATCH_SIZE + page * BATCH_SIZE);
+            preparedStatement.setInt(1, getSQLLimit(page));
             preparedStatement.setInt(2, BATCH_SIZE);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
@@ -181,6 +181,10 @@ public class UserRepositoryImpl extends GenericRepositoryImpl implements UserRep
         user.setRole(role);
         user.setBlocked(resultSet.getBoolean("blocked"));
         return user;
+    }
+
+    private int getSQLLimit(int page) {
+        return -BATCH_SIZE + page * BATCH_SIZE;
     }
 
     private String buildUpdateQueryWithIds(Long[] ids, StringBuilder updateQueryBuilder) {

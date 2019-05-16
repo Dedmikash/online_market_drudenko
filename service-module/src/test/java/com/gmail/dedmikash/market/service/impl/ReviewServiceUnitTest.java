@@ -46,7 +46,7 @@ public class ReviewServiceUnitTest {
         ReviewDTO secondReviewDTO = new ReviewDTO(null, "text2", firstReview.getCreated(), false, true);
         when(reviewConverter.toDTO(firstReview)).thenReturn(firstReviewDTO);
         when(reviewConverter.toDTO(secondReview)).thenReturn(secondReviewDTO);
-        Assert.assertEquals(firstReviewDTO, reviewService.getReviews(1).getReviewDTOList().get(0));
-        Assert.assertEquals(secondReviewDTO, reviewService.getReviews(1).getReviewDTOList().get(1));
+        Assert.assertEquals(firstReviewDTO, reviewService.getReviews(1).getList().get(0));
+        Assert.assertEquals(secondReviewDTO, reviewService.getReviews(1).getList().get(1));
     }
 }

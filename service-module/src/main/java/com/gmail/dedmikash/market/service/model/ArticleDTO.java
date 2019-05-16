@@ -8,6 +8,7 @@ public class ArticleDTO {
     private UserDTO userDTO;
     private String text;
     private Timestamp created;
+    private Long views;
     private boolean isDeleted;
 
     public Long getId() {
@@ -50,11 +51,24 @@ public class ArticleDTO {
         this.created = created;
     }
 
+    public Long getViews() {
+        return views;
+    }
+
+    public void setViews(Long views) {
+        this.views = views;
+    }
+
     public boolean isDeleted() {
         return isDeleted;
     }
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    @Override
+    public String toString() {
+        return "ArticleDTO{" + name + '}';
     }
 }

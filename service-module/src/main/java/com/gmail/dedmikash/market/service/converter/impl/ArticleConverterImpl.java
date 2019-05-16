@@ -22,6 +22,7 @@ public class ArticleConverterImpl implements ArticleConverter {
         articleDTO.setUserDTO(userConverter.toDTO(article.getUser()));
         articleDTO.setText(article.getText());
         articleDTO.setCreated(article.getCreated());
+        articleDTO.setViews(article.getViews());
         articleDTO.setDeleted(article.isDeleted());
         return articleDTO;
     }
@@ -33,6 +34,7 @@ public class ArticleConverterImpl implements ArticleConverter {
         article.setUser(userConverter.fromDTO(articleDTO.getUserDTO()));
         article.setText(articleDTO.getText());
         article.setCreated(articleDTO.getCreated());
+        article.setViews(articleDTO.getViews());
         article.setDeleted(articleDTO.isDeleted());
         return article;
     }

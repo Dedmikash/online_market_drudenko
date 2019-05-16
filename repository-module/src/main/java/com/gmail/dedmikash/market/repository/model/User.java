@@ -1,14 +1,36 @@
 package com.gmail.dedmikash.market.repository.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table
+@SQLDelete(sql = "UPDATE user SET deleted = '1' WHERE id = ?")
+@Where(clause = "deleted = '0'")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String username;
     private String password;
     private String name;
     private String surname;
     private String patronymic;
+    @ManyToOne
+    @JoinColumn (name = "role_id")
     private Role role;
+    @Column (name = "blocked")
     private boolean isBlocked;
+    @Column (name = "deleted")
     private boolean isDeleted;
 
     public Long getId() {

@@ -1,8 +1,8 @@
 package com.gmail.dedmikash.market.web.controller;
 
 import com.gmail.dedmikash.market.service.ReviewService;
+import com.gmail.dedmikash.market.service.model.PageDTO;
 import com.gmail.dedmikash.market.service.model.ReviewDTO;
-import com.gmail.dedmikash.market.service.model.assembly.ReviewsWithPages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -28,10 +28,10 @@ public class ReviewController {
 
     @GetMapping
     public String getReviews(@RequestParam(name = "page", required = false, defaultValue = "1") Integer page, Model model) {
-        ReviewsWithPages reviewsWithPages = reviewService.getReviews(page);
-        model.addAttribute("reviews", reviewsWithPages.getReviewDTOList());
+        PageDTO<ReviewDTO> reviewsWithPages = reviewService.getReviews(page);
+        model.addAttribute("reviews", reviewsWithPages.getList());
         model.addAttribute("pages", reviewsWithPages.getCountOfPages());
-        logger.info("Getting reviews {}, page {}", reviewsWithPages.getReviewDTOList(), page);
+        logger.info("Getting reviews {}, page {}", reviewsWithPages.getList(), page);
         return "reviews";
     }
 

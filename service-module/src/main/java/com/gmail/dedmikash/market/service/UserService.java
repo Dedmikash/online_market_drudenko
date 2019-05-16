@@ -1,7 +1,7 @@
 package com.gmail.dedmikash.market.service;
 
+import com.gmail.dedmikash.market.service.model.PageDTO;
 import com.gmail.dedmikash.market.service.model.UserDTO;
-import com.gmail.dedmikash.market.service.model.assembly.UsersWithPagesAndRoles;
 
 import java.util.Map;
 
@@ -10,7 +10,7 @@ public interface UserService {
 
     UserDTO readByUsername(String username);
 
-    UsersWithPagesAndRoles getUsers(int page);
+    PageDTO<UserDTO> getUsers(int page);
 
     void deleteUsersByIds(Long[] ids);
 

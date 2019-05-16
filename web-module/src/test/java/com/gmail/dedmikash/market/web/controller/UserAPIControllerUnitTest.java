@@ -42,7 +42,7 @@ public class UserAPIControllerUnitTest {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         byte[] jsonQuery = mapper.writeValueAsBytes(userDTO);
 
-        mockMvc.perform(post("/api/users")
+        mockMvc.perform(post("/api/v1/users")
                 .contentType(APPLICATION_JSON)
                 .content(jsonQuery))
                 .andExpect(status().isCreated());

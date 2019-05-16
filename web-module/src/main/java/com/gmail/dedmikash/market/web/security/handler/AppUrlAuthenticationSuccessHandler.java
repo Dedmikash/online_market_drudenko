@@ -24,7 +24,6 @@ import static com.gmail.dedmikash.market.web.constant.RolesConstants.CUSTOMER;
 @Component
 public class AppUrlAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
     private static Logger logger = LoggerFactory.getLogger(AppUrlAuthenticationSuccessHandler.class);
-
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
     @Override
@@ -57,7 +56,7 @@ public class AppUrlAuthenticationSuccessHandler implements AuthenticationSuccess
             return "/articles";
         } else {
             logger.info("Can't redirect. User : {} - has no valid role.", authentication.getCredentials());
-            return "redirect:/login?role";
+            return "/login?role";
         }
     }
 

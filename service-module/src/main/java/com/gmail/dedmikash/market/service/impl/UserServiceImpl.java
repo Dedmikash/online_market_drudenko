@@ -1,17 +1,14 @@
 package com.gmail.dedmikash.market.service.impl;
 
-import com.gmail.dedmikash.market.repository.RoleRepository;
 import com.gmail.dedmikash.market.repository.UserRepository;
 import com.gmail.dedmikash.market.repository.exception.StatementException;
 import com.gmail.dedmikash.market.repository.model.User;
 import com.gmail.dedmikash.market.service.UserService;
-import com.gmail.dedmikash.market.service.converter.RoleConverter;
 import com.gmail.dedmikash.market.service.converter.UserConverter;
 import com.gmail.dedmikash.market.service.exception.DataBaseConnectionException;
 import com.gmail.dedmikash.market.service.exception.QueryFailedException;
-import com.gmail.dedmikash.market.service.model.RoleDTO;
+import com.gmail.dedmikash.market.service.model.PageDTO;
 import com.gmail.dedmikash.market.service.model.UserDTO;
-import com.gmail.dedmikash.market.service.model.assembly.UsersWithPagesAndRoles;
 import com.gmail.dedmikash.market.service.util.RandomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,22 +30,16 @@ public class UserServiceImpl implements UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserConverter userConverter;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final RoleConverter roleConverter;
     private final RandomService randomService;
     private final PasswordEncoder passwordEncoder;
 
 
     public UserServiceImpl(UserConverter userConverter,
                            UserRepository userRepository,
-                           RoleRepository roleRepository,
-                           RoleConverter roleConverter,
                            RandomService randomService,
                            PasswordEncoder passwordEncoder) {
         this.userConverter = userConverter;
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.roleConverter = roleConverter;
         this.randomService = randomService;
         this.passwordEncoder = passwordEncoder;
     }
@@ -101,16 +92,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UsersWithPagesAndRoles getUsers(int page) {
+    public PageDTO<UserDTO> getUsers(int page) {
         try (Connection connection = userRepository.getConnection()) {
             try {
-                UsersWithPagesAndRoles usersWithPagesAndRoles = new UsersWithPagesAndRoles();
+                PageDTO<UserDTO> users = new PageDTO<>();
                 connection.setAutoCommit(false);
-                usersWithPagesAndRoles.setUserDTOList(getPageOfUsers(page, connection));
-                usersWithPagesAndRoles.setCountOfPages(userRepository.getCountOfUsersPages(connection));
-                usersWithPagesAndRoles.setRoleDTOList(getRoles(connection));
+                users.setList(getPageOfUsers(page, connection));
+                users.setCountOfPages(userRepository.getCountOfUsersPages(connection));
                 connection.commit();
-                return usersWithPagesAndRoles;
+                return users;
             } catch (StatementException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);
@@ -190,22 +180,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private List<UserDTO> getPageOfUsers(int page, Connection connection) throws SQLException, StatementException {
-        List<UserDTO> userDTOList = userRepository.getUsers(connection, page)
+    private List<UserDTO> getPageOfUsers(int page, Connection connection) throws StatementException {
+        return userRepository.getUsers(connection, page)
                 .stream()
                 .map(userConverter::toDTO)
                 .collect(Collectors.toList());
-        connection.commit();
-        return userDTOList;
-    }
-
-
-    private List<RoleDTO> getRoles(Connection connection) throws SQLException, StatementException {
-        List<RoleDTO> roleDTOList = roleRepository.readAll(connection)
-                .stream()
-                .map(roleConverter::toDTO)
-                .collect(Collectors.toList());
-        connection.commit();
-        return roleDTOList;
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.QUERY_FAILED_ERROR_MESSAGE;
 
 @Repository
-public class RoleRepositoryImpl extends GenericRepositoryImpl implements RoleRepository {
+public class RoleRepositoryImpl extends GenericRepositoryImpl<Long, Role> implements RoleRepository {
     private static final Logger logger = LoggerFactory.getLogger(RoleRepositoryImpl.class);
 
     @Override

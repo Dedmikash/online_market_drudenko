@@ -6,8 +6,8 @@ import com.gmail.dedmikash.market.service.ReviewService;
 import com.gmail.dedmikash.market.service.converter.ReviewConverter;
 import com.gmail.dedmikash.market.service.exception.DataBaseConnectionException;
 import com.gmail.dedmikash.market.service.exception.QueryFailedException;
+import com.gmail.dedmikash.market.service.model.PageDTO;
 import com.gmail.dedmikash.market.service.model.ReviewDTO;
-import com.gmail.dedmikash.market.service.model.assembly.ReviewsWithPages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,15 +36,15 @@ public class ReviewServiceImpl implements ReviewService {
 
 
     @Override
-    public ReviewsWithPages getReviews(int page) {
+    public PageDTO<ReviewDTO> getReviews(int page) {
         try (Connection connection = reviewRepository.getConnection()) {
             try {
-                ReviewsWithPages reviewsWithPages = new ReviewsWithPages();
+                PageDTO<ReviewDTO> reviews = new PageDTO<>();
                 connection.setAutoCommit(false);
-                reviewsWithPages.setReviewDTOList(getPageOfReviews(page, connection));
-                reviewsWithPages.setCountOfPages(reviewRepository.getCountOfReviewsPages(connection));
+                reviews.setList(getPageOfReviews(page, connection));
+                reviews.setCountOfPages(reviewRepository.getCountOfReviewsPages(connection));
                 connection.commit();
-                return reviewsWithPages;
+                return reviews;
             } catch (StatementException e) {
                 connection.rollback();
                 logger.error(e.getMessage(), e);

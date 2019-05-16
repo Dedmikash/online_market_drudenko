@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
-public interface UserRepository extends GenericRepository {
+public interface UserRepository extends GenericRepository<Long, User> {
     User add(Connection connection, User user) throws StatementException;
 
     User readByUsername(Connection connection, String username) throws StatementException;

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/articles")
+@RequestMapping("/api/v1/articles")
 public class ArticleAPIController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final ArticleService articleService;
@@ -27,30 +27,37 @@ public class ArticleAPIController {
     }
 
     @GetMapping
+    @SuppressWarnings(value = "unchecked")
     public ResponseEntity showArticles() {
         List<ArticleDTO> articleDTOList = articleService.getAllArticles();
         logger.info("All articles were shown with REST API");
-        return new ResponseEntity(articleDTOList, HttpStatus.FOUND); //TODO
+        return new ResponseEntity(articleDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity showArticle(@PathVariable("id") Long id) {
+    @SuppressWarnings(value = "unchecked")
+    public ResponseEntity showArticleWithId(@PathVariable("id") Long id) {
         ArticleDTO articleDTO = articleService.getArticleById(id);
-        logger.info("Article with id: {} - was shown with REST API", id);
-        return new ResponseEntity(articleDTO, HttpStatus.CREATED); //TODO
+        if (articleDTO != null) {
+            logger.info("Article with id: {} - was shown with REST API", id);
+            return new ResponseEntity(articleDTO, HttpStatus.OK);
+        } else {
+            logger.info("Article with id: {} - wasn't shown with REST API. No such article or it was soft deleted", id);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping
     public ResponseEntity saveArticle(@RequestBody ArticleDTO articleDTO) {
-        articleService.add(articleDTO);
+        articleService.saveArticle(articleDTO);
         logger.info("Added article: {} - with REST API", articleDTO.getName());
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteArticle(@PathVariable("id") Long id) {
-        articleService.deleteArticleById(id);
-        logger.info("Article was deleted with REST API");
+        articleService.delete(id);
+        logger.info("Article with id: {} -was soft deleted with REST API");
         return new ResponseEntity(HttpStatus.OK); //TODO
     }
 }

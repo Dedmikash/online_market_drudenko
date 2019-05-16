@@ -88,6 +88,9 @@
             <column name="created" type="datetime">
                 <constraints nullable="false"/>
             </column>
+            <column name="views" type="bigint" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
             <column name="deleted" type="boolean" defaultValueBoolean="false">
                 <constraints nullable="false"/>
             </column>
@@ -124,7 +127,7 @@
     <changeSet id="4.1" author="dedmikash@gmail.com">
         <insert tableName="user">
             <column name="username" value="api@gmail.com"/>
-            <column name="password" value="$2y$12$VL8AwRISyiZT/OOR/WwucOfpbBjFDrJ9pdXVi4vBbSBC9PacVhU4S"/>
+            <column name="password" value="$2a$10$ogGrq0Z7t4.dRoAJBwtTBOrtSP/Mnq7pcNFk9gfiV4jbZo9lYbn7u"/>
             <column name="name" value="Api"/>
             <column name="surname" value="Apinov"/>
             <column name="patronymic" value="Apinovich"/>
