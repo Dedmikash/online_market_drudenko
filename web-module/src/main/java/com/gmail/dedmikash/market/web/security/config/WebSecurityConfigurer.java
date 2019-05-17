@@ -40,7 +40,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .hasAuthority(ADMIN)
                 .antMatchers("/articles/**", "/profile/**")
                 .hasAuthority(CUSTOMER)
-                .antMatchers("/403","/","/login","/login?hasNoRole=1")
+                .antMatchers("/403", "/", "/login", "/login?hasNoRole=1")
                 .permitAll()
                 .and()
                 .formLogin()

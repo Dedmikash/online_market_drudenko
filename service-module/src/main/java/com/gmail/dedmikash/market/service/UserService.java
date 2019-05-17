@@ -6,7 +6,7 @@ import com.gmail.dedmikash.market.service.model.UserDTO;
 import java.util.Map;
 
 public interface UserService {
-    void add(UserDTO userDTO);
+    void saveUser(UserDTO userDTO);
 
     UserDTO readByUsername(String username);
 

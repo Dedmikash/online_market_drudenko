@@ -110,7 +110,7 @@ public class UserController {
             }
             logger.info("Trying to add user: {} {} {} {} {}", userDTO.getSurname(), userDTO.getName(),
                     userDTO.getPatronymic(), userDTO.getUsername(), userDTO.getRoleDTO().getName());
-            userService.add(userDTO);
+            userService.saveUser(userDTO);
             return "redirect:/users";
         }
     }

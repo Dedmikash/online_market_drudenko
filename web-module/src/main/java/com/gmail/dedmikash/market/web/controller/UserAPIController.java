@@ -23,7 +23,7 @@ public class UserAPIController {
 
     @PostMapping
     public ResponseEntity saveUser(@RequestBody UserDTO userDTO) {
-        userService.add(userDTO);
+        userService.saveUser(userDTO);
         logger.info("Added user: {} - with REST API", userDTO.getUsername());
         return new ResponseEntity(HttpStatus.CREATED);
     }

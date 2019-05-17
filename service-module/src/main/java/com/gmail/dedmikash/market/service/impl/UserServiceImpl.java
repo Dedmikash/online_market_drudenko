@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -45,27 +47,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void add(UserDTO userDTO) {
-        User user = userConverter.fromDTO(userDTO);
-        try (Connection connection = userRepository.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                String password = randomService.getNewPassword();
-                String hashedPassword = passwordEncoder.encode(password);
-                user.setPassword(hashedPassword);
-                userRepository.add(connection, user);
-                logger.info("User: {} - was created. Password: {} - has been sent on email.",
-                        userDTO.getUsername(), password);
-                connection.commit();
-            } catch (StatementException e) {
-                connection.rollback();
-                logger.error(e.getMessage(), e);
-                throw new QueryFailedException(QUERY_FAILED_ERROR_MESSAGE, e);
-            }
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
-        }
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void saveUser(UserDTO userDTO) {
+        userRepository.create(userConverter.fromDTO(userDTO));
     }
 
     @Override
@@ -113,20 +97,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteUsersByIds(Long[] ids) {
-        try (Connection connection = userRepository.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                userRepository.softDeleteByIds(connection, ids);
-                connection.commit();
-            } catch (StatementException e) {
-                connection.rollback();
-                logger.error(e.getMessage(), e);
-                throw new QueryFailedException(QUERY_FAILED_ERROR_MESSAGE, e);
-            }
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
+        for (Long id : ids) {
+            userRepository.delete(userRepository.findById(id));
         }
     }
 

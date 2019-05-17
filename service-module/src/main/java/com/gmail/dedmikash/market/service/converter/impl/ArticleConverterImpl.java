@@ -19,7 +19,11 @@ public class ArticleConverterImpl implements ArticleConverter {
         ArticleDTO articleDTO = new ArticleDTO();
         articleDTO.setId(article.getId());
         articleDTO.setName(article.getName());
-        articleDTO.setUserDTO(userConverter.toDTO(article.getUser()));
+        if (article.getUser() != null) {
+            articleDTO.setUserDTO(userConverter.toDTO(article.getUser()));
+        } else {
+            articleDTO.setUserDTO(null);
+        }
         articleDTO.setText(article.getText());
         articleDTO.setCreated(article.getCreated());
         articleDTO.setViews(article.getViews());
@@ -30,8 +34,13 @@ public class ArticleConverterImpl implements ArticleConverter {
     @Override
     public Article fromDTO(ArticleDTO articleDTO) {
         Article article = new Article();
+        article.setId(articleDTO.getId());
         article.setName(articleDTO.getName());
-        article.setUser(userConverter.fromDTO(articleDTO.getUserDTO()));
+        if (articleDTO.getUserDTO() != null) {
+            article.setUser(userConverter.fromDTO(articleDTO.getUserDTO()));
+        } else {
+            article.setUser(null);
+        }
         article.setText(articleDTO.getText());
         article.setCreated(articleDTO.getCreated());
         article.setViews(articleDTO.getViews());

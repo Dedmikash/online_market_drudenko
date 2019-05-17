@@ -12,7 +12,5 @@ public interface ReviewRepository extends GenericRepository<Long, Review> {
 
     int getCountOfReviewsPages(Connection connection) throws StatementException;
 
-    void softDeleteByIds(Connection connection, Long[] ids) throws StatementException;
-
     void changeVisibilityByIds(Connection connection, Map<Long, Boolean> changes) throws StatementException;
 }

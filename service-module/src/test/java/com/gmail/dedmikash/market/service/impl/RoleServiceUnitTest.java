@@ -40,7 +40,7 @@ public class RoleServiceUnitTest {
     @Test
     public void shouldReturnRightRoleDTOsListWhenGetRoles() throws StatementException {
         when(roleRepository.getConnection()).thenReturn(connection);
-        when(roleRepository.readAll(connection)).thenReturn(roleList);
+        when(roleRepository.findAll()).thenReturn(roleList);
         when(roleConverter.toDTO(firstRole)).thenReturn(new RoleDTO(firstRole.getName()));
         when(roleConverter.toDTO(secondRole)).thenReturn(new RoleDTO(secondRole.getName()));
         Assert.assertEquals("test1", roleService.getRoles().get(0).getName());

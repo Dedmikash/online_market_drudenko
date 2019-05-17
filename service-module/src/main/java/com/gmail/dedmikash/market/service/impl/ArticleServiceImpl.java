@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
@@ -36,14 +35,14 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void saveArticle(ArticleDTO articleDTO) {
         Article article = articleConverter.fromDTO(articleDTO);
         articleRepository.create(article);
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public ArticleDTO getArticleById(Long id) {
         Article article = articleRepository.findById(id);
         if (article != null) {
@@ -55,7 +54,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public List<ArticleDTO> getAllArticles() {
         return articleRepository.findAll().stream()
                 .map(articleConverter::toDTO)
@@ -86,7 +85,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void delete(Long id) {
         Article article = articleRepository.findById(id);
         if (article != null && !article.isDeleted()) {

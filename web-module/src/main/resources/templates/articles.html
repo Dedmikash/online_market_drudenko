@@ -24,7 +24,7 @@ Sort by:
     <h5 th:text="'Author: '+${article.userDTO.name}+' '+${article.userDTO.surname}">...</h5>
     <h5 th:text="'Created: '+${article.created}+' Views: '+${article.views}">...</h5>
     <p th:text="${article.text}">...</p>
-    <a th:href="@{/articles/{id}(id=${article.id})}">More</a><br>
+    <a th:href="@{/articles/{article_id}/comments(article_id=${article.id})}">More</a><br>
     <hr/>
 </th:block>
 <th:block th:each="i:${#numbers.sequence(1,pages)}">

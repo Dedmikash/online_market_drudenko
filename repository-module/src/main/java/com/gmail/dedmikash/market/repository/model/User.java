@@ -26,11 +26,11 @@ public class User {
     private String surname;
     private String patronymic;
     @ManyToOne
-    @JoinColumn (name = "role_id")
+    @JoinColumn(name = "role_id")
     private Role role;
-    @Column (name = "blocked")
+    @Column(name = "blocked")
     private boolean isBlocked;
-    @Column (name = "deleted")
+    @Column(name = "deleted")
     private boolean isDeleted;
 
     public Long getId() {

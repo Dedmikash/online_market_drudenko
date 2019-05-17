@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Comments</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <a th:href="@{/profile/{user_id}(user_id=${#authentication.principal.id})}">Profile</a>   |
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<a th:href="@{/articles}">Back to Articles</a>
+<th:block th:object="${article}">
+    <h1 th:text="${article.name}">...</h1>
+    <h3 th:text="'Author: '+${article.userDTO.name}+' '+${article.userDTO.surname}">...</h3>
+    <h3 th:text="'Created: '+${article.created}+' Views: '+${article.views}">...</h3>
+    <p th:text="${article.text}">...</p>
+    <hr/>
+    <h3>Comments:</h3>
+    <form th:action="@{/articles/{article_id}/comments(article_id=${article.id})}" th:object="${commentDTO}"
+          method="post">
+        <textarea rows="5" cols="40" th:field="${commentDTO.text}" placeholder="Your comment" required
+                  maxlength="200"></textarea><br/>
+        <span th:if="${#fields.hasErrors('text')}" th:errors="${commentDTO.text}">Surname Error</span><br/>
+        <input type="submit" value="Create comment"/>
+        <hr/>
+    </form>
+</th:block>
+<th:block th:each="comment : ${comments}">
+    <h5 th:text="'Author: '+${comment.userDTO.name}+' '+${comment.userDTO.surname}">...</h5>
+    <h5 th:text="'Created: '+${comment.created}">...</h5>
+    <p th:text="${comment.text}">...</p>
+    <hr/>
+</th:block>
+</body>
+</html>
+

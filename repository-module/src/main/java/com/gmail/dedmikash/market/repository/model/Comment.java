@@ -15,19 +15,20 @@ import java.sql.Timestamp;
 
 @Entity
 @Table
-@SQLDelete(sql = "UPDATE article SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE comment SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted = 0")
-public class Article {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "article_id")
+    private Article article;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    private String text;
     private Timestamp created;
-    private Long views;
+    private String text;
     @Column(name = "deleted")
     private boolean isDeleted;
 
@@ -39,12 +40,12 @@ public class Article {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Article getArticle() {
+        return article;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
     public User getUser() {
@@ -55,14 +56,6 @@ public class Article {
         this.user = user;
     }
 
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
     public Timestamp getCreated() {
         return created;
     }
@@ -71,12 +64,12 @@ public class Article {
         this.created = created;
     }
 
-    public Long getViews() {
-        return views;
+    public String getText() {
+        return text;
     }
 
-    public void setViews(Long views) {
-        this.views = views;
+    public void setText(String text) {
+        this.text = text;
     }
 
     public boolean isDeleted() {
