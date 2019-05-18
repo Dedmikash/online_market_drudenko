@@ -11,7 +11,6 @@ import com.gmail.dedmikash.market.service.model.ReviewDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
@@ -36,7 +35,6 @@ public class ReviewServiceImpl implements ReviewService {
         this.reviewRepository = reviewRepository;
     }
 
-
     @Override
     public PageDTO<ReviewDTO> getReviews(int page) {
         try (Connection connection = reviewRepository.getConnection()) {
@@ -59,7 +57,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional
     public void deleteReviewsByIds(Long[] ids) {
         for (Long id : ids) {
             reviewRepository.delete(reviewRepository.findById(id));

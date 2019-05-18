@@ -1,8 +1,16 @@
 package com.gmail.dedmikash.market.repository.model;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 public class Review {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false)
     private Long id;
     private User user;
     private String text;
@@ -67,5 +75,20 @@ public class Review {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Review review = (Review) o;
+        return id.equals(review.id) &&
+                text.equals(review.text) &&
+                created.equals(review.created);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text, created);
     }
 }

@@ -48,6 +48,23 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="2.05" author="dedmikash@gmail.com">
+        <createTable tableName="profile">
+            <column name="user_id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="address" type="varchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="telephone" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet id="2.1" author="dedmikash@gmail.com">
         <createTable tableName="review">
             <column name="id" type="bigint" autoIncrement="true">
@@ -147,6 +164,14 @@
         </insert>
     </changeSet>
 
+    <changeSet id="4.05" author="dedmikash@gmail.com">
+        <insert tableName="profile">
+            <column name="user_id" valueComputed="(SELECT id FROM user WHERE username = 'admin@gmail.com')"/>
+            <column name="address" value="adr"/>
+            <column name="telephone" value="tel"/>
+        </insert>
+    </changeSet>
+
     <changeSet id="4.1" author="dedmikash@gmail.com">
         <insert tableName="user">
             <column name="username" value="api@gmail.com"/>
@@ -156,6 +181,14 @@
             <column name="patronymic" value="Apinovich"/>
             <column name="role_id" valueComputed="(SELECT id FROM Role WHERE name = 'SECURE API USER')"/>
             <column name="blocked" valueBoolean="true"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="4.15" author="dedmikash@gmail.com">
+        <insert tableName="profile">
+            <column name="user_id" valueComputed="(SELECT id FROM user WHERE username = 'api@gmail.com')"/>
+            <column name="address" value="adr"/>
+            <column name="telephone" value="tel"/>
         </insert>
     </changeSet>
 
@@ -170,6 +203,14 @@
         </insert>
     </changeSet>
 
+    <changeSet id="5.1" author="dedmikash@gmail.com">
+        <insert tableName="profile">
+            <column name="user_id" valueComputed="(SELECT id FROM user WHERE username = 'sale@gmail.com')"/>
+            <column name="address" value="adr"/>
+            <column name="telephone" value="tel"/>
+        </insert>
+    </changeSet>
+
     <changeSet id="6" author="dedmikash@gmail.com">
         <insert tableName="user">
             <column name="username" value="customer@gmail.com"/>
@@ -178,6 +219,14 @@
             <column name="surname" value="Customerov"/>
             <column name="patronymic" value="Customerovich"/>
             <column name="role_id" valueComputed="(SELECT id FROM Role WHERE name = 'CUSTOMER USER')"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="6.1" author="dedmikash@gmail.com">
+        <insert tableName="profile">
+            <column name="user_id" valueComputed="(SELECT id FROM user WHERE username = 'customer@gmail.com')"/>
+            <column name="address" value="adr"/>
+            <column name="telephone" value="tel"/>
         </insert>
     </changeSet>
 

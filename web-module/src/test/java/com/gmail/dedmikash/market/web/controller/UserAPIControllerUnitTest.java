@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.dedmikash.market.service.UserService;
 import com.gmail.dedmikash.market.service.model.RoleDTO;
 import com.gmail.dedmikash.market.service.model.UserDTO;
+import com.gmail.dedmikash.market.web.validator.UserValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,10 +24,12 @@ public class UserAPIControllerUnitTest {
     private MockMvc mockMvc;
     @Mock
     private UserService userService;
+    @Mock
+    private UserValidator userValidator;
 
     @Before
     public void init() {
-        UserAPIController userAPIController = new UserAPIController(userService);
+        UserAPIController userAPIController = new UserAPIController(userService, userValidator);
         mockMvc = MockMvcBuilders.standaloneSetup(userAPIController).build();
     }
 

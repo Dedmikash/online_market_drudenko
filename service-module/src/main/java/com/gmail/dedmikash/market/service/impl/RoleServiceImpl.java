@@ -5,7 +5,6 @@ import com.gmail.dedmikash.market.service.RoleService;
 import com.gmail.dedmikash.market.service.converter.RoleConverter;
 import com.gmail.dedmikash.market.service.model.RoleDTO;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,7 +21,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional
     public List<RoleDTO> getRoles() {
         return roleRepository.findAll().stream()
                 .map(roleConverter::toDTO)

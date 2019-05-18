@@ -1,7 +1,6 @@
 package com.gmail.dedmikash.market.web.controller;
 
 import com.gmail.dedmikash.market.service.ArticleService;
-import com.gmail.dedmikash.market.service.CommentService;
 import com.gmail.dedmikash.market.service.model.AppUserPrincipal;
 import com.gmail.dedmikash.market.service.model.ArticleDTO;
 import com.gmail.dedmikash.market.service.model.CommentDTO;
@@ -28,22 +27,21 @@ import javax.validation.Valid;
 public class ArticleController {
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     private final ArticleService articleService;
-    private final CommentService commentService;
 
-    public ArticleController(ArticleService articleService,
-                             CommentService commentService) {
+    public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
-        this.commentService = commentService;
     }
 
     @GetMapping
     public String getArticles(@RequestParam(name = "page", defaultValue = "1") Integer page,
                               @RequestParam(name = "sort", defaultValue = "date") String sort,
+                              @RequestParam(name = "order", defaultValue = "desc") String order,
                               Model model) {
-        PageDTO<ArticleDTO> articles = articleService.getArticles(page, sort);
+        PageDTO<ArticleDTO> articles = articleService.getArticles(page, sort, order);
         model.addAttribute("articles", articles.getList());
         model.addAttribute("pages", articles.getCountOfPages());
         model.addAttribute("sort", sort);
+        model.addAttribute("order", order);
         logger.info("Getting articles {}, page {}", articles.getList(), page);
         return "articles";
     }
@@ -53,7 +51,6 @@ public class ArticleController {
                                  CommentDTO commentDTO,
                                  Model model) {
         model.addAttribute("article", articleService.getArticleById(article_id));
-        model.addAttribute("comments", commentService.getCommentsByArticleId(article_id));
         logger.info("Getting article with id {}", article_id);
         return "comments";
     }
@@ -63,23 +60,20 @@ public class ArticleController {
                                             @Valid CommentDTO commentDTO,
                                             BindingResult result,
                                             Model model) {
-        model.addAttribute("article", articleService.getArticleById(article_id));
         if (result.hasErrors()) {
+            model.addAttribute("article", articleService.getArticleById(article_id));
             logger.info("Attempt to add not valid comment: {}", commentDTO.getText());
-            model.addAttribute("comments", commentService.getCommentsByArticleId(article_id));
             return "comments";
         }
+        ArticleDTO article = articleService.getArticleById(article_id);
         UserDTO userDTO = new UserDTO();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         userDTO.setId(((AppUserPrincipal) userDetails).getId());
         commentDTO.setUserDTO(userDTO);
-        ArticleDTO articleDTO = new ArticleDTO();
-        articleDTO.setId(article_id);
-        commentDTO.setArticleDTO(articleDTO);
-        commentService.saveComment(commentDTO);
-        logger.info("Added article: {}", commentDTO.getText());
-        model.addAttribute("comments", commentService.getCommentsByArticleId(article_id));
+        article = articleService.addCommentToArtical(article, commentDTO);
+        logger.info("Added comment: {} - to article with id: {}", commentDTO.getText(), article_id);
+        model.addAttribute("article", article);
         return "comments";
     }
 }

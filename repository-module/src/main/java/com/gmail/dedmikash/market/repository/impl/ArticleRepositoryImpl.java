@@ -23,21 +23,11 @@ public class ArticleRepositoryImpl extends GenericRepositoryImpl<Long, Article> 
     private static final int BATCH_SIZE = 10;
 
     @Override
-    public List<Article> getArticles(Connection connection, int page, String sort) throws StatementException {
+    public List<Article> getArticles(Connection connection, int page, String sort, String order) throws StatementException {
         String selectQuery = "SELECT *,a.id AS article_id,a.deleted AS article_deleted,a.name AS article_name,u.name" +
-                " AS user_name FROM article a JOIN user u ON a.user_id=u.id WHERE a.deleted=0 ";
+                " AS user_name FROM article a JOIN user u ON a.user_id=u.id WHERE a.deleted=0 ORDER BY ";
         List<Article> articleList = new ArrayList<>();
-        switch (sort) {
-            case "date":
-                selectQuery = selectQuery.concat("ORDER BY created DESC LIMIT ?,?");
-                break;
-            case "surname":
-                selectQuery = selectQuery.concat("ORDER BY surname LIMIT ?,?");
-                break;
-            case "views":
-                selectQuery = selectQuery.concat("ORDER BY views DESC LIMIT ?,?");
-                break;
-        }
+        selectQuery = buildSortQuery(sort, order, selectQuery);
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
             preparedStatement.setInt(1, getSQLLimit(page));
             preparedStatement.setInt(2, BATCH_SIZE);
@@ -52,6 +42,30 @@ public class ArticleRepositoryImpl extends GenericRepositoryImpl<Long, Article> 
             throw new StatementException(String.format(QUERY_FAILED_ERROR_MESSAGE, selectQuery), e);
         }
         return articleList;
+    }
+
+    private String buildSortQuery(String sort, String order, String selectQuery) {
+        switch (sort) {
+            case "date":
+                selectQuery = selectQuery.concat("created ");
+                break;
+            case "surname":
+                selectQuery = selectQuery.concat("surname ");
+                break;
+            case "views":
+                selectQuery = selectQuery.concat("views ");
+                break;
+        }
+        switch (order) {
+            case "desc":
+                selectQuery = selectQuery.concat("DESC ");
+                break;
+            case "asc":
+                selectQuery = selectQuery.concat("ASC ");
+                break;
+        }
+        selectQuery = selectQuery.concat("LIMIT ?,?");
+        return selectQuery;
     }
 
     @Override

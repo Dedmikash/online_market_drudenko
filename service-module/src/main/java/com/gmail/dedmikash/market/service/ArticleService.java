@@ -1,6 +1,7 @@
 package com.gmail.dedmikash.market.service;
 
 import com.gmail.dedmikash.market.service.model.ArticleDTO;
+import com.gmail.dedmikash.market.service.model.CommentDTO;
 import com.gmail.dedmikash.market.service.model.PageDTO;
 
 import java.util.List;
@@ -13,7 +14,9 @@ public interface ArticleService {
 
     List<ArticleDTO> getAllArticles();
 
-    PageDTO<ArticleDTO> getArticles(int page, String sort);
+    PageDTO<ArticleDTO> getArticles(int page, String sort, String order);
 
     void delete(Long id);
+
+    ArticleDTO addCommentToArtical(ArticleDTO articleDTO, CommentDTO commentDTO);
 }

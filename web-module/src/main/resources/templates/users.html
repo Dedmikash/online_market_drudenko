@@ -44,7 +44,7 @@
                 <td th:if="${user.blocked}" align="center"><input type="checkbox" disabled="disabled"/></td>
                 <td th:unless="${user.blocked}" align="center"><input type="checkbox" name="delete"
                                                                       th:value="${user.id}"/></td>
-                <td align="center"><input type="checkbox" name="change_pass" th:value="${user.username}"/></td>
+                <td align="center"><input type="checkbox" name="change_pass" th:value="${user.id}"/></td>
             </tr>
         </th:block>
     </table>

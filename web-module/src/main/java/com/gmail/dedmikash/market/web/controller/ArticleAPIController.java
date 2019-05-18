@@ -2,10 +2,12 @@ package com.gmail.dedmikash.market.web.controller;
 
 import com.gmail.dedmikash.market.service.ArticleService;
 import com.gmail.dedmikash.market.service.model.ArticleDTO;
+import com.gmail.dedmikash.market.web.validator.ArticleValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,9 +23,12 @@ import java.util.List;
 public class ArticleAPIController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final ArticleService articleService;
+    private final ArticleValidator articleValidator;
 
-    public ArticleAPIController(ArticleService articleService) {
+    public ArticleAPIController(ArticleService articleService,
+                                ArticleValidator articleValidator) {
         this.articleService = articleService;
+        this.articleValidator = articleValidator;
     }
 
     @GetMapping
@@ -48,7 +53,12 @@ public class ArticleAPIController {
     }
 
     @PostMapping
-    public ResponseEntity saveArticle(@RequestBody ArticleDTO articleDTO) {
+    @SuppressWarnings(value = "unchecked")
+    public ResponseEntity saveArticle(@RequestBody ArticleDTO articleDTO, BindingResult result) {
+        articleValidator.validate(articleDTO, result);
+        if (result.hasErrors()) {
+            return new ResponseEntity(result.toString(), HttpStatus.BAD_REQUEST);
+        }
         articleService.saveArticle(articleDTO);
         logger.info("Added article: {} - with REST API", articleDTO.getName());
         return new ResponseEntity(HttpStatus.CREATED);

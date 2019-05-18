@@ -40,9 +40,9 @@
         <tr>
             <td>Role:</td>
             <td>
-                <select class="dropdown" th:field="*{roleDTO.name}">
+                <select class="dropdown" th:field="*{roleDTO.id}">
                     <option th:each="role : ${roles}" th:text="${role.name}"
-                            th:value="${role.name}"></option>
+                            th:value="${role.id}"></option>
                 </select>
             </td>
         </tr>
@@ -54,7 +54,6 @@
         </tr>
     </table>
 </form>
-<div th:unless="${duplicate==null}" th:text="${duplicate}">...</div>
 <a th:href="@{/users}">Users</a><br>
 <a th:href="@{/reviews}">Site reviews</a>
 </body>

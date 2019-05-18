@@ -1,0 +1,69 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Profile</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<a th:href="@{/articles}">Back to Articles</a>
+<h1>Profile</h1>
+<form th:action="@{/profile}" th:object="${userDTO}" method="post">
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" th:field="${user.name}" th:value="${user.name}" placeholder="Ivan"
+                       required
+                       maxlength="20"/>
+            </td>
+            <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
+        </tr>
+        <tr>
+            <td>Surname:</td>
+            <td><input type="text" th:field="${user.surname}" th:value="${user.surname}"
+                       placeholder="Ivanov" required
+                       maxlength="40"/></td>
+            <td th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Surname Error</td>
+        </tr>
+        <tr>
+            <td>Address:</td>
+            <td><input type="text" th:field="${user.profileDTO.address}" th:value="${user.profileDTO.address}"
+                       placeholder="Independence Avenue" required maxlength="100"/></td>
+            <td th:if="${#fields.hasErrors('profileDTO.address')}" th:errors="*{profileDTO.address}">Address Error</td>
+        </tr>
+        <tr>
+            <td>Telephone:</td>
+            <td><input type="text" th:field="${user.profileDTO.telephone}" th:value="${user.profileDTO.telephone}"
+                       placeholder="+375---------" required maxlength="13"/></td>
+            <td th:if="${#fields.hasErrors('profileDTO.telephone')}" th:errors="*{profileDTO.telephone}">Telephone
+                Error
+            </td>
+        </tr>
+        <tr>
+            <td>Old password:</td>
+            <td><input type="password" name="old_password" placeholder="old" maxlength="20"/></td>
+            <td th:unless="${password==null}" th:text="${password}">...</td>
+        </tr>
+        <tr>
+            <td>New password:</td>
+            <td><input type="password" name="new_password" placeholder="new" maxlength="20"/>
+            </td>
+            <td th:unless="${password==null}" th:text="${password}">...</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="submit">Change Info</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
+

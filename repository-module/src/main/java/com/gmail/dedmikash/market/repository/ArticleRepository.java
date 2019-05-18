@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.util.List;
 
 public interface ArticleRepository extends GenericRepository<Long, Article> {
-    List<Article> getArticles(Connection connection, int page, String sort) throws StatementException;
+    List<Article> getArticles(Connection connection, int page, String sort, String order) throws StatementException;
 
     int getCountOfArticlesPages(Connection connection) throws StatementException;
 }

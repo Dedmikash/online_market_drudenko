@@ -9,7 +9,7 @@
     <span sec:authorize="isAuthenticated()">
         Logged user : <span sec:authentication="name"></span>   |
         Role: <span sec:authentication="principal.authorities"></span>   |
-        <a th:href="@{/profile/{user_id}(user_id=${#authentication.principal.id})}">Profile</a>   |
+        <a th:href="@{/profile}">Profile</a>   |
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
@@ -30,7 +30,7 @@
         <hr/>
     </form>
 </th:block>
-<th:block th:each="comment : ${comments}">
+<th:block th:each="comment : ${article.comments}">
     <h5 th:text="'Author: '+${comment.userDTO.name}+' '+${comment.userDTO.surname}">...</h5>
     <h5 th:text="'Created: '+${comment.created}">...</h5>
     <p th:text="${comment.text}">...</p>

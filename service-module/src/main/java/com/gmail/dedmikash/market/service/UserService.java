@@ -14,7 +14,11 @@ public interface UserService {
 
     void deleteUsersByIds(Long[] ids);
 
-    void changeUsersPasswordsByUsernames(String[] usernames);
+    void changeUsersPasswordsByUsernames(Long[] ids);
 
     void changeUsersRolesById(Map<Long, String> changes);
+
+    UserDTO getUserById(Long id);
+
+    int updateUserProfileAndPassword(UserDTO userDTO, String oldPassword, String newPassword);
 }

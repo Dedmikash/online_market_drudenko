@@ -2,16 +2,21 @@ package com.gmail.dedmikash.market.service.converter.impl;
 
 import com.gmail.dedmikash.market.repository.model.Article;
 import com.gmail.dedmikash.market.service.converter.ArticleConverter;
+import com.gmail.dedmikash.market.service.converter.CommentConverter;
 import com.gmail.dedmikash.market.service.converter.UserConverter;
 import com.gmail.dedmikash.market.service.model.ArticleDTO;
 import org.springframework.stereotype.Component;
 
+import java.util.stream.Collectors;
+
 @Component
 public class ArticleConverterImpl implements ArticleConverter {
     private final UserConverter userConverter;
+    private final CommentConverter commentConverter;
 
-    public ArticleConverterImpl(UserConverter userConverter) {
+    public ArticleConverterImpl(UserConverter userConverter, CommentConverter commentConverter) {
         this.userConverter = userConverter;
+        this.commentConverter = commentConverter;
     }
 
     @Override
@@ -27,6 +32,9 @@ public class ArticleConverterImpl implements ArticleConverter {
         articleDTO.setText(article.getText());
         articleDTO.setCreated(article.getCreated());
         articleDTO.setViews(article.getViews());
+        articleDTO.setComments(article.getComments().stream()
+                .map(commentConverter::toDTO)
+                .collect(Collectors.toList()));
         articleDTO.setDeleted(article.isDeleted());
         return articleDTO;
     }
@@ -42,8 +50,11 @@ public class ArticleConverterImpl implements ArticleConverter {
             article.setUser(null);
         }
         article.setText(articleDTO.getText());
-        article.setCreated(articleDTO.getCreated());
         article.setViews(articleDTO.getViews());
+        article.setCreated(articleDTO.getCreated());
+        article.setComments(articleDTO.getComments().stream()
+                .map(commentConverter::fromDTO)
+                .collect(Collectors.toList()));
         article.setDeleted(articleDTO.isDeleted());
         return article;
     }

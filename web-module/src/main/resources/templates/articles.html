@@ -9,15 +9,18 @@
     <span sec:authorize="isAuthenticated()">
         Logged user : <span sec:authentication="name"></span>   |
         Role: <span sec:authentication="principal.authorities"></span>   |
-        <a th:href="@{/profile/{user_id}(user_id=${#authentication.principal.id})}">Profile</a>   |
+        <a th:href="@{/profile}">Profile</a>   |
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
 <h1>Articles</h1>
 Sort by:
-<a th:href="@{/articles?sort=date}">Date</a>
-<a th:href="@{/articles?sort=surname}">Surname</a>
-<a th:href="@{/articles?sort=views}">Views</a>
+<a th:href="@{/articles?sort=date&order=asc}">Date ASC</a>
+<a th:href="@{/articles?sort=date&order=desc}">Date DESC</a>
+<a th:href="@{/articles?sort=surname&order=asc}">Surname ASC</a>
+<a th:href="@{/articles?sort=surname&order=desc}">Surname DESC</a>
+<a th:href="@{/articles?sort=views&order=asc}">Views ASC</a>
+<a th:href="@{/articles?sort=views&order=desc}">Views DESC</a>
 <hr/>
 <th:block th:each="article : ${articles}">
     <h3 th:text="${article.name}">...</h3>
@@ -27,8 +30,9 @@ Sort by:
     <a th:href="@{/articles/{article_id}/comments(article_id=${article.id})}">More</a><br>
     <hr/>
 </th:block>
-<th:block th:each="i:${#numbers.sequence(1,pages)}">
-    <a th:href="@{/articles?page={page}&sort={sort}(page=${i},sort=${sort})}"><span th:text="${i}">...</span></a>
+<th:block th:if="${pages}>0" th:each="i:${#numbers.sequence(1,pages)}">
+    <a th:href="@{/articles?page={page}&sort={sort}&order={order}(page=${i},sort=${sort},order=${order})}">
+        <span th:text="${i}">...</span></a>
 </th:block>
 </body>
 </html>

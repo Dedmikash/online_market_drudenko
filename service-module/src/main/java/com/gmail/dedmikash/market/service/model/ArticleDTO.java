@@ -1,6 +1,8 @@
 package com.gmail.dedmikash.market.service.model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArticleDTO {
     private Long id;
@@ -9,6 +11,7 @@ public class ArticleDTO {
     private String text;
     private Timestamp created;
     private Long views;
+    private List<CommentDTO> comments = new ArrayList<>();
     private boolean isDeleted;
 
     public Long getId() {
@@ -57,6 +60,14 @@ public class ArticleDTO {
 
     public void setViews(Long views) {
         this.views = views;
+    }
+
+    public List<CommentDTO> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<CommentDTO> comments) {
+        this.comments = comments;
     }
 
     public boolean isDeleted() {

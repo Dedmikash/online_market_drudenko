@@ -98,7 +98,7 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implem
 
     @Override
     public void changePasswordByUsername(Connection connection, String username, String newHashedPassword) throws StatementException {
-        String updateQuery = "UPDATE user SET password=? WHERE username=?";
+        String updateQuery = "UPDATE user SET password=? WHERE username=? AND deleted=0;";
         try (PreparedStatement preparedStatement = connection.prepareStatement(updateQuery)) {
             preparedStatement.setString(1, username);
             preparedStatement.setString(2, newHashedPassword);

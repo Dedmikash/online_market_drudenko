@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Connection;
@@ -47,9 +46,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional
     public void saveUser(UserDTO userDTO) {
-        userRepository.create(userConverter.fromDTO(userDTO));
+        User user = userConverter.fromDTO(userDTO);
+        String password = randomService.getNewPassword();
+        String hashedPassword = passwordEncoder.encode(password);
+        user.setPassword(hashedPassword);
+        user.getProfile().setAddress("-");
+        user.getProfile().setTelephone("-");
+        userRepository.create(user);
     }
 
     @Override
@@ -97,7 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional
     public void deleteUsersByIds(Long[] ids) {
         for (Long id : ids) {
             userRepository.delete(userRepository.findById(id));
@@ -105,34 +110,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeUsersPasswordsByUsernames(String[] usernames) {
-        try (Connection connection = userRepository.getConnection()) {
-            try {
-                connection.setAutoCommit(false);
-                Map<String, String> newPasswords = new HashMap<>();
-                for (String username : usernames) {
-                    newPasswords.put(username, randomService.getNewPassword());
-                }
-                for (Map.Entry<String, String> entry : newPasswords.entrySet()) {
-                    userRepository.changePasswordByUsername(
-                            connection,
-                            entry.getKey(),
-                            passwordEncoder.encode(entry.getValue())
-                    );
-                }
-                for (Map.Entry<String, String> entry : newPasswords.entrySet()) {
-                    logger.info("Password of user with username: {} - was changed to: {}. Email has been sent."
-                            , entry.getKey(), entry.getValue());
-                }
-                connection.commit();
-            } catch (StatementException e) {
-                connection.rollback();
-                logger.error(e.getMessage(), e);
-                throw new QueryFailedException(QUERY_FAILED_ERROR_MESSAGE, e);
-            }
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
+    @Transactional
+    public void changeUsersPasswordsByUsernames(Long[] ids) {
+        Map<String, String> emails = new HashMap<>();
+        Map<Long, String> newPasswords = new HashMap<>();
+        for (Long id : ids) {
+            emails.put(userRepository.findById(id).getUsername(), randomService.getNewPassword());
+            newPasswords.put(id, randomService.getNewPassword());
+        }
+        for (Map.Entry<Long, String> entry : newPasswords.entrySet()) {
+            User user = userRepository.findById(entry.getKey());
+            user.setPassword(passwordEncoder.encode(entry.getValue()));
+            userRepository.update(user);
+        }
+        for (Map.Entry<String, String> entry : emails.entrySet()) {
+            logger.info("Password of user with username: {} - was changed to: {}. Email has been sent."
+                    , entry.getKey(), entry.getValue());
         }
     }
 
@@ -151,6 +144,34 @@ public class UserServiceImpl implements UserService {
         } catch (SQLException e) {
             logger.error(e.getMessage(), e);
             throw new DataBaseConnectionException(NO_CONNECTION_ERROR_MESSAGE, e);
+        }
+    }
+
+    @Override
+    public UserDTO getUserById(Long id) {
+        return userConverter.toDTO(userRepository.findById(id));
+    }
+
+    @Override
+    @Transactional
+    public int updateUserProfileAndPassword(UserDTO userDTO, String oldPassword, String newPassword) {
+        User user = userRepository.findById(userDTO.getId());
+        user.setName(userDTO.getName());
+        user.setSurname(userDTO.getSurname());
+        user.getProfile().setAddress(userDTO.getProfileDTO().getAddress());
+        user.getProfile().setTelephone(userDTO.getProfileDTO().getTelephone());
+        if (!newPassword.equals("") || !oldPassword.equals("")) {
+            if (passwordEncoder.matches(oldPassword, user.getPassword())) {
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.update(user);
+                return 1;
+            } else {
+                userRepository.update(user);
+                return 0;
+            }
+        } else {
+            userRepository.update(user);
+            return -1;
         }
     }
 
