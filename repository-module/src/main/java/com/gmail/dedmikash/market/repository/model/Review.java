@@ -82,9 +82,9 @@ public class Review {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Review review = (Review) o;
-        return id.equals(review.id) &&
-                text.equals(review.text) &&
-                created.equals(review.created);
+        return Objects.equals(id, review.id) &&
+                Objects.equals(text, review.text) &&
+                Objects.equals(created, review.created);
     }
 
     @Override
