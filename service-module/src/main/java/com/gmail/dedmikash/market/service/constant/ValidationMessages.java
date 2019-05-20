@@ -50,6 +50,15 @@ public class ValidationMessages {
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9._]+@[a-zA-Z]+.[a-zA-Z]{2,4}$";
     public static final String PHONE_NUMBER_REGEX = "^\\+375[0-9]{9}$";
 
+    public static final int ARTICLE_NAME_SIZE = 100;
+    public static final int ARTICLE_TEXT_SIZE = 1000;
+    public static final int USER_NAME_SIZE = 20;
+    public static final int USER_SURNAME_SIZE = 40;
+    public static final int USER_ADDRESS_SIZE = 100;
+    public static final int USER_TELEPHONE_SIZE = 13;
+    public static final int USERNAME_SIZE = 50;
+    public static final int USER_PATRONYMIC_SIZE = 40;
+
     private ValidationMessages() {
     }
 }

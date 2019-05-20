@@ -2,6 +2,7 @@ package com.gmail.dedmikash.market.service;
 
 import com.gmail.dedmikash.market.service.model.PageDTO;
 import com.gmail.dedmikash.market.service.model.UserDTO;
+import org.springframework.ui.Model;
 
 import java.util.Map;
 
@@ -20,5 +21,5 @@ public interface UserService {
 
     UserDTO getUserById(Long id);
 
-    int updateUserProfileAndPassword(UserDTO userDTO, String oldPassword, String newPassword);
+    String updateUserProfileAndPassword(Model model, Long id, UserDTO userDTO, String oldPassword, String newPassword);
 }

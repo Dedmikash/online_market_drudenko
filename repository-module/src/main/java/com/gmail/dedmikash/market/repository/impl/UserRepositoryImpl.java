@@ -62,12 +62,11 @@ public class UserRepositoryImpl extends GenericRepositoryImpl<Long, User> implem
 
     @Override
     public int getCountOfUsersPages(Connection connection) throws StatementException {
-        String countQuery = "SELECT ceil(COUNT(*)/?) AS pages FROM user WHERE deleted=0";
+        String countQuery = "SELECT COUNT(*) AS row_count FROM user WHERE deleted=0";
         try (PreparedStatement preparedStatement = connection.prepareStatement(countQuery)) {
-            preparedStatement.setInt(1, BATCH_SIZE);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getInt("pages");
+                    return (int) Math.ceil(resultSet.getInt("row_count") / (double) BATCH_SIZE);
                 }
             }
         } catch (SQLException e) {

@@ -7,7 +7,33 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import static com.gmail.dedmikash.market.service.constant.ValidationMessages.*;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.DUPLICATE_USERNAME;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.EMAIL_REGEX;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.LATIN_REGEX;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.NAME_PATTERN_NOT_VALID;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.PATRONYMIC_PATTERN_NOT_VALID;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.SURNAME_PATTERN_NOT_VALID;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USERNAME_EMPTY;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USERNAME_PATTERN_NOT_VALID;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USERNAME_SIZE;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USERNAME_SIZE_NOT_VALID;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_BLOCKED_NOT_NULL;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_DELETED_NOT_NULL;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_ID_NOT_NULL;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_NAME_EMPTY;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_NAME_SIZE;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_NAME_SIZE_NOT_VALID;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_PASSWORD_NOT_NULL;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_PATRONYMIC_EMPTY;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_PATRONYMIC_SIZE;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_PATRONYMIC_SIZE_NOT_VALID;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_PROFILE_NOT_NULL;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_ROLE_ID_NULL;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_ROLE_NAME_NOT_NULL;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_ROLE_NULL;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_SURNAME_EMPTY;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_SURNAME_SIZE;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_SURNAME_SIZE_NOT_VALID;
 
 @Component
 public class UserValidator implements Validator {
@@ -34,7 +60,7 @@ public class UserValidator implements Validator {
         if (userService.readByUsername(user.getUsername()) != null) {
             errors.rejectValue("username", "", DUPLICATE_USERNAME);
         }
-        if (user.getUsername().length() > 50) {
+        if (user.getUsername().length() > USERNAME_SIZE) {
             errors.rejectValue("username", "", USERNAME_SIZE_NOT_VALID);
         }
         if (!user.getUsername().matches(EMAIL_REGEX)) {
@@ -46,7 +72,7 @@ public class UserValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", USER_NAME_EMPTY);
-        if (user.getName().length() > 20) {
+        if (user.getName().length() > USER_NAME_SIZE) {
             errors.rejectValue("name", "", USER_NAME_SIZE_NOT_VALID);
         }
         if (!user.getName().matches(LATIN_REGEX)) {
@@ -54,7 +80,7 @@ public class UserValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "surname", USER_SURNAME_EMPTY);
-        if (user.getSurname().length() > 40) {
+        if (user.getSurname().length() > USER_SURNAME_SIZE) {
             errors.rejectValue("surname", "", USER_SURNAME_SIZE_NOT_VALID);
         }
         if (!user.getSurname().matches(LATIN_REGEX)) {
@@ -62,7 +88,7 @@ public class UserValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "patronymic", USER_PATRONYMIC_EMPTY);
-        if (user.getPatronymic().length() > 40) {
+        if (user.getPatronymic().length() > USER_PATRONYMIC_SIZE) {
             errors.rejectValue("patronymic", "", USER_PATRONYMIC_SIZE_NOT_VALID);
         }
         if (!user.getPatronymic().matches(LATIN_REGEX)) {

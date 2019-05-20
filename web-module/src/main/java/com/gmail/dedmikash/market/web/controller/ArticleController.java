@@ -71,7 +71,7 @@ public class ArticleController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         userDTO.setId(((AppUserPrincipal) userDetails).getId());
         commentDTO.setUserDTO(userDTO);
-        article = articleService.addCommentToArtical(article, commentDTO);
+        article = articleService.addCommentToArticle(article, commentDTO);
         logger.info("Added comment: {} - to article with id: {}", commentDTO.getText(), article_id);
         model.addAttribute("article", article);
         return "comments";

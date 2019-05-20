@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -154,24 +155,37 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public int updateUserProfileAndPassword(UserDTO userDTO, String oldPassword, String newPassword) {
+    public String updateUserProfileAndPassword(Model model,
+                                               Long id,
+                                               UserDTO userDTO,
+                                               String oldPassword,
+                                               String newPassword) {
         User user = userRepository.findById(userDTO.getId());
         user.setName(userDTO.getName());
         user.setSurname(userDTO.getSurname());
         user.getProfile().setAddress(userDTO.getProfileDTO().getAddress());
         user.getProfile().setTelephone(userDTO.getProfileDTO().getTelephone());
+        return getView(model, id, oldPassword, newPassword, user);
+    }
+
+    private String getView(Model model, Long id, String oldPassword, String newPassword, User user) {
         if (!newPassword.equals("") || !oldPassword.equals("")) {
             if (passwordEncoder.matches(oldPassword, user.getPassword())) {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 userRepository.update(user);
-                return 1;
+                model.addAttribute("user", getUserById(id));
+                model.addAttribute("password", "Password successfully changed");
+                return "profile";
             } else {
                 userRepository.update(user);
-                return 0;
+                model.addAttribute("user", getUserById(id));
+                model.addAttribute("password", "Wrong password");
+                return "profile";
             }
         } else {
             userRepository.update(user);
-            return -1;
+            model.addAttribute("user", getUserById(id));
+            return "profile";
         }
     }
 

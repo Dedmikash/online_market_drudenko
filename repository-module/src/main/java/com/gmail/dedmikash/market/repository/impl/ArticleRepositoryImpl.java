@@ -1,6 +1,8 @@
 package com.gmail.dedmikash.market.repository.impl;
 
 import com.gmail.dedmikash.market.repository.ArticleRepository;
+import com.gmail.dedmikash.market.repository.enums.OrderEnum;
+import com.gmail.dedmikash.market.repository.enums.SortEnum;
 import com.gmail.dedmikash.market.repository.exception.StatementException;
 import com.gmail.dedmikash.market.repository.model.Article;
 import com.gmail.dedmikash.market.repository.model.User;
@@ -27,7 +29,10 @@ public class ArticleRepositoryImpl extends GenericRepositoryImpl<Long, Article> 
         String selectQuery = "SELECT *,a.id AS article_id,a.deleted AS article_deleted,a.name AS article_name,u.name" +
                 " AS user_name FROM article a JOIN user u ON a.user_id=u.id WHERE a.deleted=0 ORDER BY ";
         List<Article> articleList = new ArrayList<>();
-        selectQuery = buildSortQuery(sort, order, selectQuery);
+        selectQuery = buildSortQuery(
+                SortEnum.valueOf(sort.toUpperCase()),
+                OrderEnum.valueOf(order.toUpperCase()),
+                selectQuery);
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectQuery)) {
             preparedStatement.setInt(1, getSQLLimit(page));
             preparedStatement.setInt(2, BATCH_SIZE);
@@ -44,23 +49,23 @@ public class ArticleRepositoryImpl extends GenericRepositoryImpl<Long, Article> 
         return articleList;
     }
 
-    private String buildSortQuery(String sort, String order, String selectQuery) {
+    private String buildSortQuery(SortEnum sort, OrderEnum order, String selectQuery) {
         switch (sort) {
-            case "date":
+            case DATE:
                 selectQuery = selectQuery.concat("created ");
                 break;
-            case "surname":
+            case SURNAME:
                 selectQuery = selectQuery.concat("surname ");
                 break;
-            case "views":
+            case VIEWS:
                 selectQuery = selectQuery.concat("views ");
                 break;
         }
         switch (order) {
-            case "desc":
+            case DESC:
                 selectQuery = selectQuery.concat("DESC ");
                 break;
-            case "asc":
+            case ASC:
                 selectQuery = selectQuery.concat("ASC ");
                 break;
         }
@@ -70,12 +75,11 @@ public class ArticleRepositoryImpl extends GenericRepositoryImpl<Long, Article> 
 
     @Override
     public int getCountOfArticlesPages(Connection connection) throws StatementException {
-        String countQuery = "SELECT ceil(COUNT(*)/?) AS pages FROM article WHERE deleted=0";
+        String countQuery = "SELECT COUNT(*) AS row_count FROM article WHERE deleted=0";
         try (PreparedStatement preparedStatement = connection.prepareStatement(countQuery)) {
-            preparedStatement.setInt(1, BATCH_SIZE);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    return resultSet.getInt("pages");
+                    return (int) Math.ceil(resultSet.getInt("row_count") / (double) BATCH_SIZE);
                 }
             }
         } catch (SQLException e) {

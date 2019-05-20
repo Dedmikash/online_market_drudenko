@@ -8,8 +8,10 @@ import org.springframework.validation.Validator;
 
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_ID_NOT_NULL;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_NAME_EMPTY;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_NAME_SIZE;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_NAME_SIZE_NOT_VALID;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_TEXT_EMPTY;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_TEXT_SIZE;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_TEXT_SIZE_NOT_VALID;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_USER_ID_NULL;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_USER_NULL;
@@ -31,7 +33,7 @@ public class ArticleValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", ARTICLE_NAME_EMPTY);
-        if (article.getName().length() > 100) {
+        if (article.getName().length() > ARTICLE_NAME_SIZE) {
             errors.rejectValue("name", "", ARTICLE_NAME_SIZE_NOT_VALID);
         }
 
@@ -42,7 +44,7 @@ public class ArticleValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "text", ARTICLE_TEXT_EMPTY);
-        if (article.getText().length() > 1000) {
+        if (article.getText().length() > ARTICLE_TEXT_SIZE) {
             errors.rejectValue("text", "", ARTICLE_TEXT_SIZE_NOT_VALID);
         }
 

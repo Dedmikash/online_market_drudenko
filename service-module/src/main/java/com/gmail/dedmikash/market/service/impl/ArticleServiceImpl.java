@@ -96,7 +96,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleDTO addCommentToArtical(ArticleDTO articleDTO, CommentDTO commentDTO) {
+    public ArticleDTO addCommentToArticle(ArticleDTO articleDTO, CommentDTO commentDTO) {
         commentDTO.setCreated(new Timestamp(System.currentTimeMillis()));
         commentDTO.setArticleID(articleDTO.getId());
         articleDTO.getComments().add(0, commentDTO);
