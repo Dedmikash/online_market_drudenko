@@ -1,22 +1,25 @@
 package com.gmail.dedmikash.market.service;
 
+import com.gmail.dedmikash.market.service.model.PageDTO;
 import com.gmail.dedmikash.market.service.model.UserDTO;
+import org.springframework.ui.Model;
 
-import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    void add(UserDTO userDTO);
+    void saveUser(UserDTO userDTO);
 
     UserDTO readByUsername(String username);
 
-    List<UserDTO> getUsersBatch(int page);
-
-    int getCountOfUsersPages();
+    PageDTO<UserDTO> getUsers(int page);
 
     void deleteUsersByIds(Long[] ids);
 
-    void changeUsersPasswordsByUsernames(String[] usernames);
+    void changeUsersPasswordsByUsernames(Long[] ids);
 
     void changeUsersRolesById(Map<Long, String> changes);
+
+    UserDTO getUserById(Long id);
+
+    String updateUserProfileAndPassword(Model model, Long id, UserDTO userDTO, String oldPassword, String newPassword);
 }

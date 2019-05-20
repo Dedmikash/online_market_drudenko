@@ -78,7 +78,7 @@ public class UserServiceUnitTest {
         secondUserDTO.setUsername("test2");
         when(userConverter.toDTO(firstUser)).thenReturn(firstUserDTO);
         when(userConverter.toDTO(secondUser)).thenReturn(secondUserDTO);
-        Assert.assertEquals("test1", userService.getUsersBatch(5).get(0).getUsername());
-        Assert.assertEquals("test2", userService.getUsersBatch(5).get(1).getUsername());
+        Assert.assertEquals("test1", userService.getUsers(5).getList().get(0).getUsername());
+        Assert.assertEquals("test2", userService.getUsers(5).getList().get(1).getUsername());
     }
 }

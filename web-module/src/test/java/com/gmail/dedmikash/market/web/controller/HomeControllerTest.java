@@ -15,13 +15,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(MockitoJUnitRunner.class)
 @ActiveProfiles("test")
-public class CommonControllerTest {
+public class HomeControllerTest {
     private MockMvc mockMvc;
 
     @Before
     public void init() {
-        CommonController commonController = new CommonController();
-        mockMvc = MockMvcBuilders.standaloneSetup(commonController).build();
+        HomeController homeController = new HomeController();
+        mockMvc = MockMvcBuilders.standaloneSetup(homeController).build();
     }
 
     @Test
