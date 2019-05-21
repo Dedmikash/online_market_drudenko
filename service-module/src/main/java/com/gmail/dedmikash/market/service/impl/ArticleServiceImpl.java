@@ -38,8 +38,10 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public ArticleDTO getArticleById(Long id) {
         Article article = articleRepository.findById(id);
-        article.setViews(article.getViews() + 1);
-        articleRepository.update(article);
+        if (article != null) {
+            article.setViews(article.getViews() + 1);
+            articleRepository.update(article);
+        }
         return articleConverter.toDTO(articleRepository.findById(id));
     }
 

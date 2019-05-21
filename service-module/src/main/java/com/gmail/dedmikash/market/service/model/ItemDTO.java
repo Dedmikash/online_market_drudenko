@@ -1,12 +1,10 @@
 package com.gmail.dedmikash.market.service.model;
 
-import java.math.BigDecimal;
-
 public class ItemDTO {
     private Long id;
     private String name;
     private String uniqueNumber;
-    private BigDecimal price;
+    private String price;
     private boolean isDeleted;
 
     public Long getId() {
@@ -33,11 +31,11 @@ public class ItemDTO {
         this.uniqueNumber = uniqueNumber;
     }
 
-    public BigDecimal getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(String price) {
         this.price = price;
     }
 

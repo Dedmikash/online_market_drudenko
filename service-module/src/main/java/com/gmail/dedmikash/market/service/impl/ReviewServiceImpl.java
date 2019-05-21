@@ -40,7 +40,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public void deleteReviewsByIds(Long[] ids) {
         for (Long id : ids) {
-            reviewRepository.delete(reviewRepository.findById(id));
+            Review review = reviewRepository.findById(id);
+            if (review != null && !review.isDeleted()) {
+                reviewRepository.delete(review);
+            }
         }
     }
 

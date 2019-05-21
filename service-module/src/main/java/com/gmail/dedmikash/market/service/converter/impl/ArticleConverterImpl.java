@@ -24,22 +24,24 @@ public class ArticleConverterImpl implements ArticleConverter {
 
     @Override
     public ArticleDTO toDTO(Article article) {
-        ArticleDTO articleDTO = new ArticleDTO();
-        articleDTO.setId(article.getId());
-        articleDTO.setName(article.getName());
-        if (article.getUser() != null) {
-            articleDTO.setUserDTO(userConverter.toDTO(article.getUser()));
-        } else {
-            articleDTO.setUserDTO(null);
-        }
-        articleDTO.setText(article.getText());
-        articleDTO.setCreated(article.getCreated().toString());
-        articleDTO.setViews(article.getViews());
-        articleDTO.setComments(article.getComments().stream()
-                .map(commentConverter::toDTO)
-                .collect(Collectors.toList()));
-        articleDTO.setDeleted(article.isDeleted());
-        return articleDTO;
+        if (article != null) {
+            ArticleDTO articleDTO = new ArticleDTO();
+            articleDTO.setId(article.getId());
+            articleDTO.setName(article.getName());
+            if (article.getUser() != null) {
+                articleDTO.setUserDTO(userConverter.toDTO(article.getUser()));
+            } else {
+                articleDTO.setUserDTO(null);
+            }
+            articleDTO.setText(article.getText());
+            articleDTO.setCreated(article.getCreated().toString());
+            articleDTO.setViews(article.getViews());
+            articleDTO.setComments(article.getComments().stream()
+                    .map(commentConverter::toDTO)
+                    .collect(Collectors.toList()));
+            articleDTO.setDeleted(article.isDeleted());
+            return articleDTO;
+        } else return null;
     }
 
     @Override

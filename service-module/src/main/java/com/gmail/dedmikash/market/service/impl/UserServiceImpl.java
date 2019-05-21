@@ -76,7 +76,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUsersByIds(Long[] ids) {
         for (Long id : ids) {
-            userRepository.delete(userRepository.findById(id));
+            User user = userRepository.findById(id);
+            if (user != null && !user.isDeleted()) {
+                userRepository.delete(user);
+            }
         }
     }
 
