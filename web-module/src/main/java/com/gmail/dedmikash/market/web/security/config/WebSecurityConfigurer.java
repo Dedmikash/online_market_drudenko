@@ -44,7 +44,8 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/articles/{\\d+}/comments/new")
                 .hasAuthority(CUSTOMER)
                 .antMatchers("/articles/{\\d+}/delete", "/articles/new",
-                        "/articles/{\\d+}/comments/change_article", "articles/{\\d+}/comments/delete")
+                        "/articles/{\\d+}/comments/change_article", "articles/{\\d+}/comments/delete",
+                        "/items", "/items/{\\d+}")
                 .hasAuthority(SALE)
                 .antMatchers("/403", "/", "/login", "/login?hasNoRole=1")
                 .permitAll()

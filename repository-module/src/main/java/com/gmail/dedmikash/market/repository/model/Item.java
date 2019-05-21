@@ -25,6 +25,7 @@ public class Item {
     @Column(name = "unique_number")
     private String uniqueNumber;
     private BigDecimal price;
+    private String text;
     @Column(name = "deleted")
     private boolean isDeleted;
 
@@ -58,6 +59,14 @@ public class Item {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public boolean isDeleted() {

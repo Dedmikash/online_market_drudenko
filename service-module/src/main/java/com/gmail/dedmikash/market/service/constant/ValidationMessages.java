@@ -32,6 +32,7 @@ public class ValidationMessages {
     public static final String ARTICLE_DATE_EMPTY = "Article's date must be not empty";
     public static final String ITEM_NAME_EMPTY = "Item's name must be not empty";
     public static final String ITEM_PRICE_EMPTY = "Item's price must be not empty";
+    public static final String ITEM_TEXT_EMPTY = "Item's text must be not empty";
 
     public static final String USERNAME_SIZE_NOT_VALID = "User's Email must have from 1 to 50 symbols";
     public static final String USER_NAME_SIZE_NOT_VALID = "User's Name must have from 1 to 20 symbols";
@@ -44,6 +45,7 @@ public class ValidationMessages {
     public static final String USER_TELEPHONE_SIZE_NOT_VALID = "User's telephone number  must have from 1 to 13 symbols";
     public static final String ITEM_NAME_SIZE_NOT_VALID = "Item's name must have from 1 to 50 symbols";
     public static final String ITEM_PRICE_SIZE_NOT_VALID = "Item's price must have from 1 to 15 symbols";
+    public static final String ITEM_TEXT_SIZE_NOT_VALID = "Item's text must have from 1 to 200 symbols";
 
     public static final String USERNAME_PATTERN_NOT_VALID = "User's Email must matches pattern:" +
             " ^[a-zA-Z0-9._]+@[a-zA-Z]+.[a-zA-Z]{2,4}$ - simple email pattern.";
@@ -69,6 +71,7 @@ public class ValidationMessages {
     public static final int USER_PATRONYMIC_SIZE = 40;
     public static final int ITEM_NAME_SIZE = 50;
     public static final int ITEM_PRICE_SIZE = 15;
+    public static final int ITEM_TEXT_SIZE = 200;
 
     private ValidationMessages() {
     }

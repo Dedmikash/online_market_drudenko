@@ -5,6 +5,7 @@ import com.gmail.dedmikash.market.repository.model.Item;
 import com.gmail.dedmikash.market.service.ItemService;
 import com.gmail.dedmikash.market.service.converter.ItemConverter;
 import com.gmail.dedmikash.market.service.model.ItemDTO;
+import com.gmail.dedmikash.market.service.model.PageDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,5 +52,21 @@ public class ItemServiceImpl implements ItemService {
         if (item != null && !item.isDeleted()) {
             itemRepository.delete(item);
         }
+    }
+
+    @Override
+    public PageDTO<ItemDTO> getItems(int page) {
+        PageDTO<ItemDTO> items = new PageDTO<>();
+        List<ItemDTO> itemDTOS = getPageOfItems(page);
+        items.setList(itemDTOS);
+        items.setCountOfPages(itemRepository.getCountOfPages());
+        return items;
+    }
+
+    private List<ItemDTO> getPageOfItems(int page) {
+        return itemRepository.getItems(page)
+                .stream()
+                .map(itemConverter::toDTO)
+                .collect(Collectors.toList());
     }
 }

@@ -13,6 +13,9 @@ import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ITE
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ITEM_PRICE_EMPTY;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ITEM_PRICE_SIZE;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ITEM_PRICE_SIZE_NOT_VALID;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ITEM_TEXT_EMPTY;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ITEM_TEXT_SIZE;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ITEM_TEXT_SIZE_NOT_VALID;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ITEM_UNIQUE_NUMBER_NOT_NULL;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.PRICE_PATTERN_NOT_VALID;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.PRICE_REGEX;
@@ -42,11 +45,16 @@ public class ItemValidator implements Validator {
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "price", ITEM_PRICE_EMPTY);
-        if (item.getPrice().toString().length() > ITEM_PRICE_SIZE) {
+        if (item.getPrice().length() > ITEM_PRICE_SIZE) {
             errors.rejectValue("price", "", ITEM_PRICE_SIZE_NOT_VALID);
         }
-        if (!item.getPrice().toString().matches(PRICE_REGEX)) {
+        if (!item.getPrice().matches(PRICE_REGEX)) {
             errors.rejectValue("price", "", PRICE_PATTERN_NOT_VALID);
+        }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "text", ITEM_TEXT_EMPTY);
+        if (item.getName().length() > ITEM_TEXT_SIZE) {
+            errors.rejectValue("text", "", ITEM_TEXT_SIZE_NOT_VALID);
         }
     }
 }

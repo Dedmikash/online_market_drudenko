@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Items</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
+        <a th:href="@{/articles}">Articles</a>   |
+        <a th:href="@{/profile}">Profile</a>   |
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<h1>Items</h1>
+<table>
+    <tr>
+        <th>Name</th>
+        <th>Unique Number</th>
+        <th>Price</th>
+    </tr>
+    <th:block th:each="item : ${items}">
+        <tr>
+            <td th:text="${item.name}">...</td>
+            <td th:text="${item.uniqueNumber}">...</td>
+            <td th:text="${item.price}">...</td>
+            <td><a th:href="@{/items/{item_id}(item_id=${item.id})}">More</a></td>
+            <td>
+                <form th:action="@{/items/delete}" method="post">
+                    <input hidden th:value="${item.id}" name="item_id">
+                    <input type="submit" value="Delete">
+                </form>
+            </td>
+        </tr>
+    </th:block>
+</table>
+<th:block th:if="${pages}>0" th:each="i:${#numbers.sequence(1,pages)}">
+    <a th:href="@{/items?page={page}(page=${i})}">
+        <span th:text="${i}">...</span></a>
+</th:block>
+</body>
+</html>
+

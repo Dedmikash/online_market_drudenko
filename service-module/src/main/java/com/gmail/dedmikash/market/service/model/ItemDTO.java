@@ -5,6 +5,7 @@ public class ItemDTO {
     private String name;
     private String uniqueNumber;
     private String price;
+    private String text;
     private boolean isDeleted;
 
     public Long getId() {
@@ -37,6 +38,14 @@ public class ItemDTO {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public boolean isDeleted() {
