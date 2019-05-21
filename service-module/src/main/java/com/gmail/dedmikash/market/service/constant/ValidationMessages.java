@@ -28,6 +28,7 @@ public class ValidationMessages {
     public static final String COMMENT_EMPTY = "Comment must be not empty";
     public static final String ARTICLE_NAME_EMPTY = "Article name must be not empty";
     public static final String ARTICLE_TEXT_EMPTY = "Article text must be not empty";
+    public static final String ARTICLE_DATE_EMPTY = "Article date must be not empty";
 
     public static final String USERNAME_SIZE_NOT_VALID = "User's Email must have from 1 to 50 symbols";
     public static final String USER_NAME_SIZE_NOT_VALID = "User's Name must have from 1 to 20 symbols";
@@ -45,6 +46,7 @@ public class ValidationMessages {
     public static final String SURNAME_PATTERN_NOT_VALID = "User's Surname must have only latin letters";
     public static final String PATRONYMIC_PATTERN_NOT_VALID = "User's Patronymic must have only latin letters";
     public static final String TELEPHONE_PATTERN_NOT_VALID = "Telephone number must matches pattern: ^\\+375[0-9]{9}$";
+    public static final String ARTICLE_DATE_PATTERN_NOT_VALID = "Article's date must matches pattern: ^yyyy-MM-ddTHH:mm$";
 
     public static final String LATIN_REGEX = "[a-zA-z]+";
     public static final String EMAIL_REGEX = "^[a-zA-Z0-9._]+@[a-zA-Z]+.[a-zA-Z]{2,4}$";

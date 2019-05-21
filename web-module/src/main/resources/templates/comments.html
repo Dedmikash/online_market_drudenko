@@ -21,19 +21,27 @@
     <p th:text="${article.text}">...</p>
     <hr/>
     <h3>Comments:</h3>
-    <form th:action="@{/articles/{article_id}/comments(article_id=${article.id})}" th:object="${commentDTO}"
-          method="post">
+    <div sec:authorize="hasAuthority('CUSTOMER USER')">
+        <form th:action="@{/articles/{article_id}/comments/new(article_id=${article.id})}" th:object="${commentDTO}"
+              method="post">
         <textarea rows="5" cols="40" th:field="${commentDTO.text}" placeholder="Your comment" required
                   maxlength="200"></textarea><br/>
-        <span th:if="${#fields.hasErrors('text')}" th:errors="${commentDTO.text}">Surname Error</span><br/>
-        <input type="submit" value="Create comment"/>
-        <hr/>
-    </form>
+            <span th:if="${#fields.hasErrors('text')}" th:errors="${commentDTO.text}">Text Error</span><br/>
+            <input type="submit" value="Create comment"/>
+            <hr/>
+        </form>
+    </div>
 </th:block>
 <th:block th:each="comment : ${article.comments}">
     <h5 th:text="'Author: '+${comment.userDTO.name}+' '+${comment.userDTO.surname}">...</h5>
     <h5 th:text="'Created: '+${comment.created}">...</h5>
     <p th:text="${comment.text}">...</p>
+    <div sec:authorize="hasAuthority('SALE USER')">
+        <form th:action="@{/articles/{article_id}/comments/delete(article_id=${article.id})}" method="post">
+            <input hidden th:value="${comment.id}" name="comment_id">
+            <input type="submit" value="Delete Article">
+        </form>
+    </div>
     <hr/>
 </th:block>
 </body>

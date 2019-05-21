@@ -75,8 +75,9 @@ public class ArticleServiceImpl implements ArticleService {
     @Transactional
     public ArticleDTO addCommentToArticle(ArticleDTO articleDTO, CommentDTO commentDTO) {
         commentDTO.setCreated(new Timestamp(System.currentTimeMillis()));
-        commentDTO.setArticleID(articleDTO.getId());
-        articleDTO.getComments().add(0, commentDTO);
+        commentDTO.setArticleDTO(articleDTO);
+        articleDTO.getComments().add(commentDTO);
+        articleDTO.setViews(articleDTO.getViews() - 1);
         Article article = articleConverter.fromDTO(articleDTO);
         articleRepository.update(article);
         return articleConverter.toDTO(articleRepository.findById(articleDTO.getId()));

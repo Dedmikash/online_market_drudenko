@@ -7,6 +7,8 @@ import com.gmail.dedmikash.market.service.converter.UserConverter;
 import com.gmail.dedmikash.market.service.model.ArticleDTO;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Component
@@ -14,7 +16,8 @@ public class ArticleConverterImpl implements ArticleConverter {
     private final UserConverter userConverter;
     private final CommentConverter commentConverter;
 
-    public ArticleConverterImpl(UserConverter userConverter, CommentConverter commentConverter) {
+    public ArticleConverterImpl(UserConverter userConverter,
+                                CommentConverter commentConverter) {
         this.userConverter = userConverter;
         this.commentConverter = commentConverter;
     }
@@ -30,7 +33,7 @@ public class ArticleConverterImpl implements ArticleConverter {
             articleDTO.setUserDTO(null);
         }
         articleDTO.setText(article.getText());
-        articleDTO.setCreated(article.getCreated());
+        articleDTO.setCreated(article.getCreated().toString());
         articleDTO.setViews(article.getViews());
         articleDTO.setComments(article.getComments().stream()
                 .map(commentConverter::toDTO)
@@ -51,7 +54,11 @@ public class ArticleConverterImpl implements ArticleConverter {
         }
         article.setText(articleDTO.getText());
         article.setViews(articleDTO.getViews());
-        article.setCreated(articleDTO.getCreated());
+        if (articleDTO.getCreated().matches("^\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d$")) {
+            article.setCreated(Timestamp.valueOf(LocalDateTime.parse(articleDTO.getCreated())));
+        } else {
+            article.setCreated(Timestamp.valueOf(articleDTO.getCreated()));
+        }
         article.setComments(articleDTO.getComments().stream()
                 .map(commentConverter::fromDTO)
                 .collect(Collectors.toList()));

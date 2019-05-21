@@ -2,60 +2,47 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
-    <title>Add User</title>
+    <title>Create Article</title>
 </head>
 <body>
 <header>
     <span sec:authorize="isAuthenticated()">
         Logged user : <span sec:authentication="name"></span>   |
         Role: <span sec:authentication="principal.authorities"></span>   |
+        <a th:href="@{/profile}">Profile</a>   |
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
-<h1>Add User</h1>
-<form th:action="@{/users/new}" th:object="${userDTO}" method="post">
+<a th:href="@{/articles}">Back to Articles</a>
+<h1>Create Article</h1>
+<form th:action="@{/articles/new}" th:object="${articleDTO}" method="post">
     <table>
         <tr>
-            <td>Surname:</td>
-            <td><input type="text" th:field="*{surname}" placeholder="Ivanov" required maxlength="40"/></td>
-            <td th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}">Surname Error</td>
-        </tr>
-        <tr>
             <td>Name:</td>
-            <td><input type="text" th:field="*{name}" placeholder="Ivan" required maxlength="20"/></td>
+            <td><input type="text" th:field="*{name}" placeholder="Article Name" required maxlength="100"/></td>
             <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
         </tr>
         <tr>
-            <td>Patronymic:</td>
-            <td><input type="text" th:field="*{patronymic}" placeholder="Ivanovich" required maxlength="40"/></td>
-            <td th:if="${#fields.hasErrors('patronymic')}" th:errors="*{patronymic}">Patronymic Error</td>
+            <td>Date:</td>
+            <td><input type="datetime-local" th:field="*{created}" required/></td>
+            <td th:if="${#fields.hasErrors('created')}" th:errors="*{created}">Created Error</td>
         </tr>
         <tr>
-            <td>Email:</td>
+            <td>Text:</td>
             <td>
-                <input type="email" th:field="*{username}" placeholder="ivanov2019@gmail.com" required maxlength="50"/>
+                <textarea rows="10" cols="50" type="text" th:field="*{text}" placeholder="Type your text here" required
+                          maxlength="1000"></textarea>
             </td>
-            <td th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Email Error</td>
-        </tr>
-        <tr>
-            <td>Role:</td>
-            <td>
-                <select class="dropdown" th:field="*{roleDTO.id}">
-                    <option th:each="role : ${roles}" th:text="${role.name}"
-                            th:value="${role.id}"></option>
-                </select>
-            </td>
+            <td th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Text Error</td>
         </tr>
         <tr>
             <td></td>
             <td>
-                <button type="submit">Add User</button>
+                <button type="submit">Create Article</button>
             </td>
         </tr>
     </table>
 </form>
-<a th:href="@{/users}">Users</a><br>
-<a th:href="@{/reviews}">Site reviews</a>
 </body>
 </html>
 

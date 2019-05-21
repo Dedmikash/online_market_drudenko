@@ -137,6 +137,26 @@
         </createTable>
     </changeSet>
 
+    <changeSet id="2.4" author="dedmikash@gmail.com">
+        <createTable tableName="item">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unique_number" type="varchar(36)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="decimal(15,5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deleted" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet id="3" author="dedmikash@gmail.com">
         <insert tableName="role">
             <column name="name" value="ADMINISTRATOR"/>

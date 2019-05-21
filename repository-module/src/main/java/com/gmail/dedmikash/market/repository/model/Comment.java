@@ -5,6 +5,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,10 +24,11 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Long id;
-    @Column(name = "article_id")
-    private Long articleID;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id", nullable = false)
+    private Article article;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     private Timestamp created;
     private String text;
@@ -41,12 +43,12 @@ public class Comment {
         this.id = id;
     }
 
-    public Long getArticleID() {
-        return articleID;
+    public Article getArticle() {
+        return article;
     }
 
-    public void setArticleID(Long articleID) {
-        this.articleID = articleID;
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
     public User getUser() {
@@ -86,14 +88,14 @@ public class Comment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Comment comment = (Comment) o;
-        return id.equals(comment.id) &&
-                articleID.equals(comment.articleID) &&
-                created.equals(comment.created);
+        return Objects.equals(id, comment.id) &&
+                Objects.equals(created, comment.created) &&
+                Objects.equals(text, comment.text);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, articleID, created);
+        return Objects.hash(id, created, text);
     }
 
     @Override

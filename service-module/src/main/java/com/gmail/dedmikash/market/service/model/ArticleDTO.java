@@ -1,6 +1,5 @@
 package com.gmail.dedmikash.market.service.model;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +8,7 @@ public class ArticleDTO {
     private String name;
     private UserDTO userDTO;
     private String text;
-    private Timestamp created;
+    private String created;
     private Long views;
     private List<CommentDTO> comments = new ArrayList<>();
     private boolean isDeleted;
@@ -46,11 +45,11 @@ public class ArticleDTO {
         this.text = text;
     }
 
-    public Timestamp getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 

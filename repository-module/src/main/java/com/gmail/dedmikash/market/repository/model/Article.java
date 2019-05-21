@@ -36,8 +36,7 @@ public class Article {
     private String text;
     private Timestamp created;
     private Long views;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id")
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("created DESC")
     private List<Comment> comments = new ArrayList<>();
     @Column(name = "deleted")
