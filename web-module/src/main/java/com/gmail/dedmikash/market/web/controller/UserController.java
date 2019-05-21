@@ -64,11 +64,11 @@ public class UserController {
         if (changes == null) {
             return "redirect:/users";
         }
-        Map<Long, String> validChanges = new HashMap<>();
+        Map<Long, Long> validChanges = new HashMap<>();
         for (String change : changes) {
             String[] elements = change.split(",");
             if (!elements[1].equals(elements[2])) {
-                validChanges.put(Long.parseLong(elements[0]), elements[2]);
+                validChanges.put(Long.parseLong(elements[0]), Long.parseLong(elements[2]));
             }
         }
         userService.changeUsersRolesById(validChanges);

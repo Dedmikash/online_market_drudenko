@@ -1,7 +1,6 @@
 package com.gmail.dedmikash.market.service.impl;
 
 import com.gmail.dedmikash.market.repository.ReviewRepository;
-import com.gmail.dedmikash.market.repository.exception.StatementException;
 import com.gmail.dedmikash.market.repository.model.Review;
 import com.gmail.dedmikash.market.service.ReviewService;
 import com.gmail.dedmikash.market.service.converter.ReviewConverter;
@@ -13,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +24,6 @@ public class ReviewServiceUnitTest {
     private ReviewRepository reviewRepository;
     @Mock
     private ReviewConverter reviewConverter;
-    @Mock
-    private Connection connection;
     private ReviewService reviewService;
     private Review firstReview = new Review(null, "text1", new Timestamp(System.currentTimeMillis()), true, false);
     private Review secondReview = new Review(null, "text2", new Timestamp(System.currentTimeMillis()), false, true);
@@ -39,9 +35,8 @@ public class ReviewServiceUnitTest {
     }
 
     @Test
-    public void shouldReturnRightReviewDTOsListWhenGetReviewsBatch() throws StatementException {
-        when(reviewRepository.getConnection()).thenReturn(connection);
-        when(reviewRepository.readPage(connection, 1)).thenReturn(reviewList);
+    public void shouldReturnRightReviewDTOsListWhenGetReviewsBatch() {
+        when(reviewRepository.findPage(1)).thenReturn(reviewList);
         ReviewDTO firstReviewDTO = new ReviewDTO(null, "text1", firstReview.getCreated(), true, false);
         ReviewDTO secondReviewDTO = new ReviewDTO(null, "text2", firstReview.getCreated(), false, true);
         when(reviewConverter.toDTO(firstReview)).thenReturn(firstReviewDTO);

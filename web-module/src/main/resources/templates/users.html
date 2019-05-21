@@ -35,10 +35,10 @@
                     <select class="dropdown" name="change_role">
                         <option th:each="role : ${roles}" th:if="${role.name} == ${user.roleDTO.name}" selected
                                 th:text="${role.name}"
-                                th:value="${user.id}+','+${user.roleDTO.name}+','+${role.name}"></option>
+                                th:value="${user.id}+','+${user.roleDTO.id}+','+${role.id}"></option>
                         <option th:each="role : ${roles}" th:unless="${role.name} == ${user.roleDTO.name}"
                                 th:text="${role.name}"
-                                th:value="${user.id}+','+${user.roleDTO.name}+','+${role.name}"></option>
+                                th:value="${user.id}+','+${user.roleDTO.id}+','+${role.id}"></option>
                     </select>
                 </td>
                 <td th:if="${user.blocked}" align="center"><input type="checkbox" disabled="disabled"/></td>

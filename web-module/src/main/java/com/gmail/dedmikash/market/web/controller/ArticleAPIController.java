@@ -66,7 +66,7 @@ public class ArticleAPIController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteArticle(@PathVariable("id") Long id) {
-        articleService.delete(id);
+        articleService.deleteArticleById(id);
         logger.info("Article with id: {} -was soft deleted with REST API");
         return new ResponseEntity(HttpStatus.OK); //TODO
     }

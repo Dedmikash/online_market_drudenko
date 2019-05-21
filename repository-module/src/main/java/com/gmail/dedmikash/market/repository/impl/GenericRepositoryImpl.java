@@ -1,40 +1,19 @@
 package com.gmail.dedmikash.market.repository.impl;
 
 import com.gmail.dedmikash.market.repository.GenericRepository;
-import com.gmail.dedmikash.market.repository.exception.DataBaseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.sql.DataSource;
 import java.lang.reflect.ParameterizedType;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
-import static com.gmail.dedmikash.market.repository.constant.RepositoryErrorMessages.NO_CONNECTION_ERROR_MESSAGE;
-
 public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I, T> {
-    private static Logger logger = LoggerFactory.getLogger(GenericRepositoryImpl.class);
-    @Autowired
-    private DataSource dataSource;
+    protected static final int BATCH_SIZE = 10;
     protected Class<T> entityClass;
 
     @PersistenceContext
     protected EntityManager entityManager;
-
-    @Override
-    public Connection getConnection() {
-        try {
-            return dataSource.getConnection();
-        } catch (SQLException e) {
-            logger.error(e.getMessage(), e);
-            throw new DataBaseException(NO_CONNECTION_ERROR_MESSAGE, e);
-        }
-    }
 
     @SuppressWarnings(value = "unchecked")
     public GenericRepositoryImpl() {
@@ -68,5 +47,42 @@ public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I
         String query = "from " + entityClass.getName() + " c";
         Query q = entityManager.createQuery(query);
         return q.getResultList();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<T> findEntitiesWithLimit(int offset, int limit) {
+        String query = "from " + entityClass.getName() + " c";
+        Query q = entityManager.createQuery(query)
+                .setFirstResult(offset)
+                .setMaxResults(limit);
+        return q.getResultList();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<T> findPage(int page) {
+        String query = "from " + entityClass.getName() + " c";
+        Query q = entityManager.createQuery(query)
+                .setFirstResult(getOffset(page))
+                .setMaxResults(BATCH_SIZE);
+        return q.getResultList();
+    }
+
+    @Override
+    public int getCountOfEntities() {
+        String query = "SELECT COUNT(*) FROM " + entityClass.getName() + " c";
+        Query q = entityManager.createQuery(query);
+        return ((Number) q.getSingleResult()).intValue();
+    }
+
+    @Override
+    public int getCountOfPages() {
+        int count = getCountOfEntities();
+        return (int) Math.ceil(count / (double) BATCH_SIZE);
+    }
+
+    protected int getOffset(int page) {
+        return -BATCH_SIZE + page * BATCH_SIZE;
     }
 }

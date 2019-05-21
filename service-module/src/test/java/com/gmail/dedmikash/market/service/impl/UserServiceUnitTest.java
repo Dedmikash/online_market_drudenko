@@ -1,5 +1,6 @@
 package com.gmail.dedmikash.market.service.impl;
 
+import com.gmail.dedmikash.market.repository.RoleRepository;
 import com.gmail.dedmikash.market.repository.UserRepository;
 import com.gmail.dedmikash.market.repository.exception.StatementException;
 import com.gmail.dedmikash.market.repository.model.User;
@@ -15,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.sql.Connection;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,26 +28,25 @@ public class UserServiceUnitTest {
     @Mock
     private UserConverter userConverter;
     @Mock
-    private Connection connection;
-    @Mock
     private RandomService randomService;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private RoleRepository roleRepository;
     private UserService userService;
 
     @Before
     public void init() {
-        userService = new UserServiceImpl(userConverter, userRepository, randomService, passwordEncoder);
+        userService = new UserServiceImpl(userConverter, userRepository, randomService, passwordEncoder, roleRepository);
     }
 
     @Test
-    public void shouldReturnUserByUsername() throws StatementException {
-        when(userRepository.getConnection()).thenReturn(connection);
+    public void shouldReturnUserByUsername() {
         User user = new User();
         user.setName("testname");
         user.setSurname("testsurname");
         user.setUsername("testusername");
-        when(userRepository.readByUsername(connection, "testusername")).thenReturn(user);
+        when(userRepository.findByUsername("testusername")).thenReturn(user);
         UserDTO userDTO = new UserDTO();
         userDTO.setName("testname");
         userDTO.setSurname("testsurname");
@@ -58,20 +57,18 @@ public class UserServiceUnitTest {
 
     @Test
     public void shouldReturnNullIfNullWhenReadUserByUsername() throws StatementException {
-        when(userRepository.getConnection()).thenReturn(connection);
-        when(userRepository.readByUsername(connection, "testusername")).thenReturn(null);
+        when(userRepository.findByUsername("testusername")).thenReturn(null);
         Assert.assertNull(userService.readByUsername("testusername"));
     }
 
     @Test
     public void shouldReturnRightUserDTOsListWhenGetUserBatch() throws StatementException {
-        when(userRepository.getConnection()).thenReturn(connection);
         User firstUser = new User();
         firstUser.setUsername("test1");
         User secondUser = new User();
         secondUser.setUsername("test2");
         List<User> userList = Arrays.asList(firstUser, secondUser);
-        when(userRepository.getUsers(connection, 5)).thenReturn(userList);
+        when(userRepository.findPage(5)).thenReturn(userList);
         UserDTO firstUserDTO = new UserDTO();
         firstUserDTO.setUsername("test1");
         UserDTO secondUserDTO = new UserDTO();
