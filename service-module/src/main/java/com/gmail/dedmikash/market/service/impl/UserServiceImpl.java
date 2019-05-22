@@ -8,36 +8,37 @@ import com.gmail.dedmikash.market.service.converter.UserConverter;
 import com.gmail.dedmikash.market.service.model.PageDTO;
 import com.gmail.dedmikash.market.service.model.UserDTO;
 import com.gmail.dedmikash.market.service.util.RandomService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserConverter userConverter;
     private final UserRepository userRepository;
     private final RandomService randomService;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final JavaMailSender javaMailSender;
 
     public UserServiceImpl(UserConverter userConverter,
                            UserRepository userRepository,
                            RandomService randomService,
                            PasswordEncoder passwordEncoder,
-                           RoleRepository roleRepository) {
+                           RoleRepository roleRepository,
+                           JavaMailSender javaMailSender) {
         this.userConverter = userConverter;
         this.userRepository = userRepository;
         this.randomService = randomService;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.javaMailSender = javaMailSender;
     }
 
     @Override
@@ -50,6 +51,11 @@ public class UserServiceImpl implements UserService {
         user.getProfile().setAddress("-");
         user.getProfile().setTelephone("-");
         userRepository.create(user);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getUsername());
+        message.setSubject("Welcome!");
+        message.setText("Welcome to our site! Your password: " + password + ".");
+        javaMailSender.send(message);
     }
 
     @Override
@@ -85,21 +91,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void changeUsersPasswordsByUsernames(Long[] ids) { //TODO email sending
-        Map<String, String> emails = new HashMap<>();
-        Map<Long, String> newPasswords = new HashMap<>();
+    public void changeUsersPasswordsById(Long[] ids) {
         for (Long id : ids) {
-            emails.put(userRepository.findById(id).getUsername(), randomService.getNewPassword());
-            newPasswords.put(id, randomService.getNewPassword());
-        }
-        for (Map.Entry<Long, String> entry : newPasswords.entrySet()) {
-            User user = userRepository.findById(entry.getKey());
-            user.setPassword(passwordEncoder.encode(entry.getValue()));
+            String password = randomService.getNewPassword();
+            User user = userRepository.findById(id);
+            user.setPassword(passwordEncoder.encode(password));
             userRepository.update(user);
-        }
-        for (Map.Entry<String, String> entry : emails.entrySet()) {
-            logger.info("Password of user with username: {} - was changed to: {}. Email has been sent."
-                    , entry.getKey(), entry.getValue());
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(user.getUsername());
+            message.setSubject("Changing password");
+            message.setText("Your new password: " + password + ".");
+            javaMailSender.send(message);
         }
     }
 

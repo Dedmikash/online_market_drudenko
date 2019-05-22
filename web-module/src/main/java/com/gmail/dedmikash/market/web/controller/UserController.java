@@ -81,7 +81,7 @@ public class UserController {
         if (ids == null) {
             return "redirect:/users";
         }
-        userService.changeUsersPasswordsByUsernames(ids);
+        userService.changeUsersPasswordsById(ids);
         logger.info("Changing passwords of users with ids: {} ", Arrays.toString(ids));
         return "redirect:/users";
     }

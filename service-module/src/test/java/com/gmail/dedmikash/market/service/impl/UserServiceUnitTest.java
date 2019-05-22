@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Arrays;
@@ -33,11 +34,14 @@ public class UserServiceUnitTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private RoleRepository roleRepository;
+    @Mock
+    private JavaMailSender javaMailSender;
     private UserService userService;
 
     @Before
     public void init() {
-        userService = new UserServiceImpl(userConverter, userRepository, randomService, passwordEncoder, roleRepository);
+        userService = new UserServiceImpl(userConverter, userRepository, randomService,
+                passwordEncoder, roleRepository, javaMailSender);
     }
 
     @Test
