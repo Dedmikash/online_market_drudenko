@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Copy Item</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
+        <a th:href="@{/articles}">Articles</a>   |
+        <a th:href="@{/profile}">Profile</a>   |
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<h1>Create item</h1>
+<form th:action="@{/items/{item_id}/copy(item_id=${item.id})}" th:object="${itemDTO}" method="post">
+    <table>
+        <tr>
+            <td>Item Name:</td>
+            <td><input type="text" th:field="${item.name}" th:value="${item.name}" placeholder="Potato"
+                       required maxlength="50"/>
+            </td>
+            <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
+        </tr>
+        <tr>
+            <td>Item Price:</td>
+            <td><input type="text" th:field="${item.price}" th:value="${item.price}"
+                       placeholder="105.325" required maxlength="15"/></td>
+            <td th:if="${#fields.hasErrors('price')}" th:errors="*{price}">Surname Error</td>
+        </tr>
+        <tr>
+            <td>Item Description:</td>
+            <td><textarea rows="10" cols="50" type="text" th:field="${item.text}" th:value="${item.text}"
+                          placeholder="Item Description" required maxlength="200"></textarea></td>
+            <td th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Address Error</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="submit">Create Item</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
+

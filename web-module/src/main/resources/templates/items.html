@@ -28,6 +28,7 @@
             <td th:text="${item.uniqueNumber}">...</td>
             <td th:text="${item.price}">...</td>
             <td><a th:href="@{/items/{item_id}(item_id=${item.id})}">More</a></td>
+            <td><a th:href="@{/items/{item_id}/copy(item_id=${item.id})}">Copy</a></td>
             <td>
                 <form th:action="@{/items/delete}" method="post">
                     <input hidden th:value="${item.id}" name="item_id">
