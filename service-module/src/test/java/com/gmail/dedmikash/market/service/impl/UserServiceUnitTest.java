@@ -2,7 +2,6 @@ package com.gmail.dedmikash.market.service.impl;
 
 import com.gmail.dedmikash.market.repository.RoleRepository;
 import com.gmail.dedmikash.market.repository.UserRepository;
-import com.gmail.dedmikash.market.repository.exception.StatementException;
 import com.gmail.dedmikash.market.repository.model.User;
 import com.gmail.dedmikash.market.service.UserService;
 import com.gmail.dedmikash.market.service.converter.UserConverter;
@@ -60,13 +59,13 @@ public class UserServiceUnitTest {
     }
 
     @Test
-    public void shouldReturnNullIfNullWhenReadUserByUsername() throws StatementException {
+    public void shouldReturnNullIfNullWhenReadUserByUsername() {
         when(userRepository.findByUsername("testusername")).thenReturn(null);
         Assert.assertNull(userService.readByUsername("testusername"));
     }
 
     @Test
-    public void shouldReturnRightUserDTOsListWhenGetUserBatch() throws StatementException {
+    public void shouldReturnRightUserDTOsListWhenGetUserBatch() {
         User firstUser = new User();
         firstUser.setUsername("test1");
         User secondUser = new User();
