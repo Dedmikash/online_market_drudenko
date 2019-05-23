@@ -85,6 +85,17 @@ public class ArticleServiceImpl implements ArticleService {
         return articleConverter.toDTO(articleRepository.findById(articleDTO.getId()));
     }
 
+    @Override
+    @Transactional
+    public ArticleDTO changeArticleInfo(Long articleId, ArticleDTO articleDTO) {
+        Article article = articleRepository.findById(articleId);
+        article.setName(articleDTO.getName());
+        article.setText(articleDTO.getText());
+        article.setCreated(new Timestamp(System.currentTimeMillis()));
+        articleRepository.update(article);
+        return articleConverter.toDTO(articleRepository.findById(articleId));
+    }
+
     private List<ArticleDTO> getPageOfArticles(int page, String sort, String order) {
         return articleRepository.getArticles(page, sort, order)
                 .stream()

@@ -19,4 +19,6 @@ public interface ArticleService {
     void deleteArticleById(Long id);
 
     ArticleDTO addCommentToArticle(ArticleDTO articleDTO, CommentDTO commentDTO);
+
+    ArticleDTO changeArticleInfo(Long articleId, ArticleDTO articleDTO);
 }

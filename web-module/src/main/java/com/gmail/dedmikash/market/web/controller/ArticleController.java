@@ -54,6 +54,7 @@ public class ArticleController {
     @GetMapping("/{article_id}/comments")
     public String getArticleById(@PathVariable(name = "article_id") Long article_id,
                                  CommentDTO commentDTO,
+                                 ArticleDTO articleDTO,
                                  Model model) {
         model.addAttribute("article", articleService.getArticleById(article_id));
         logger.info("Getting article with id {}", article_id);
@@ -114,6 +115,21 @@ public class ArticleController {
     public String deleteComment(@RequestParam(name = "comment_id") Long articleId) {
         commentService.deleteCommentById(articleId);
         logger.info("Deleting comment with id: {}", articleId);
+        return "redirect:/articles/{article_id}/comments";
+    }
+
+    @PostMapping("/{article_id}/change")
+    public String changeArticleInfo(@PathVariable(name = "article_id") Long article_id,
+                                    @Valid ArticleDTO articleDTO,
+                                    BindingResult result,
+                                    Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("article", articleService.getArticleById(article_id));
+            logger.info("Attempt to change article with not valid arguments: {}", articleDTO.getName());
+            return "comments";
+        }
+        articleService.changeArticleInfo(article_id, articleDTO);
+        logger.info("Created article: {}", articleDTO.getName());
         return "redirect:/articles/{article_id}/comments";
     }
 }

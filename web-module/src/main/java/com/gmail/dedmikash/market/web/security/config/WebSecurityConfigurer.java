@@ -39,15 +39,15 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/users/**", "/reviews/**")
                 .hasAuthority(ADMIN)
-                .antMatchers("/articles", "/articles/{\\d+}/comments", "/profile")
+                .antMatchers("/articles", "/articles/{\\d+}/comments")
                 .hasAnyAuthority(CUSTOMER, SALE)
-                .antMatchers("/articles/{\\d+}/comments/new")
+                .antMatchers("/articles/{\\d+}/comments/new", "/profile")
                 .hasAuthority(CUSTOMER)
-                .antMatchers("/articles/{\\d+}/delete", "/articles/new",
-                        "/articles/{\\d+}/comments/change_article", "articles/{\\d+}/comments/delete",
-                        "/items", "/items/{\\d+}","/items/{\\d+}/copy")
+                .antMatchers("/articles/delete", "/articles/new",
+                        "/articles/{\\d+}/change", "articles/{\\d+}/comments/delete",
+                        "/items", "/items/{\\d+}", "/items/{\\d+}/copy", "/items/delete")
                 .hasAuthority(SALE)
-                .antMatchers("/403", "/", "/login", "/login?hasNoRole=1")
+                .antMatchers("/403", "/", "/login")
                 .permitAll()
                 .and()
                 .formLogin()

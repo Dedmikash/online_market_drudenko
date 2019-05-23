@@ -1,12 +1,15 @@
 package com.gmail.dedmikash.market.service.model;
 
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ArticleDTO {
     private Long id;
+    @Size(min = 1, max = 100)
     private String name;
     private UserDTO userDTO;
+    @Size(min = 1, max = 1000)
     private String text;
     private String created;
     private Long views;

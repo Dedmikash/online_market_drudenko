@@ -11,11 +11,11 @@
         Role: <span sec:authentication="principal.authorities"></span>   |
         <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
         <a th:href="@{/articles}">Articles</a>   |
-        <a th:href="@{/profile}">Profile</a>   |
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
-<h1>Create item</h1>
+<h1>Create Item</h1>
 <form th:action="@{/items/{item_id}/copy(item_id=${item.id})}" th:object="${itemDTO}" method="post">
     <table>
         <tr>
@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td>Item Description:</td>
-            <td><textarea rows="10" cols="50" type="text" th:field="${item.text}" th:value="${item.text}"
+            <td><textarea rows="10" cols="50" th:field="${item.text}" th:value="${item.text}"
                           placeholder="Item Description" required maxlength="200"></textarea></td>
             <td th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Address Error</td>
         </tr>

@@ -11,7 +11,7 @@
         Role: <span sec:authentication="principal.authorities"></span>   |
         <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
         <a th:href="@{/articles}">Articles</a>   |
-        <a th:href="@{/profile}">Profile</a>   |
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
@@ -21,6 +21,34 @@
     <h3 th:text="'Created: '+${article.created}+' Views: '+${article.views}">...</h3>
     <p th:text="${article.text}">...</p>
     <hr/>
+    <div sec:authorize="hasAuthority('SALE USER')">
+        <form th:action="@{/articles/{article_id}/change(article_id=${article.id})}" th:object="${articleDTO}"
+              method="post">
+            <table>
+                <tr>
+                    <td>Name:</td>
+                    <td><input type="text" th:field="*{name}" placeholder="Article New Name" required maxlength="100"/>
+                    </td>
+                    <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
+                </tr>
+                <tr>
+                    <td>Text:</td>
+                    <td>
+                <textarea rows="10" cols="50" th:field="*{text}" placeholder="Type new article text here" required
+                          maxlength="1000"></textarea>
+                    </td>
+                    <td th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Text Error</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <button type="submit">Change Article Info</button>
+                    </td>
+                </tr>
+            </table>
+            <hr/>
+        </form>
+    </div>
     <h3>Comments:</h3>
     <div sec:authorize="hasAuthority('CUSTOMER USER')">
         <form th:action="@{/articles/{article_id}/comments/new(article_id=${article.id})}" th:object="${commentDTO}"
