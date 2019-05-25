@@ -50,6 +50,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(hashedPassword);
         user.getProfile().setAddress("-");
         user.getProfile().setTelephone("-");
+        user.getProfile().setUser(user);
         userRepository.create(user);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(user.getUsername());

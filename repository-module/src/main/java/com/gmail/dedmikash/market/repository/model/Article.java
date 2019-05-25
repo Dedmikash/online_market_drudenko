@@ -110,10 +110,10 @@ public class Article {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Article article = (Article) o;
-        return id.equals(article.id) &&
-                name.equals(article.name) &&
-                created.equals(article.created) &&
-                views.equals(article.views);
+        return Objects.equals(id, article.id) &&
+                Objects.equals(name, article.name) &&
+                Objects.equals(created, article.created) &&
+                Objects.equals(views, article.views);
     }
 
     @Override

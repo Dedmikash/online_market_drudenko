@@ -9,7 +9,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -24,7 +23,7 @@ public class Profile {
     @GenericGenerator(name = "generator", strategy = "foreign",
             parameters = @Parameter(name = "property", value = "user"))
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "generator")
     @Column(updatable = false, nullable = false, name = "user_id")
     private Long userID;
     private String address;
