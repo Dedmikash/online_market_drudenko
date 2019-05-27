@@ -1,11 +1,8 @@
 package com.gmail.dedmikash.market.repository;
 
-import java.sql.Connection;
 import java.util.List;
 
 public interface GenericRepository<I, T> {
-    Connection getConnection();
-
     void create(T entity);
 
     void update(T entity);
@@ -15,4 +12,12 @@ public interface GenericRepository<I, T> {
     T findById(I id);
 
     List<T> findAll();
+
+    List<T> findEntitiesWithLimit(int offset, int limit);
+
+    List<T> findPage(int page);
+
+    int getCountOfEntities();
+
+    int getCountOfPages();
 }

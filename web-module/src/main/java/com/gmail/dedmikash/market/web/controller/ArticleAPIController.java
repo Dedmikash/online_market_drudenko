@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/articles")
 public class ArticleAPIController {
-    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ArticleAPIController.class);
     private final ArticleService articleService;
     private final ArticleValidator articleValidator;
 
@@ -66,8 +66,8 @@ public class ArticleAPIController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteArticle(@PathVariable("id") Long id) {
-        articleService.delete(id);
+        articleService.deleteArticleById(id);
         logger.info("Article with id: {} -was soft deleted with REST API");
-        return new ResponseEntity(HttpStatus.OK); //TODO
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

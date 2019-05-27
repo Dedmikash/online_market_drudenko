@@ -1,6 +1,7 @@
 package com.gmail.dedmikash.market.web.controller;
 
 import com.gmail.dedmikash.market.service.ArticleService;
+import com.gmail.dedmikash.market.service.CommentService;
 import com.gmail.dedmikash.market.service.model.AppUserPrincipal;
 import com.gmail.dedmikash.market.service.model.ArticleDTO;
 import com.gmail.dedmikash.market.service.model.CommentDTO;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,9 +29,12 @@ import javax.validation.Valid;
 public class ArticleController {
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     private final ArticleService articleService;
+    private final CommentService commentService;
 
-    public ArticleController(ArticleService articleService) {
+    public ArticleController(ArticleService articleService,
+                             CommentService commentService) {
         this.articleService = articleService;
+        this.commentService = commentService;
     }
 
     @GetMapping
@@ -49,13 +54,14 @@ public class ArticleController {
     @GetMapping("/{article_id}/comments")
     public String getArticleById(@PathVariable(name = "article_id") Long article_id,
                                  CommentDTO commentDTO,
+                                 ArticleDTO articleDTO,
                                  Model model) {
         model.addAttribute("article", articleService.getArticleById(article_id));
         logger.info("Getting article with id {}", article_id);
         return "comments";
     }
 
-    @PostMapping("/{article_id}/comments")
+    @PostMapping("/{article_id}/comments/new")
     public String addCommentToArticleWithId(@PathVariable(name = "article_id") Long article_id,
                                             @Valid CommentDTO commentDTO,
                                             BindingResult result,
@@ -71,9 +77,59 @@ public class ArticleController {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         userDTO.setId(((AppUserPrincipal) userDetails).getId());
         commentDTO.setUserDTO(userDTO);
-        article = articleService.addCommentToArticle(article, commentDTO);
+        articleService.addCommentToArticle(article, commentDTO);
         logger.info("Added comment: {} - to article with id: {}", commentDTO.getText(), article_id);
-        model.addAttribute("article", article);
-        return "comments";
+        return "redirect:/articles/{article_id}/comments";
+    }
+
+    @GetMapping("/new")
+    public String createArticlePage(ArticleDTO articleDTO) {
+        return "newarticle";
+    }
+
+    @PostMapping("/new")
+    public String createArticle(@ModelAttribute ArticleDTO articleDTO,
+                                BindingResult result) {
+        if (result.hasErrors()) {
+            logger.info("Attempt to add not valid article: {}", articleDTO.getName());
+            return "newarticle";
+        }
+        UserDTO userDTO = new UserDTO();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        userDTO.setId(((AppUserPrincipal) userDetails).getId());
+        articleDTO.setUserDTO(userDTO);
+        articleService.saveArticle(articleDTO);
+        logger.info("Created article: {}", articleDTO.getName());
+        return "redirect:/articles";
+    }
+
+    @PostMapping("/delete")
+    public String deleteArticle(@RequestParam(name = "article_id") Long articleId) {
+        articleService.deleteArticleById(articleId);
+        logger.info("Deleting article with id: {}", articleId);
+        return "redirect:/articles";
+    }
+
+    @PostMapping("/{article_id}/comments/delete")
+    public String deleteComment(@RequestParam(name = "comment_id") Long articleId) {
+        commentService.deleteCommentById(articleId);
+        logger.info("Deleting comment with id: {}", articleId);
+        return "redirect:/articles/{article_id}/comments";
+    }
+
+    @PostMapping("/{article_id}/change")
+    public String changeArticleInfo(@PathVariable(name = "article_id") Long article_id,
+                                    @Valid ArticleDTO articleDTO,
+                                    BindingResult result,
+                                    Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("article", articleService.getArticleById(article_id));
+            logger.info("Attempt to change article with not valid arguments: {}", articleDTO.getName());
+            return "comments";
+        }
+        articleService.changeArticleInfo(article_id, articleDTO);
+        logger.info("Created article: {}", articleDTO.getName());
+        return "redirect:/articles/{article_id}/comments";
     }
 }

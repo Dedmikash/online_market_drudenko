@@ -6,6 +6,11 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
+
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_DATE_EMPTY;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_DATE_PATTERN_NOT_VALID;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_ID_NOT_NULL;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_NAME_EMPTY;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_NAME_SIZE;
@@ -46,6 +51,13 @@ public class ArticleValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "text", ARTICLE_TEXT_EMPTY);
         if (article.getText().length() > ARTICLE_TEXT_SIZE) {
             errors.rejectValue("text", "", ARTICLE_TEXT_SIZE_NOT_VALID);
+        }
+
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "created", ARTICLE_DATE_EMPTY);
+        try {
+            LocalDateTime.parse(article.getCreated());
+        } catch (DateTimeParseException e) {
+            errors.rejectValue("created", "", ARTICLE_DATE_PATTERN_NOT_VALID);
         }
 
         if (article.getViews() != null) {

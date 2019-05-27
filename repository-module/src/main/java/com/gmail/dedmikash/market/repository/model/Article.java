@@ -6,7 +6,6 @@ import org.hibernate.annotations.Where;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -27,6 +26,7 @@ import java.util.Objects;
 public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false)
     private Long id;
     private String name;
     @ManyToOne
@@ -35,8 +35,7 @@ public class Article {
     private String text;
     private Timestamp created;
     private Long views;
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id")
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("created DESC")
     private List<Comment> comments = new ArrayList<>();
     @Column(name = "deleted")
@@ -111,10 +110,10 @@ public class Article {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Article article = (Article) o;
-        return id.equals(article.id) &&
-                name.equals(article.name) &&
-                created.equals(article.created) &&
-                views.equals(article.views);
+        return Objects.equals(id, article.id) &&
+                Objects.equals(name, article.name) &&
+                Objects.equals(created, article.created) &&
+                Objects.equals(views, article.views);
     }
 
     @Override

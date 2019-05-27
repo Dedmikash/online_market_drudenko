@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Item</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
+        <a th:href="@{/articles}">Articles</a>   |
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<th:block th:object="${item}">
+    <h1 th:text="${item.name}">...</h1>
+    <h3 th:text="'Unique number: '+${item.uniqueNumber}">...</h3>
+    <h3 th:text="'Price: '+${item.price}">...</h3>
+    <p th:text="${item.text}">...</p>
+</th:block>
+</body>
+</html>
+

@@ -64,11 +64,11 @@ public class UserController {
         if (changes == null) {
             return "redirect:/users";
         }
-        Map<Long, String> validChanges = new HashMap<>();
+        Map<Long, Long> validChanges = new HashMap<>();
         for (String change : changes) {
             String[] elements = change.split(",");
             if (!elements[1].equals(elements[2])) {
-                validChanges.put(Long.parseLong(elements[0]), elements[2]);
+                validChanges.put(Long.parseLong(elements[0]), Long.parseLong(elements[2]));
             }
         }
         userService.changeUsersRolesById(validChanges);
@@ -81,7 +81,7 @@ public class UserController {
         if (ids == null) {
             return "redirect:/users";
         }
-        userService.changeUsersPasswordsByUsernames(ids);
+        userService.changeUsersPasswordsById(ids);
         logger.info("Changing passwords of users with ids: {} ", Arrays.toString(ids));
         return "redirect:/users";
     }

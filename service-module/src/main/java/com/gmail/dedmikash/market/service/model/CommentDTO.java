@@ -9,7 +9,7 @@ import static com.gmail.dedmikash.market.service.constant.ValidationMessages.COM
 
 public class CommentDTO {
     private Long id;
-    private Long articleID;
+    private ArticleDTO articleDTO;
     private UserDTO userDTO;
     private Timestamp created;
     @NotNull(message = COMMENT_EMPTY)
@@ -25,12 +25,12 @@ public class CommentDTO {
         this.id = id;
     }
 
-    public Long getArticleID() {
-        return articleID;
+    public ArticleDTO getArticleDTO() {
+        return articleDTO;
     }
 
-    public void setArticleID(Long articleID) {
-        this.articleID = articleID;
+    public void setArticleDTO(ArticleDTO articleDTO) {
+        this.articleDTO = articleDTO;
     }
 
     public UserDTO getUserDTO() {

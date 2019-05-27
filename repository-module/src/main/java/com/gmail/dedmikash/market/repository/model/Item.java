@@ -5,32 +5,26 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import java.sql.Timestamp;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 @Table
-@SQLDelete(sql = "UPDATE comment SET deleted = 1 WHERE id = ?")
+@SQLDelete(sql = "UPDATE item SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted = 0")
-public class Comment {
+public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "article_id", nullable = false)
-    private Article article;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-    private Timestamp created;
+    private String name;
+    @Column(name = "unique_number")
+    private String uniqueNumber;
+    private BigDecimal price;
     private String text;
     @Column(name = "deleted")
     private boolean isDeleted;
@@ -43,28 +37,28 @@ public class Comment {
         this.id = id;
     }
 
-    public Article getArticle() {
-        return article;
+    public String getName() {
+        return name;
     }
 
-    public void setArticle(Article article) {
-        this.article = article;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public User getUser() {
-        return user;
+    public String getUniqueNumber() {
+        return uniqueNumber;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUniqueNumber(String uniqueNumber) {
+        this.uniqueNumber = uniqueNumber;
     }
 
-    public Timestamp getCreated() {
-        return created;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setCreated(Timestamp created) {
-        this.created = created;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public String getText() {
@@ -87,21 +81,14 @@ public class Comment {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Comment comment = (Comment) o;
-        return Objects.equals(id, comment.id) &&
-                Objects.equals(created, comment.created) &&
-                Objects.equals(text, comment.text);
+        Item item = (Item) o;
+        return Objects.equals(id, item.id) &&
+                Objects.equals(name, item.name) &&
+                Objects.equals(uniqueNumber, item.uniqueNumber);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, created, text);
-    }
-
-    @Override
-    public String toString() {
-        return "Comment{" +
-                "text='" + text + '\'' +
-                '}';
+        return Objects.hash(id, name, uniqueNumber);
     }
 }

@@ -1,8 +1,10 @@
 package com.gmail.dedmikash.market.service.converter.impl;
 
+import com.gmail.dedmikash.market.repository.model.Article;
 import com.gmail.dedmikash.market.repository.model.Comment;
 import com.gmail.dedmikash.market.service.converter.CommentConverter;
 import com.gmail.dedmikash.market.service.converter.UserConverter;
+import com.gmail.dedmikash.market.service.model.ArticleDTO;
 import com.gmail.dedmikash.market.service.model.CommentDTO;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +20,9 @@ public class CommentConverterImpl implements CommentConverter {
     public CommentDTO toDTO(Comment comment) {
         CommentDTO commentDTO = new CommentDTO();
         commentDTO.setId(comment.getId());
-        commentDTO.setArticleID(comment.getArticleID());
+        ArticleDTO articleDTO = new ArticleDTO();
+        articleDTO.setId(comment.getArticle().getId());
+        commentDTO.setArticleDTO(articleDTO);
         if (comment.getUser() != null) {
             commentDTO.setUserDTO(userConverter.toDTO(comment.getUser()));
         } else {
@@ -34,7 +38,9 @@ public class CommentConverterImpl implements CommentConverter {
     public Comment fromDTO(CommentDTO commentDTO) {
         Comment comment = new Comment();
         comment.setId(commentDTO.getId());
-        comment.setArticleID(commentDTO.getArticleID());
+        Article article = new Article();
+        article.setId(commentDTO.getArticleDTO().getId());
+        comment.setArticle(article);
         if (commentDTO.getUserDTO() != null) {
             comment.setUser(userConverter.fromDTO(commentDTO.getUserDTO()));
         } else {

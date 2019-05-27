@@ -23,14 +23,15 @@ import java.util.Objects;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(updatable = false, nullable = false)
     private Long id;
     private String username;
     private String password;
     private String name;
     private String surname;
     private String patronymic;
-    @ManyToOne
-    @JoinColumn(name = "role_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Profile profile;

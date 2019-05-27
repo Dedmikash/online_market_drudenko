@@ -2,7 +2,6 @@ package com.gmail.dedmikash.market.service;
 
 import com.gmail.dedmikash.market.service.model.PageDTO;
 import com.gmail.dedmikash.market.service.model.UserDTO;
-import org.springframework.ui.Model;
 
 import java.util.Map;
 
@@ -15,11 +14,11 @@ public interface UserService {
 
     void deleteUsersByIds(Long[] ids);
 
-    void changeUsersPasswordsByUsernames(Long[] ids);
+    void changeUsersPasswordsById(Long[] ids);
 
-    void changeUsersRolesById(Map<Long, String> changes);
+    void changeUsersRolesById(Map<Long, Long> changes);
 
     UserDTO getUserById(Long id);
 
-    String updateUserProfileAndPassword(Model model, Long id, UserDTO userDTO, String oldPassword, String newPassword);
+    int updateUserProfileAndPassword(UserDTO userDTO, String oldPassword, String newPassword);
 }

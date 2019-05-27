@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import static com.gmail.dedmikash.market.web.constant.RolesConstants.ADMIN;
 import static com.gmail.dedmikash.market.web.constant.RolesConstants.CUSTOMER;
+import static com.gmail.dedmikash.market.web.constant.RolesConstants.SALE;
 
 @Configuration
 @Order(2)
@@ -38,9 +39,15 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/users/**", "/reviews/**")
                 .hasAuthority(ADMIN)
-                .antMatchers("/articles/**", "/profile")
+                .antMatchers("/articles", "/articles/{\\d+}/comments")
+                .hasAnyAuthority(CUSTOMER, SALE)
+                .antMatchers("/articles/{\\d+}/comments/new", "/profile")
                 .hasAuthority(CUSTOMER)
-                .antMatchers("/403", "/", "/login", "/login?hasNoRole=1")
+                .antMatchers("/articles/delete", "/articles/new",
+                        "/articles/{\\d+}/change", "articles/{\\d+}/comments/delete",
+                        "/items", "/items/{\\d+}", "/items/{\\d+}/copy", "/items/delete")
+                .hasAuthority(SALE)
+                .antMatchers("/403", "/", "/login")
                 .permitAll()
                 .and()
                 .formLogin()

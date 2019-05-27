@@ -53,6 +53,20 @@ public class ProfileController {
             model.addAttribute("user", userService.getUserById(id));
             return "profile";
         }
-        return userService.updateUserProfileAndPassword(model, id, userDTO, oldPassword, newPassword);
+        switch (userService.updateUserProfileAndPassword(userDTO, oldPassword, newPassword)) {
+            case 1:
+                model.addAttribute("user", userService.getUserById(id));
+                model.addAttribute("password", "Password successfully changed");
+                return "profile";
+            case 0:
+                model.addAttribute("user", userService.getUserById(id));
+                model.addAttribute("password", "Wrong password");
+                return "profile";
+            case -1:
+                model.addAttribute("user", userService.getUserById(id));
+                return "profile";
+            default:
+                return "#";
+        }
     }
 }

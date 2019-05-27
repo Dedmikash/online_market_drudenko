@@ -16,7 +16,9 @@ public interface ArticleService {
 
     PageDTO<ArticleDTO> getArticles(int page, String sort, String order);
 
-    void delete(Long id);
+    void deleteArticleById(Long id);
 
     ArticleDTO addCommentToArticle(ArticleDTO articleDTO, CommentDTO commentDTO);
+
+    ArticleDTO changeArticleInfo(Long articleId, ArticleDTO articleDTO);
 }

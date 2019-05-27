@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Create Article</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
+        <a th:href="@{/articles}">Articles</a>   |
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<h1>Create Article</h1>
+<form th:action="@{/articles/new}" th:object="${articleDTO}" method="post">
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td><input type="text" th:field="*{name}" placeholder="Article Name" required maxlength="100"/></td>
+            <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
+        </tr>
+        <tr>
+            <td>Date:</td>
+            <td><input type="datetime-local" th:field="*{created}" required/></td>
+            <td th:if="${#fields.hasErrors('created')}" th:errors="*{created}">Created Error</td>
+        </tr>
+        <tr>
+            <td>Text:</td>
+            <td>
+                <textarea rows="10" cols="50" th:field="*{text}" placeholder="Type your text here" required
+                          maxlength="1000"></textarea>
+            </td>
+            <td th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Text Error</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <button type="submit">Create Article</button>
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>
+

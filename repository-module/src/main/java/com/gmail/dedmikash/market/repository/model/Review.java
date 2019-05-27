@@ -1,21 +1,36 @@
 package com.gmail.dedmikash.market.repository.model;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.sql.Timestamp;
 import java.util.Objects;
 
+@Entity
+@Table
+@SQLDelete(sql = "UPDATE review SET deleted = 1 WHERE id = ?")
+@Where(clause = "deleted = 0")
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
     private String text;
     private Timestamp created;
+    @Column(name = "visible")
     private boolean isVisible;
+    @Column(name = "deleted")
     private boolean isDeleted;
 
     public Review() {
