@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Order</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <a th:href="@{/items}">Items</a>|
+        <a th:href="@{/orders}">Orders</a>   |
+        <a th:href="@{/articles}">Articles</a>   |
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/reviews/new}">Reviews</a>|</span>
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<h1>Order</h1>
+<th:block th:object="${order}">
+    <table>
+        <tr>
+            <td>Unique Number:</td>
+            <td><span th:text="${order.uniqueNumber}">...</span></td>
+        </tr>
+        <td>Status:</td>
+        <td><span th:text="${order.status}">...</span></td>
+        <tr>
+            <td>Item Name:</td>
+            <td><span th:text="${order.itemDTO.name}">...</span></td>
+        </tr>
+        <tr>
+            <td>Identification:</td>
+            <td><span th:text="${order.userDTO.name}+' '+${order.userDTO.surname}">...</span></td>
+        </tr>
+        <tr>
+            <td>Telephone:</td>
+            <td><span th:text="${order.userDTO.profileDTO.telephone}">...</span></td>
+        </tr>
+        <tr>
+            <td>Quantity:</td>
+            <td><span th:text="${order.quantity}">...</span></td>
+        </tr>
+        <tr>
+            <td>Total Price:</td>
+            <td><span th:text="${order.price}">...</span></td>
+        </tr>
+    </table>
+</th:block>
+<form method="post" th:action="@{/orders/order/change}">
+    <input name="order_id" th:value="${order.id}" type="hidden">
+    <select name="new_status">
+        <option th:each="status : ${T(com.gmail.dedmikash.market.repository.enums.StatusEnum).values()}"
+                th:text="${status}"
+                th:value="${status}">
+        </option>
+    </select>
+    <button type="submit">Change Status</button>
+</form>
+</body>
+</html>
+

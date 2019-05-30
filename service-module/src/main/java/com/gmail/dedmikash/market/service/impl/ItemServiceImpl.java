@@ -55,6 +55,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public PageDTO<ItemDTO> getItems(int page) {
         PageDTO<ItemDTO> items = new PageDTO<>();
         List<ItemDTO> itemDTOS = getPageOfItems(page);

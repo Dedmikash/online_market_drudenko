@@ -3,36 +3,41 @@ package com.gmail.dedmikash.market.repository.model;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table
-@SQLDelete(sql = "UPDATE item SET deleted = 1 WHERE id = ?")
+@Table(name = "`order`")
+@SQLDelete(sql = "UPDATE `order` SET deleted = 1 WHERE id = ?")
 @Where(clause = "deleted = 0")
-public class Item {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false, nullable = false)
     private Long id;
-    private String name;
     @Column(name = "unique_number")
     private String uniqueNumber;
+    @Column(name = "status")
+    private String status;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
+    private Item item;
+    private int quantity;
     private BigDecimal price;
-    private String text;
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Order> orders = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+    private Timestamp created;
     @Column(name = "deleted")
     private boolean isDeleted;
 
@@ -44,20 +49,36 @@ public class Item {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getUniqueNumber() {
         return uniqueNumber;
     }
 
     public void setUniqueNumber(String uniqueNumber) {
         this.uniqueNumber = uniqueNumber;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
     public BigDecimal getPrice() {
@@ -68,20 +89,20 @@ public class Item {
         this.price = price;
     }
 
-    public String getText() {
-        return text;
+    public User getUser() {
+        return user;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public List<Order> getOrders() {
-        return orders;
+    public Timestamp getCreated() {
+        return created;
     }
 
-    public void setOrders(List<Order> orders) {
-        this.orders = orders;
+    public void setCreated(Timestamp created) {
+        this.created = created;
     }
 
     public boolean isDeleted() {
@@ -96,14 +117,14 @@ public class Item {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Item item = (Item) o;
-        return Objects.equals(id, item.id) &&
-                Objects.equals(name, item.name) &&
-                Objects.equals(uniqueNumber, item.uniqueNumber);
+        Order order = (Order) o;
+        return Objects.equals(id, order.id) &&
+                Objects.equals(item.getId(), order.item.getId()) &&
+                Objects.equals(user.getId(), order.user.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, uniqueNumber);
+        return Objects.hash(id, item.getId(), user.getId());
     }
 }

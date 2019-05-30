@@ -4,7 +4,6 @@ public class ProfileDTO {
     private Long userID;
     private String address;
     private String telephone;
-    private boolean isDeleted;
 
     public Long getUserID() {
         return userID;
@@ -28,13 +27,5 @@ public class ProfileDTO {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
     }
 }

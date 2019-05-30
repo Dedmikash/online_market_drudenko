@@ -1,6 +1,7 @@
 package com.gmail.dedmikash.market.service.impl;
 
 import com.gmail.dedmikash.market.repository.ReviewRepository;
+import com.gmail.dedmikash.market.repository.UserRepository;
 import com.gmail.dedmikash.market.repository.model.Review;
 import com.gmail.dedmikash.market.service.ReviewService;
 import com.gmail.dedmikash.market.service.converter.ReviewConverter;
@@ -9,6 +10,7 @@ import com.gmail.dedmikash.market.service.model.ReviewDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +21,26 @@ import java.util.stream.Collectors;
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewConverter reviewConverter;
     private final ReviewRepository reviewRepository;
+    private final UserRepository userRepository;
 
     public ReviewServiceImpl(ReviewConverter reviewConverter,
-                             ReviewRepository reviewRepository) {
+                             ReviewRepository reviewRepository,
+                             UserRepository userRepository) {
         this.reviewConverter = reviewConverter;
         this.reviewRepository = reviewRepository;
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    @Transactional
+    public ReviewDTO saveReview(ReviewDTO reviewDTO, Long userId) {
+        Review review = new Review();
+        review.setText(reviewDTO.getText());
+        review.setCreated(new Timestamp(System.currentTimeMillis()));
+        review.setUser(userRepository.findById(userId));
+        review.setVisible(true);
+        reviewRepository.create(review);
+        return reviewConverter.toDTO(review);
     }
 
     @Override

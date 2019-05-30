@@ -1,20 +1,25 @@
 package com.gmail.dedmikash.market.service.model;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_NAME_SIZE;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.ARTICLE_TEXT_SIZE;
+
 public class ArticleDTO {
     private Long id;
-    @Size(min = 1, max = 100)
+    @NotNull
+    @Size(min = 1, max = ARTICLE_NAME_SIZE)
     private String name;
     private UserDTO userDTO;
-    @Size(min = 1, max = 1000)
+    @NotNull
+    @Size(min = 1, max = ARTICLE_TEXT_SIZE)
     private String text;
     private String created;
     private Long views;
     private List<CommentDTO> comments = new ArrayList<>();
-    private boolean isDeleted;
 
     public Long getId() {
         return id;
@@ -70,14 +75,6 @@ public class ArticleDTO {
 
     public void setComments(List<CommentDTO> comments) {
         this.comments = comments;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
     }
 
     @Override

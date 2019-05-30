@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Articles</title>
 </head>
@@ -9,9 +9,11 @@
     <span sec:authorize="isAuthenticated()">
         Logged user : <span sec:authentication="name"></span>   |
         Role: <span sec:authentication="principal.authorities"></span>   |
-        <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
+        <a th:href="@{/items}">Items</a>|
+        <a th:href="@{/orders}">Orders</a>   |
         <a th:href="@{/articles}">Articles</a>   |
         <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/reviews/new}">Reviews</a>|</span>
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
@@ -32,14 +34,14 @@ Sort by:
     <p th:text="${article.text}">...</p>
     <a th:href="@{/articles/{article_id}/comments(article_id=${article.id})}">More</a><br>
     <div sec:authorize="hasAuthority('SALE USER')">
-        <form th:action="@{/articles/delete}" method="post">
-            <input hidden th:value="${article.id}" name="article_id">
+        <form method="post" th:action="@{/articles/delete}">
+            <input hidden name="article_id" th:value="${article.id}">
             <input type="submit" value="Delete Article">
         </form>
     </div>
     <hr/>
 </th:block>
-<th:block th:if="${pages}>0" th:each="i:${#numbers.sequence(1,pages)}">
+<th:block th:each="i:${#numbers.sequence(1,pages)}" th:if="${pages}>0">
     <a th:href="@{/articles?page={page}&sort={sort}&order={order}(page=${i},sort=${sort},order=${order})}">
         <span th:text="${i}">...</span></a>
 </th:block>

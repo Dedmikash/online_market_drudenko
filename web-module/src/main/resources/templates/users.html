@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Users</title>
 </head>
@@ -9,14 +9,13 @@
     <span sec:authorize="isAuthenticated()">
         Logged user : <span sec:authentication="name"></span>   |
         Role: <span sec:authentication="principal.authorities"></span>   |
-        <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
-        <a th:href="@{/articles}">Articles</a>   |
-        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
+        <a th:href="@{/users}">Users</a>|
+        <a th:href="@{/reviews}">Reviews</a>|
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
 <h1>Users List</h1>
-<form th:action="@{/users/change_pass}" method="post">
+<form method="post" th:action="@{/users/change_pass}">
     <table>
         <tr>
             <th>Name</th>
@@ -36,18 +35,18 @@
                 <td th:if="${user.blocked}" th:text="${user.roleDTO.name}">...</td>
                 <td th:unless="${user.blocked}">
                     <select class="dropdown" name="change_role">
-                        <option th:each="role : ${roles}" th:if="${role.name} == ${user.roleDTO.name}" selected
+                        <option selected th:each="role : ${roles}" th:if="${role.name} == ${user.roleDTO.name}"
                                 th:text="${role.name}"
                                 th:value="${user.id}+','+${user.roleDTO.id}+','+${role.id}"></option>
-                        <option th:each="role : ${roles}" th:unless="${role.name} == ${user.roleDTO.name}"
-                                th:text="${role.name}"
+                        <option th:each="role : ${roles}" th:text="${role.name}"
+                                th:unless="${role.name} == ${user.roleDTO.name}"
                                 th:value="${user.id}+','+${user.roleDTO.id}+','+${role.id}"></option>
                     </select>
                 </td>
-                <td th:if="${user.blocked}" align="center"><input type="checkbox" disabled="disabled"/></td>
-                <td th:unless="${user.blocked}" align="center"><input type="checkbox" name="delete"
-                                                                      th:value="${user.id}"/></td>
-                <td align="center"><input type="checkbox" name="change_pass" th:value="${user.id}"/></td>
+                <td align="center" th:if="${user.blocked}"><input disabled="disabled" type="checkbox"/></td>
+                <td align="center" th:unless="${user.blocked}"><input name="delete" th:value="${user.id}"
+                                                                      type="checkbox"/></td>
+                <td align="center"><input name="change_pass" th:value="${user.id}" type="checkbox"/></td>
             </tr>
         </th:block>
     </table>
@@ -55,12 +54,11 @@
         <a th:href="@{/users?page={page}(page=${i})}"><span th:text="${i}">...</span></a>
     </th:block>
     <br>
-    <input type="submit" value="Change roles" th:formaction="@{/users/change_roles}">
-    <input type="submit" value="Delete selected" th:formaction="@{/users/delete}">
+    <input th:formaction="@{/users/change_roles}" type="submit" value="Change roles">
+    <input th:formaction="@{/users/delete}" type="submit" value="Delete selected">
     <input type="submit" value="Change selected passwords">
 </form>
-<a th:href="@{/users/new}">Add user</a><br>
-<a th:href="@{/reviews}">Site reviews</a>
+<a th:href="@{/users/new}">Create user</a><br>
 </body>
 </html>
 

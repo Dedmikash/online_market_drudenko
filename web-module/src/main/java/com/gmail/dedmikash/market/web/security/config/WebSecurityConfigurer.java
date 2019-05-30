@@ -37,15 +37,16 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/users/**", "/reviews/**")
+                .antMatchers("/users/**", "/reviews")
                 .hasAuthority(ADMIN)
-                .antMatchers("/articles", "/articles/{\\d+}/comments")
+                .antMatchers("/articles", "/articles/{\\d+}/comments", "/items", "/orders", "/items/{\\d+}")
                 .hasAnyAuthority(CUSTOMER, SALE)
-                .antMatchers("/articles/{\\d+}/comments/new", "/profile")
+                .antMatchers("/articles/{\\d+}/comments/new", "/profile", "/items/order",
+                        "/reviews/new")
                 .hasAuthority(CUSTOMER)
-                .antMatchers("/articles/delete", "/articles/new",
-                        "/articles/{\\d+}/change", "articles/{\\d+}/comments/delete",
-                        "/items", "/items/{\\d+}", "/items/{\\d+}/copy", "/items/delete")
+                .antMatchers("/articles/delete", "/articles/new", "/articles/{\\d+}/change",
+                        "articles/{\\d+}/comments/delete", "/items/{\\d+}/copy", "/items/delete",
+                        "/orders/order", "/orders/order/change")
                 .hasAuthority(SALE)
                 .antMatchers("/403", "/", "/login")
                 .permitAll()

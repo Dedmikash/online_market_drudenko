@@ -7,19 +7,19 @@ import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.LATIN_REGEX;
-import static com.gmail.dedmikash.market.service.constant.ValidationMessages.NAME_PATTERN_NOT_VALID;
-import static com.gmail.dedmikash.market.service.constant.ValidationMessages.PHONE_NUMBER_REGEX;
-import static com.gmail.dedmikash.market.service.constant.ValidationMessages.SURNAME_PATTERN_NOT_VALID;
-import static com.gmail.dedmikash.market.service.constant.ValidationMessages.TELEPHONE_PATTERN_NOT_VALID;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.TELEPHONE_NUMBER_REGEX;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_ADDRESS_SIZE;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_ADDRESS_SIZE_NOT_VALID;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_NAME_EMPTY;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_NAME_PATTERN_NOT_VALID;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_NAME_SIZE;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_NAME_SIZE_NOT_VALID;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_PATRONYMIC_EMPTY;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_SURNAME_EMPTY;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_SURNAME_PATTERN_NOT_VALID;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_SURNAME_SIZE;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_SURNAME_SIZE_NOT_VALID;
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_TELEPHONE_PATTERN_NOT_VALID;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_TELEPHONE_SIZE;
 import static com.gmail.dedmikash.market.service.constant.ValidationMessages.USER_TELEPHONE_SIZE_NOT_VALID;
 
@@ -39,7 +39,7 @@ public class ProfileValidator implements Validator {
             errors.rejectValue("name", "", USER_NAME_SIZE_NOT_VALID);
         }
         if (!user.getName().matches(LATIN_REGEX)) {
-            errors.rejectValue("name", "", NAME_PATTERN_NOT_VALID);
+            errors.rejectValue("name", "", USER_NAME_PATTERN_NOT_VALID);
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "surname", USER_SURNAME_EMPTY);
@@ -47,7 +47,7 @@ public class ProfileValidator implements Validator {
             errors.rejectValue("surname", "", USER_SURNAME_SIZE_NOT_VALID);
         }
         if (!user.getSurname().matches(LATIN_REGEX)) {
-            errors.rejectValue("surname", "", SURNAME_PATTERN_NOT_VALID);
+            errors.rejectValue("surname", "", USER_SURNAME_PATTERN_NOT_VALID);
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "profileDTO.address", USER_PATRONYMIC_EMPTY);
@@ -59,8 +59,8 @@ public class ProfileValidator implements Validator {
         if (user.getProfileDTO().getTelephone().length() > USER_TELEPHONE_SIZE) {
             errors.rejectValue("profileDTO.telephone", "", USER_TELEPHONE_SIZE_NOT_VALID);
         }
-        if (!user.getProfileDTO().getTelephone().matches(PHONE_NUMBER_REGEX)) {
-            errors.rejectValue("profileDTO.telephone", "", TELEPHONE_PATTERN_NOT_VALID);
+        if (!user.getProfileDTO().getTelephone().matches(TELEPHONE_NUMBER_REGEX)) {
+            errors.rejectValue("profileDTO.telephone", "", USER_TELEPHONE_PATTERN_NOT_VALID);
         }
     }
 }

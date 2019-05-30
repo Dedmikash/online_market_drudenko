@@ -1,11 +1,15 @@
 package com.gmail.dedmikash.market.web.controller;
 
 import com.gmail.dedmikash.market.service.ItemService;
+import com.gmail.dedmikash.market.service.OrderService;
+import com.gmail.dedmikash.market.service.model.AppUserPrincipal;
 import com.gmail.dedmikash.market.service.model.ItemDTO;
 import com.gmail.dedmikash.market.service.model.PageDTO;
 import com.gmail.dedmikash.market.web.validator.ItemValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,10 +26,14 @@ public class ItemController {
     private static final Logger logger = LoggerFactory.getLogger(ItemController.class);
     private final ItemService itemService;
     private final ItemValidator itemValidator;
+    private final OrderService orderService;
 
-    public ItemController(ItemService itemService, ItemValidator itemValidator) {
+    public ItemController(ItemService itemService,
+                          ItemValidator itemValidator,
+                          OrderService orderService) {
         this.itemService = itemService;
         this.itemValidator = itemValidator;
+        this.orderService = orderService;
     }
 
     @GetMapping
@@ -75,5 +83,15 @@ public class ItemController {
         itemService.saveItem(itemDTO);
         logger.info("Save item: {}", itemDTO);
         return "redirect:/items";
+    }
+
+    @PostMapping("/order")
+    public String createCopyItem(@RequestParam(name = "item_id") Long itemId,
+                                 @RequestParam(name = "quantity") int quantity) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long id = ((AppUserPrincipal) userDetails).getId();
+        orderService.createOrder(id, itemId, quantity);
+        logger.info("Created order: itemId - {}, quantity - {}, userID - {}", itemId, quantity, id);
+        return "redirect:/orders";
     }
 }

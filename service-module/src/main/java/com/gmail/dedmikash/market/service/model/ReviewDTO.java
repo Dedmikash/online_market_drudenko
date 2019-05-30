@@ -1,24 +1,28 @@
 package com.gmail.dedmikash.market.service.model;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
+
+import static com.gmail.dedmikash.market.service.constant.ValidationMessages.REVIEW_TEXT_SIZE;
 
 public class ReviewDTO {
     private Long id;
     private UserDTO userDTO;
+    @NotNull
+    @Size(min = 1, max = REVIEW_TEXT_SIZE)
     private String text;
     private Timestamp created;
     private boolean isVisible;
-    private boolean isDeleted;
 
     public ReviewDTO() {
     }
 
-    public ReviewDTO(UserDTO userDTO, String text, Timestamp created, boolean isVisible, boolean isDeleted) {
+    public ReviewDTO(UserDTO userDTO, String text, Timestamp created, boolean isVisible) {
         this.userDTO = userDTO;
         this.text = text;
         this.created = created;
         this.isVisible = isVisible;
-        this.isDeleted = isDeleted;
     }
 
     public Long getId() {
@@ -59,14 +63,6 @@ public class ReviewDTO {
 
     public void setVisible(boolean visible) {
         this.isVisible = visible;
-    }
-
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        this.isDeleted = deleted;
     }
 
     @Override

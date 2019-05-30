@@ -4,7 +4,7 @@
     <title>Access Page</title>
 </head>
 <body>
-<form th:action="@{/login}" method="post">
+<form method="post" th:action="@{/login}">
     <h1>Please Sign In</h1>
     <div th:if="${param.error}">
         Invalid username or password.
@@ -15,8 +15,8 @@
     <div th:if="${param.logout}">
         You have been logged out.
     </div>
-    <input type="text" name="username" id="username" placeholder="Email" required="true" autofocus="true"/><br/>
-    <input type="password" name="password" id="password" placeholder="Password" required="true"/><br/>
+    <input autofocus="true" id="username" name="username" placeholder="Email" required="true" type="text"/><br/>
+    <input id="password" name="password" placeholder="Password" required="true" type="password"/><br/>
     <input type="submit" value="Sign In"/>
 </form>
 </body>

@@ -51,16 +51,6 @@ public abstract class GenericRepositoryImpl<I, T> implements GenericRepository<I
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<T> findEntitiesWithLimit(int offset, int limit) {
-        String query = "from " + entityClass.getName() + " c";
-        Query q = entityManager.createQuery(query)
-                .setFirstResult(offset)
-                .setMaxResults(limit);
-        return q.getResultList();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
     public List<T> findPage(int page) {
         String query = "from " + entityClass.getName() + " c";
         Query q = entityManager.createQuery(query)

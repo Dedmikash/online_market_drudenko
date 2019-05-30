@@ -20,26 +20,27 @@ public class UserConverterImpl implements UserConverter {
 
     @Override
     public UserDTO toDTO(User user) {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setUsername(user.getUsername());
-        userDTO.setPassword(user.getPassword());
-        userDTO.setName(user.getName());
-        userDTO.setSurname(user.getSurname());
-        userDTO.setPatronymic(user.getPatronymic());
-        RoleDTO roleDTO = new RoleDTO();
-        if (user.getRole() != null) {
-            roleDTO.setName(user.getRole().getName());
-        }
-        userDTO.setRoleDTO(roleDTO);
-        ProfileDTO profileDTO = new ProfileDTO();
-        if (user.getProfile() != null) {
-            profileDTO = profileConverter.toDTO(user.getProfile());
-        }
-        userDTO.setProfileDTO(profileDTO);
-        userDTO.setBlocked(user.isBlocked());
-        userDTO.setDeleted(user.isDeleted());
-        return userDTO;
+        if (user != null) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setUsername(user.getUsername());
+            userDTO.setPassword(user.getPassword());
+            userDTO.setName(user.getName());
+            userDTO.setSurname(user.getSurname());
+            userDTO.setPatronymic(user.getPatronymic());
+            RoleDTO roleDTO = new RoleDTO();
+            if (user.getRole() != null) {
+                roleDTO.setName(user.getRole().getName());
+            }
+            userDTO.setRoleDTO(roleDTO);
+            ProfileDTO profileDTO = new ProfileDTO();
+            if (user.getProfile() != null) {
+                profileDTO = profileConverter.toDTO(user.getProfile());
+            }
+            userDTO.setProfileDTO(profileDTO);
+            userDTO.setBlocked(user.isBlocked());
+            return userDTO;
+        } else return null;
     }
 
     @Override
@@ -63,7 +64,6 @@ public class UserConverterImpl implements UserConverter {
         }
         user.setProfile(profile);
         user.setBlocked(userDTO.isBlocked());
-        user.setDeleted(userDTO.isDeleted());
         return user;
     }
 }

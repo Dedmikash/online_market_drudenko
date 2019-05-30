@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
+    private static final int MAX_TEXT_LENGTH = 200;
     private final ArticleConverter articleConverter;
     private final ArticleRepository articleRepository;
-    private static final int MAX_TEXT_LENGTH = 200;
 
     public ArticleServiceImpl(ArticleConverter articleConverter,
                               ArticleRepository articleRepository) {

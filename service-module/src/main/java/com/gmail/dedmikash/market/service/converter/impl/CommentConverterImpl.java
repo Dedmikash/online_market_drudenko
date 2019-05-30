@@ -18,20 +18,21 @@ public class CommentConverterImpl implements CommentConverter {
 
     @Override
     public CommentDTO toDTO(Comment comment) {
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setId(comment.getId());
-        ArticleDTO articleDTO = new ArticleDTO();
-        articleDTO.setId(comment.getArticle().getId());
-        commentDTO.setArticleDTO(articleDTO);
-        if (comment.getUser() != null) {
-            commentDTO.setUserDTO(userConverter.toDTO(comment.getUser()));
-        } else {
-            commentDTO.setUserDTO(null);
-        }
-        commentDTO.setCreated(comment.getCreated());
-        commentDTO.setText(comment.getText());
-        commentDTO.setDeleted(comment.isDeleted());
-        return commentDTO;
+        if (comment != null) {
+            CommentDTO commentDTO = new CommentDTO();
+            commentDTO.setId(comment.getId());
+            ArticleDTO articleDTO = new ArticleDTO();
+            articleDTO.setId(comment.getArticle().getId());
+            commentDTO.setArticleDTO(articleDTO);
+            if (comment.getUser() != null) {
+                commentDTO.setUserDTO(userConverter.toDTO(comment.getUser()));
+            } else {
+                commentDTO.setUserDTO(null);
+            }
+            commentDTO.setCreated(comment.getCreated());
+            commentDTO.setText(comment.getText());
+            return commentDTO;
+        } else return null;
     }
 
     @Override
@@ -48,7 +49,6 @@ public class CommentConverterImpl implements CommentConverter {
         }
         comment.setCreated(commentDTO.getCreated());
         comment.setText(commentDTO.getText());
-        comment.setDeleted(commentDTO.isDeleted());
         return comment;
     }
 }

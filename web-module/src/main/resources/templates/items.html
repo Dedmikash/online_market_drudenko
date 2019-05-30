@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Items</title>
 </head>
@@ -9,9 +9,11 @@
     <span sec:authorize="isAuthenticated()">
         Logged user : <span sec:authentication="name"></span>   |
         Role: <span sec:authentication="principal.authorities"></span>   |
-        <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
+        <a th:href="@{/items}">Items</a>|
+        <a th:href="@{/orders}">Orders</a>   |
         <a th:href="@{/articles}">Articles</a>   |
         <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/reviews/new}">Reviews</a>|</span>
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
@@ -21,6 +23,11 @@
         <th>Name</th>
         <th>Unique Number</th>
         <th>Price</th>
+        <th>Details</th>
+        <th sec:authorize="hasAuthority('SALE USER')">Copy</th>
+        <th sec:authorize="hasAuthority('SALE USER')">Delete</th>
+        <th sec:authorize="hasAuthority('CUSTOMER USER')">Quantity</th>
+        <th sec:authorize="hasAuthority('CUSTOMER USER')">Create Order</th>
     </tr>
     <th:block th:each="item : ${items}">
         <tr>
@@ -28,17 +35,27 @@
             <td th:text="${item.uniqueNumber}">...</td>
             <td th:text="${item.price}">...</td>
             <td><a th:href="@{/items/{item_id}(item_id=${item.id})}">More</a></td>
-            <td><a th:href="@{/items/{item_id}/copy(item_id=${item.id})}">Copy</a></td>
-            <td>
-                <form th:action="@{/items/delete}" method="post">
-                    <input hidden th:value="${item.id}" name="item_id">
+            <td sec:authorize="hasAuthority('SALE USER')"><a
+                    th:href="@{/items/{item_id}/copy(item_id=${item.id})}">Copy</a></td>
+            <td sec:authorize="hasAuthority('SALE USER')">
+                <form method="post" th:action="@{/items/delete}">
+                    <input hidden name="item_id" th:value="${item.id}">
                     <input type="submit" value="Delete">
                 </form>
             </td>
+            <form method="post" sec:authorize="hasAuthority('CUSTOMER USER')" th:action="@{/items/order}">
+                <td>
+                    <input name="item_id" th:value="${item.id}" type="hidden">
+                    <input max="2147483647" min="1" name="quantity" placeholder="15" required type="number">
+                </td>
+                <td>
+                    <input type="submit" value="Create">
+                </td>
+            </form>
         </tr>
     </th:block>
 </table>
-<th:block th:if="${pages}>0" th:each="i:${#numbers.sequence(1,pages)}">
+<th:block th:each="i:${#numbers.sequence(1,pages)}" th:if="${pages}>0">
     <a th:href="@{/items?page={page}(page=${i})}">
         <span th:text="${i}">...</span></a>
 </th:block>

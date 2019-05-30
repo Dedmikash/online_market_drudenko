@@ -12,9 +12,14 @@ public class RandomServiceImpl implements RandomService {
     @Override
     public String getNewPassword() {
         StringBuilder newPassword = new StringBuilder();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             newPassword.append((char) (random.nextInt(90 - 65 + 1) + 65));
         }
         return newPassword.toString();
+    }
+
+    @Override
+    public String getUniqueNumber() {
+        return System.currentTimeMillis() + "-" + random.nextInt(100);
     }
 }

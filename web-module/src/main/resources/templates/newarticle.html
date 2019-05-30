@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Create Article</title>
 </head>
@@ -9,32 +9,34 @@
     <span sec:authorize="isAuthenticated()">
         Logged user : <span sec:authentication="name"></span>   |
         Role: <span sec:authentication="principal.authorities"></span>   |
-        <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
+        <a th:href="@{/items}">Items</a>|
+        <a th:href="@{/orders}">Orders</a>   |
         <a th:href="@{/articles}">Articles</a>   |
         <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/reviews/new}">Reviews</a>|</span>
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
 <h1>Create Article</h1>
-<form th:action="@{/articles/new}" th:object="${articleDTO}" method="post">
+<form method="post" th:action="@{/articles/new}" th:object="${articleDTO}">
     <table>
         <tr>
             <td>Name:</td>
-            <td><input type="text" th:field="*{name}" placeholder="Article Name" required maxlength="100"/></td>
-            <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
+            <td><input maxlength="100" placeholder="Article Name" required th:field="*{name}" type="text"/></td>
+            <td th:errors="*{name}" th:if="${#fields.hasErrors('name')}">Name Error</td>
         </tr>
         <tr>
             <td>Date:</td>
-            <td><input type="datetime-local" th:field="*{created}" required/></td>
-            <td th:if="${#fields.hasErrors('created')}" th:errors="*{created}">Created Error</td>
+            <td><input max="2100-01-01T23:59" required th:field="*{created}" type="datetime-local"/></td>
+            <td th:errors="*{created}" th:if="${#fields.hasErrors('created')}">Created Error</td>
         </tr>
         <tr>
             <td>Text:</td>
             <td>
-                <textarea rows="10" cols="50" th:field="*{text}" placeholder="Type your text here" required
-                          maxlength="1000"></textarea>
+                <textarea cols="50" maxlength="1000" placeholder="Type your text here" required rows="10"
+                          th:field="*{text}"></textarea>
             </td>
-            <td th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Text Error</td>
+            <td th:errors="*{text}" th:if="${#fields.hasErrors('text')}">Text Error</td>
         </tr>
         <tr>
             <td></td>

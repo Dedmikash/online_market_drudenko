@@ -9,9 +9,11 @@ import org.springframework.stereotype.Component;
 public class RoleConverterImpl implements RoleConverter {
     @Override
     public RoleDTO toDTO(Role role) {
-        RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setId(role.getId());
-        roleDTO.setName(role.getName());
-        return roleDTO;
+        if (role != null) {
+            RoleDTO roleDTO = new RoleDTO();
+            roleDTO.setId(role.getId());
+            roleDTO.setName(role.getName());
+            return roleDTO;
+        } else return null;
     }
 }

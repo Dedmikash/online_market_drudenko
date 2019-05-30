@@ -16,13 +16,14 @@ public class ReviewConverterImpl implements ReviewConverter {
 
     @Override
     public ReviewDTO toDTO(Review review) {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setId(review.getId());
-        reviewDTO.setUserDTO(userConverter.toDTO(review.getUser()));
-        reviewDTO.setText(review.getText());
-        reviewDTO.setCreated(review.getCreated());
-        reviewDTO.setVisible(review.isVisible());
-        reviewDTO.setDeleted(review.isDeleted());
-        return reviewDTO;
+        if (review != null) {
+            ReviewDTO reviewDTO = new ReviewDTO();
+            reviewDTO.setId(review.getId());
+            reviewDTO.setUserDTO(userConverter.toDTO(review.getUser()));
+            reviewDTO.setText(review.getText());
+            reviewDTO.setCreated(review.getCreated());
+            reviewDTO.setVisible(review.isVisible());
+            return reviewDTO;
+        } else return null;
     }
 }

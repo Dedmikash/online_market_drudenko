@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 public interface ReviewService {
+    ReviewDTO saveReview(ReviewDTO reviewDTO, Long userId);
+
     PageDTO<ReviewDTO> getReviews(int page);
 
     void deleteReviewsByIds(Long[] ids);

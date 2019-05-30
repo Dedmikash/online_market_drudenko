@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Orders</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <a th:href="@{/items}">Items</a>|
+        <a th:href="@{/orders}">Orders</a>   |
+        <a th:href="@{/articles}">Articles</a>   |
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/reviews/new}">Reviews</a>|</span>
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<h1>Orders</h1>
+<table>
+    <tr>
+        <th>Unique Number</th>
+        <th>Status</th>
+        <th>Item Name</th>
+        <th>Quantity</th>
+        <th>Total Price</th>
+        <th sec:authorize="hasAuthority('SALE USER')">Details</th>
+    </tr>
+    <th:block th:each="order : ${orders}">
+        <tr>
+            <td th:text="${order.uniqueNumber}">...</td>
+            <td th:text="${order.status}">...</td>
+            <td th:text="${order.itemDTO.name}">...</td>
+            <td th:text="${order.quantity}">...</td>
+            <td th:text="${order.price}">...</td>
+            <td sec:authorize="hasAuthority('SALE USER')">
+                <a th:href="@{/orders/order?unique_number={unique_number}(unique_number=${order.uniqueNumber})}">
+                   More</a>
+            </td>
+        </tr>
+    </th:block>
+</table>
+<th:block th:each="i:${#numbers.sequence(1,pages)}" th:if="${pages}>0">
+    <a th:href="@{/orders?page={page}(page=${i})}">
+        <span th:text="${i}">...</span></a>
+</th:block>
+</body>
+</html>
+

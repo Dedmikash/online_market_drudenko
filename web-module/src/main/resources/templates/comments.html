@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Comments</title>
 </head>
@@ -9,9 +9,11 @@
     <span sec:authorize="isAuthenticated()">
         Logged user : <span sec:authentication="name"></span>   |
         Role: <span sec:authentication="principal.authorities"></span>   |
-        <span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items}">Items</a>|</span>
+        <a th:href="@{/items}">Items</a>|
+        <a th:href="@{/orders}">Orders</a>   |
         <a th:href="@{/articles}">Articles</a>   |
         <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/reviews/new}">Reviews</a>|</span>
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
@@ -22,22 +24,22 @@
     <p th:text="${article.text}">...</p>
     <hr/>
     <div sec:authorize="hasAuthority('SALE USER')">
-        <form th:action="@{/articles/{article_id}/change(article_id=${article.id})}" th:object="${articleDTO}"
-              method="post">
+        <form method="post" th:action="@{/articles/{article_id}/change(article_id=${article.id})}"
+              th:object="${articleDTO}">
             <table>
                 <tr>
                     <td>Name:</td>
-                    <td><input type="text" th:field="*{name}" placeholder="Article New Name" required maxlength="100"/>
+                    <td><input maxlength="100" placeholder="Article New Name" required th:field="*{name}" type="text"/>
                     </td>
-                    <td th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</td>
+                    <td th:errors="*{name}" th:if="${#fields.hasErrors('name')}">Name Error</td>
                 </tr>
                 <tr>
                     <td>Text:</td>
                     <td>
-                <textarea rows="10" cols="50" th:field="*{text}" placeholder="Type new article text here" required
-                          maxlength="1000"></textarea>
+                <textarea cols="50" maxlength="1000" placeholder="Type new article text here" required rows="10"
+                          th:field="*{text}"></textarea>
                     </td>
-                    <td th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Text Error</td>
+                    <td th:errors="*{text}" th:if="${#fields.hasErrors('text')}">Text Error</td>
                 </tr>
                 <tr>
                     <td></td>
@@ -51,11 +53,11 @@
     </div>
     <h3>Comments:</h3>
     <div sec:authorize="hasAuthority('CUSTOMER USER')">
-        <form th:action="@{/articles/{article_id}/comments/new(article_id=${article.id})}" th:object="${commentDTO}"
-              method="post">
-        <textarea rows="5" cols="40" th:field="${commentDTO.text}" placeholder="Your comment" required
-                  maxlength="200"></textarea><br/>
-            <span th:if="${#fields.hasErrors('text')}" th:errors="${commentDTO.text}">Text Error</span><br/>
+        <form method="post" th:action="@{/articles/{article_id}/comments/new(article_id=${article.id})}"
+              th:object="${commentDTO}">
+        <textarea cols="40" maxlength="200" placeholder="Your comment" required rows="5"
+                  th:field="${commentDTO.text}"></textarea><br/>
+            <span th:errors="${commentDTO.text}" th:if="${#fields.hasErrors('text')}">Text Error</span><br/>
             <input type="submit" value="Create comment"/>
             <hr/>
         </form>
@@ -66,8 +68,8 @@
     <h5 th:text="'Created: '+${comment.created}">...</h5>
     <p th:text="${comment.text}">...</p>
     <div sec:authorize="hasAuthority('SALE USER')">
-        <form th:action="@{/articles/{article_id}/comments/delete(article_id=${article.id})}" method="post">
-            <input hidden th:value="${comment.id}" name="comment_id">
+        <form method="post" th:action="@{/articles/{article_id}/comments/delete(article_id=${article.id})}">
+            <input hidden name="comment_id" th:value="${comment.id}">
             <input type="submit" value="Delete Article">
         </form>
     </div>

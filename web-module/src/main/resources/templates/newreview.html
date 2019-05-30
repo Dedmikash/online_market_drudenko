@@ -2,7 +2,7 @@
 <html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Item</title>
+    <title>Create Review</title>
 </head>
 <body>
 <header>
@@ -17,12 +17,23 @@
         <a th:href="@{/logout}">Logout</a>
     </span>
 </header>
-<th:block th:object="${item}">
-    <h1 th:text="${item.name}">...</h1>
-    <h3 th:text="'Unique number: '+${item.uniqueNumber}">...</h3>
-    <h3 th:text="'Price: '+${item.price}">...</h3>
-    <p th:text="${item.text}">...</p>
-</th:block>
+<h1>Create Review</h1>
+<form method="post" th:action="@{/reviews/new}" th:object="${reviewDTO}">
+    <table>
+        <tr>
+            <td>
+                <textarea cols="40" maxlength="255" placeholder="Type your review here" required rows="7"
+                          th:field="*{text}"></textarea>
+            </td>
+            <td th:errors="*{text}" th:if="${#fields.hasErrors('text')}">Text Error</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="submit">Create Review</button>
+            </td>
+        </tr>
+    </table>
+</form>
 </body>
 </html>
 

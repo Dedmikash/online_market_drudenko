@@ -13,8 +13,6 @@ public interface GenericRepository<I, T> {
 
     List<T> findAll();
 
-    List<T> findEntitiesWithLimit(int offset, int limit);
-
     List<T> findPage(int page);
 
     int getCountOfEntities();

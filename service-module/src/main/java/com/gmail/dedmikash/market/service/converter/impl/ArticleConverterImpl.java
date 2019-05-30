@@ -39,7 +39,6 @@ public class ArticleConverterImpl implements ArticleConverter {
             articleDTO.setComments(article.getComments().stream()
                     .map(commentConverter::toDTO)
                     .collect(Collectors.toList()));
-            articleDTO.setDeleted(article.isDeleted());
             return articleDTO;
         } else return null;
     }
@@ -64,7 +63,6 @@ public class ArticleConverterImpl implements ArticleConverter {
         article.setComments(articleDTO.getComments().stream()
                 .map(commentConverter::fromDTO)
                 .collect(Collectors.toList()));
-        article.setDeleted(articleDTO.isDeleted());
         return article;
     }
 }
