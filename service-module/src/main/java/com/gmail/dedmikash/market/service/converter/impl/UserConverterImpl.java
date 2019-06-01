@@ -31,6 +31,7 @@ public class UserConverterImpl implements UserConverter {
             RoleDTO roleDTO = new RoleDTO();
             if (user.getRole() != null) {
                 roleDTO.setName(user.getRole().getName());
+                roleDTO.setId(user.getRole().getId());
             }
             userDTO.setRoleDTO(roleDTO);
             ProfileDTO profileDTO = new ProfileDTO();

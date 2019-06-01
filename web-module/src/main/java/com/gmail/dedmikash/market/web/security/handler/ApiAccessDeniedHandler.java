@@ -20,7 +20,7 @@ public class ApiAccessDeniedHandler implements AccessDeniedHandler {
                        AccessDeniedException e) throws IOException {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
-            logger.info("{} was trying to access protected api resource: {}", auth.getName(), request.getRequestURI());
+            logger.info("{} was trying to access protected rest resource: {}", auth.getName(), request.getRequestURI());
         }
         response.sendRedirect(request.getContextPath() + "/403");
     }

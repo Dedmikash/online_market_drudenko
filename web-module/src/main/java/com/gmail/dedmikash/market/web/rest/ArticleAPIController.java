@@ -1,4 +1,4 @@
-package com.gmail.dedmikash.market.web.controller;
+package com.gmail.dedmikash.market.web.rest;
 
 import com.gmail.dedmikash.market.service.ArticleService;
 import com.gmail.dedmikash.market.service.model.ArticleDTO;
@@ -48,7 +48,7 @@ public class ArticleAPIController {
             return new ResponseEntity(articleDTO, HttpStatus.OK);
         } else {
             logger.info("Article with id: {} - wasn't shown with REST API. No such article or it was soft deleted", id);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("No article with such id in DB", HttpStatus.NOT_FOUND);
         }
     }
 

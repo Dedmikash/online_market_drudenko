@@ -46,7 +46,7 @@
             <form method="post" sec:authorize="hasAuthority('CUSTOMER USER')" th:action="@{/items/order}">
                 <td>
                     <input name="item_id" th:value="${item.id}" type="hidden">
-                    <input max="2147483647" min="1" name="quantity" placeholder="15" required type="number">
+                    <input max="2147483647" min="1" name="quantity" placeholder="-" required type="number">
                 </td>
                 <td>
                     <input type="submit" value="Create">
@@ -59,6 +59,8 @@
     <a th:href="@{/items?page={page}(page=${i})}">
         <span th:text="${i}">...</span></a>
 </th:block>
+<br>
+<span sec:authorize="hasAuthority('SALE USER')"><a th:href="@{/items/download}">Download Items</a></span>
 </body>
 </html>
 

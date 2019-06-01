@@ -25,8 +25,8 @@ public class ErrorControllerTest {
 
     @Test
     public void shouldGet403PageFor403Url() throws Exception {
-        mockMvc.perform(get("/403.html"))
+        mockMvc.perform(get("error/403.html"))
                 .andExpect(status().isOk())
-                .andExpect(forwardedUrl("/403"));
+                .andExpect(forwardedUrl("error/403"));
     }
 }

@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ItemRepository extends GenericRepository<Long, Item> {
     List<Item> getItems(int page);
+
+    Item findByUniqueNumber(String uniqueNumber);
 }

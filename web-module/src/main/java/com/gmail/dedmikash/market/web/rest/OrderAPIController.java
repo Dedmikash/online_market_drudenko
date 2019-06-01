@@ -1,4 +1,4 @@
-package com.gmail.dedmikash.market.web.controller;
+package com.gmail.dedmikash.market.web.rest;
 
 import com.gmail.dedmikash.market.service.OrderService;
 import com.gmail.dedmikash.market.service.model.OrderDTO;
@@ -33,14 +33,14 @@ public class OrderAPIController {
 
     @GetMapping("/{id}")
     @SuppressWarnings(value = "unchecked")
-    public ResponseEntity showItemWithId(@PathVariable("id") Long id) {
+    public ResponseEntity showOrderWithId(@PathVariable("id") Long id) {
         OrderDTO orderDTO = orderService.getOrderById(id);
         if (orderDTO != null) {
             logger.info("Order with id: {} - was shown with REST API", id);
             return new ResponseEntity(orderDTO, HttpStatus.OK);
         } else {
             logger.info("Order with id: {} - wasn't shown with REST API. No such order or it was soft deleted", id);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("No order with such id in DB", HttpStatus.NOT_FOUND);
         }
     }
 }

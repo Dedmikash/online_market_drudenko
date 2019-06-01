@@ -36,7 +36,7 @@
             <td th:text="${order.price}">...</td>
             <td sec:authorize="hasAuthority('SALE USER')">
                 <a th:href="@{/orders/order?unique_number={unique_number}(unique_number=${order.uniqueNumber})}">
-                   More</a>
+                    More</a>
             </td>
         </tr>
     </th:block>

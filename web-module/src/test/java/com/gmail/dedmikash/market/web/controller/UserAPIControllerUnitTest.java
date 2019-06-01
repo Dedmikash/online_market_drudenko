@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gmail.dedmikash.market.service.UserService;
 import com.gmail.dedmikash.market.service.model.RoleDTO;
 import com.gmail.dedmikash.market.service.model.UserDTO;
+import com.gmail.dedmikash.market.web.rest.UserAPIController;
 import com.gmail.dedmikash.market.web.validator.UserValidator;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class UserAPIControllerUnitTest {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         byte[] jsonQuery = mapper.writeValueAsBytes(userDTO);
 
-        mockMvc.perform(post("/api/v1/users")
+        mockMvc.perform(post("/rest/v1/users")
                 .contentType(APPLICATION_JSON)
                 .content(jsonQuery))
                 .andExpect(status().isCreated());

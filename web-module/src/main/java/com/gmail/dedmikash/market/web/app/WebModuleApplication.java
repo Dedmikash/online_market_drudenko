@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServic
         scanBasePackages = "com.gmail.dedmikash.market.*",
         exclude = UserDetailsServiceAutoConfiguration.class
 )
-@EntityScan(basePackages = "com.gmail.dedmikash.market.repository.*")
+@EntityScan(basePackages = "com.gmail.dedmikash.market.repository.model")
 public class WebModuleApplication {
     public static void main(String[] args) {
         SpringApplication.run(WebModuleApplication.class, args);

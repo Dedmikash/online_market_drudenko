@@ -99,7 +99,7 @@
             <column name="user_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_article_user" references="user(id)"/>
             </column>
-            <column name="text" type="text">
+            <column name="text" type="varchar(1000)">
                 <constraints nullable="false"/>
             </column>
             <column name="created" type="datetime">

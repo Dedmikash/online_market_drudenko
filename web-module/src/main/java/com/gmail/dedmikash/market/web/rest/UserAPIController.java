@@ -1,4 +1,4 @@
-package com.gmail.dedmikash.market.web.controller;
+package com.gmail.dedmikash.market.web.rest;
 
 import com.gmail.dedmikash.market.service.UserService;
 import com.gmail.dedmikash.market.service.model.UserDTO;
@@ -50,7 +50,7 @@ public class UserAPIController {
             return new ResponseEntity(userDTO, HttpStatus.OK);
         } else {
             logger.info("User with id: {} - wasn't shown with REST API. No such article or it was soft deleted", id);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("No user with such id in DB", HttpStatus.NOT_FOUND);
         }
     }
 }

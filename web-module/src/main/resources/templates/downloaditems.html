@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Download Items</title>
+</head>
+<body>
+<header>
+    <span sec:authorize="isAuthenticated()">
+        Logged user : <span sec:authentication="name"></span>   |
+        Role: <span sec:authentication="principal.authorities"></span>   |
+        <a th:href="@{/items}">Items</a>|
+        <a th:href="@{/orders}">Orders</a>   |
+        <a th:href="@{/articles}">Articles</a>   |
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/profile}">Profile</a>|</span>
+        <span sec:authorize="hasAuthority('CUSTOMER USER')"><a th:href="@{/reviews/new}">Reviews</a>|</span>
+        <a th:href="@{/logout}">Logout</a>
+    </span>
+</header>
+<h1>Download Items</h1>
+<form method="post" th:action="@{/items/download}" enctype="multipart/form-data">
+    <input type="file" name="xml" accept="text/xml" required/>
+    <input type="submit" value="Add Items From XML">
+</form>
+<div th:text="${sout}" th:unless="${sout==null}">...</div>
+</th:block>
+</body>
+</html>
+

@@ -106,8 +106,13 @@ public class ArticleServiceImpl implements ArticleService {
     private void cutLongTexts(List<ArticleDTO> articleDTOS) {
         articleDTOS.stream()
                 .filter(articleDTO -> articleDTO.getText().length() > MAX_TEXT_LENGTH)
+                .filter(articleDTO -> articleDTO.getText().substring(0, MAX_TEXT_LENGTH).lastIndexOf(" ") != -1)
                 .forEach(articleDTO -> articleDTO.setText(articleDTO.getText().substring(
                         0, articleDTO.getText().substring(0, MAX_TEXT_LENGTH).lastIndexOf(" ")
                 ).concat("...")));
+        articleDTOS.stream()
+                .filter(articleDTO -> articleDTO.getText().length() > MAX_TEXT_LENGTH)
+                .filter(articleDTO -> articleDTO.getText().substring(0, MAX_TEXT_LENGTH).lastIndexOf(" ") == -1)
+                .forEach(articleDTO -> articleDTO.setText("{First word more than " + MAX_TEXT_LENGTH + " symbols}..."));
     }
 }

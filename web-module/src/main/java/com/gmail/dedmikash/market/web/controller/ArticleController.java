@@ -16,7 +16,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,7 +55,9 @@ public class ArticleController {
                                  CommentDTO commentDTO,
                                  ArticleDTO articleDTO,
                                  Model model) {
-        model.addAttribute("article", articleService.getArticleById(article_id));
+        ArticleDTO article = articleService.getArticleById(article_id);
+        if (article == null) return "redirect:/404";
+        model.addAttribute("article", article);
         logger.info("Getting article with id {}", article_id);
         return "comments";
     }
@@ -88,7 +89,7 @@ public class ArticleController {
     }
 
     @PostMapping("/new")
-    public String createArticle(@ModelAttribute ArticleDTO articleDTO,
+    public String createArticle(@Valid ArticleDTO articleDTO,
                                 BindingResult result) {
         if (result.hasErrors()) {
             logger.info("Attempt to add not valid article: {}", articleDTO.getName());

@@ -48,7 +48,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "articles/{\\d+}/comments/delete", "/items/{\\d+}/copy", "/items/delete",
                         "/orders/order", "/orders/order/change")
                 .hasAuthority(SALE)
-                .antMatchers("/403", "/", "/login")
+                .antMatchers("/403", "/404", "/", "/login")
                 .permitAll()
                 .and()
                 .formLogin()

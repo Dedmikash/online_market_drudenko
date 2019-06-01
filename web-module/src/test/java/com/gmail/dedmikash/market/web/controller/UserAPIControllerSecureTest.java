@@ -56,7 +56,7 @@ public class UserAPIControllerSecureTest {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         byte[] jsonQuery = mapper.writeValueAsBytes(userDTO);
 
-        mvc.perform(post("/api/v1/users")
+        mvc.perform(post("/rest/v1/users")
                 .contentType(APPLICATION_JSON)
                 .content(jsonQuery));
     }
@@ -68,7 +68,7 @@ public class UserAPIControllerSecureTest {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         byte[] jsonQuery = mapper.writeValueAsBytes(userDTO);
 
-        mvc.perform(post("/api/v1/users")
+        mvc.perform(post("/rest/v1/users")
                 .contentType(APPLICATION_JSON)
                 .content(jsonQuery))
                 .andExpect(status().is3xxRedirection())

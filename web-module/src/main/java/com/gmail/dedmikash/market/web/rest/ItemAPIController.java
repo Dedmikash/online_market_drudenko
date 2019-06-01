@@ -1,4 +1,4 @@
-package com.gmail.dedmikash.market.web.controller;
+package com.gmail.dedmikash.market.web.rest;
 
 import com.gmail.dedmikash.market.service.ItemService;
 import com.gmail.dedmikash.market.service.model.ItemDTO;
@@ -47,7 +47,7 @@ public class ItemAPIController {
             return new ResponseEntity(itemDTO, HttpStatus.OK);
         } else {
             logger.info("Item with id: {} - wasn't shown with REST API. No such item or it was soft deleted", id);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("No item with such id in DB", HttpStatus.NOT_FOUND);
         }
     }
 
