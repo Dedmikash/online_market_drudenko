@@ -40,6 +40,7 @@ public class UserConverterImpl implements UserConverter {
             }
             userDTO.setProfileDTO(profileDTO);
             userDTO.setBlocked(user.isBlocked());
+            userDTO.setDeleted(user.isDeleted());
             return userDTO;
         } else return null;
     }
@@ -65,6 +66,7 @@ public class UserConverterImpl implements UserConverter {
         }
         user.setProfile(profile);
         user.setBlocked(userDTO.isBlocked());
+        user.setDeleted(userDTO.isDeleted());
         return user;
     }
 }

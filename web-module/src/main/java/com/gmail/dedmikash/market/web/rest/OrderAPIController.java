@@ -27,7 +27,7 @@ public class OrderAPIController {
     @SuppressWarnings(value = "unchecked")
     public ResponseEntity showOrders() {
         List<OrderDTO> orderDTOList = orderService.getAllOrders();
-        logger.info("All orders were shown with REST API");
+        logger.info("All non deleted orders were shown with REST API");
         return new ResponseEntity(orderDTOList, HttpStatus.OK);
     }
 
@@ -40,7 +40,7 @@ public class OrderAPIController {
             return new ResponseEntity(orderDTO, HttpStatus.OK);
         } else {
             logger.info("Order with id: {} - wasn't shown with REST API. No such order or it was soft deleted", id);
-            return new ResponseEntity("No order with such id in DB", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("No order with such id in DB or it was soft deleted", HttpStatus.NOT_FOUND);
         }
     }
 }

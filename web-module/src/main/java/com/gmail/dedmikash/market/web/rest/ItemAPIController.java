@@ -47,7 +47,7 @@ public class ItemAPIController {
             return new ResponseEntity(itemDTO, HttpStatus.OK);
         } else {
             logger.info("Item with id: {} - wasn't shown with REST API. No such item or it was soft deleted", id);
-            return new ResponseEntity("No item with such id in DB", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("No item with such id in DB or it was soft deleted", HttpStatus.NOT_FOUND);
         }
     }
 

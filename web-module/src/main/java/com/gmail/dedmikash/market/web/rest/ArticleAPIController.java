@@ -35,7 +35,7 @@ public class ArticleAPIController {
     @SuppressWarnings(value = "unchecked")
     public ResponseEntity showArticles() {
         List<ArticleDTO> articleDTOList = articleService.getAllArticles();
-        logger.info("All articles were shown with REST API");
+        logger.info("All non deleted articles were shown with REST API");
         return new ResponseEntity(articleDTOList, HttpStatus.OK);
     }
 
@@ -48,7 +48,7 @@ public class ArticleAPIController {
             return new ResponseEntity(articleDTO, HttpStatus.OK);
         } else {
             logger.info("Article with id: {} - wasn't shown with REST API. No such article or it was soft deleted", id);
-            return new ResponseEntity("No article with such id in DB", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("No article with such id in DB or it was soft deleted", HttpStatus.NOT_FOUND);
         }
     }
 

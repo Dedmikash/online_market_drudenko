@@ -18,6 +18,7 @@ public class ItemConverterImpl implements ItemConverter {
             itemDTO.setUniqueNumber(item.getUniqueNumber());
             itemDTO.setPrice(item.getPrice().toString());
             itemDTO.setText(item.getText());
+            itemDTO.setDeleted(item.isDeleted());
             return itemDTO;
         } else return null;
     }
@@ -29,6 +30,7 @@ public class ItemConverterImpl implements ItemConverter {
         item.setName(itemDTO.getName());
         item.setUniqueNumber(itemDTO.getUniqueNumber());
         item.setPrice(new BigDecimal(itemDTO.getPrice()));
+        item.setDeleted(itemDTO.isDeleted());
         item.setText(itemDTO.getText());
         return item;
     }

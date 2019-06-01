@@ -18,8 +18,8 @@
     </span>
 </header>
 <h1>Download Items</h1>
-<form method="post" th:action="@{/items/download}" enctype="multipart/form-data">
-    <input type="file" name="xml" accept="text/xml" required/>
+<form enctype="multipart/form-data" method="post" th:action="@{/items/download}">
+    <input accept="text/xml" name="xml" required type="file"/>
     <input type="submit" value="Add Items From XML">
 </form>
 <div th:text="${sout}" th:unless="${sout==null}">...</div>

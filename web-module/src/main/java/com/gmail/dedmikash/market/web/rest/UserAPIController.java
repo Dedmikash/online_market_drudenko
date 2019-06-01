@@ -50,7 +50,7 @@ public class UserAPIController {
             return new ResponseEntity(userDTO, HttpStatus.OK);
         } else {
             logger.info("User with id: {} - wasn't shown with REST API. No such article or it was soft deleted", id);
-            return new ResponseEntity("No user with such id in DB", HttpStatus.NOT_FOUND);
+            return new ResponseEntity("No user with such id in DB or it was soft deleted", HttpStatus.NOT_FOUND);
         }
     }
 }

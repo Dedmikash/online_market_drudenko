@@ -12,8 +12,8 @@ import java.util.List;
 public class ItemRepositoryImpl extends GenericRepositoryImpl<Long, Item> implements ItemRepository {
     @Override
     @SuppressWarnings(value = "unchecked")
-    public List<Item> getItems(int page) {
-        String selectHqlQuery = "from Item as a ORDER BY a.name ";
+    public List<Item> getNonDeletedItems(int page) {
+        String selectHqlQuery = "from Item as a where a.isDeleted=0 ORDER BY a.name ";
         Query selectQuery = entityManager.createQuery(selectHqlQuery)
                 .setFirstResult(getOffset(page))
                 .setMaxResults(BATCH_SIZE);
@@ -21,8 +21,20 @@ public class ItemRepositoryImpl extends GenericRepositoryImpl<Long, Item> implem
     }
 
     @Override
-    public Item findByUniqueNumber(String uniqueNumber) {
-        String selectHqlQuery = "from Item as a where a.uniqueNumber=:uniqueNumber";
+    public Item findNonDeletedById(Long id) {
+        String selectHqlQuery = "from Item as u where u.id=:id and u.isDeleted=0";
+        Query query = entityManager.createQuery(selectHqlQuery);
+        query.setParameter("id", id);
+        try {
+            return (Item) query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Item findNonDeletedByUniqueNumber(String uniqueNumber) {
+        String selectHqlQuery = "from Item as a where a.uniqueNumber=:uniqueNumber and a.isDeleted=0";
         Query selectQuery = entityManager.createQuery(selectHqlQuery)
                 .setParameter("uniqueNumber", uniqueNumber);
         try {
@@ -30,5 +42,17 @@ public class ItemRepositoryImpl extends GenericRepositoryImpl<Long, Item> implem
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    @Override
+    public int getCountOfNonDeletedPages() {
+        int count = getCountOfNonDeletedEntities();
+        return (int) Math.ceil(count / (double) BATCH_SIZE);
+    }
+
+    private int getCountOfNonDeletedEntities() {
+        String query = "SELECT COUNT(*) from Item as u where u.isDeleted=0";
+        Query q = entityManager.createQuery(query);
+        return ((Number) q.getSingleResult()).intValue();
     }
 }

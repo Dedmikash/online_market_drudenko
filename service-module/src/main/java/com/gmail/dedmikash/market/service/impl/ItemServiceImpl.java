@@ -40,7 +40,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemDTO getItemById(Long id) {
-        return itemConverter.toDTO(itemRepository.findById(id));
+        return itemConverter.toDTO(itemRepository.findNonDeletedById(id));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void deleteItemById(Long id) {
-        Item item = itemRepository.findById(id);
+        Item item = itemRepository.findNonDeletedById(id);
         if (item != null && !item.isDeleted()) {
             itemRepository.delete(item);
         }
@@ -66,7 +66,7 @@ public class ItemServiceImpl implements ItemService {
         PageDTO<ItemDTO> items = new PageDTO<>();
         List<ItemDTO> itemDTOS = getPageOfItems(page);
         items.setList(itemDTOS);
-        items.setCountOfPages(itemRepository.getCountOfPages());
+        items.setCountOfPages(itemRepository.getCountOfNonDeletedPages());
         return items;
     }
 
@@ -78,7 +78,7 @@ public class ItemServiceImpl implements ItemService {
         int counter = 0;
         int all = 0;
         for (ItemDTO itemDTO : itemDTOList) {
-            if (itemRepository.findByUniqueNumber(itemDTO.getUniqueNumber()) == null
+            if (itemRepository.findNonDeletedByUniqueNumber(itemDTO.getUniqueNumber()) == null
             ) {
                 try {
                     itemRepository.create(itemConverter.fromDTO(itemDTO));
@@ -97,7 +97,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private List<ItemDTO> getPageOfItems(int page) {
-        return itemRepository.getItems(page)
+        return itemRepository.getNonDeletedItems(page)
                 .stream()
                 .map(itemConverter::toDTO)
                 .collect(Collectors.toList());

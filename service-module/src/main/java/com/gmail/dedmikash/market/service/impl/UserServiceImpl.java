@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO readByUsername(String username) {
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findNonDeletedByUsername(username);
         if (user == null) {
             return null;
         }
@@ -75,7 +75,7 @@ public class UserServiceImpl implements UserService {
         PageDTO<UserDTO> users = new PageDTO<>();
         List<UserDTO> userDTOS = getPageOfUsers(page);
         users.setList(userDTOS);
-        users.setCountOfPages(userRepository.getCountOfPages());
+        users.setCountOfPages(userRepository.getCountOfNonDeletedPages());
         return users;
     }
 
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUsersByIds(Long[] ids) {
         for (Long id : ids) {
-            User user = userRepository.findById(id);
+            User user = userRepository.findNonDeletedById(id);
             if (user != null && !user.isDeleted()) {
                 userRepository.delete(user);
             }
@@ -95,7 +95,7 @@ public class UserServiceImpl implements UserService {
     public void changeUsersPasswordsById(Long[] ids) {
         for (Long id : ids) {
             String password = randomService.getNewPassword();
-            User user = userRepository.findById(id);
+            User user = userRepository.findNonDeletedById(id);
             user.setPassword(passwordEncoder.encode(password));
             userRepository.update(user);
             SimpleMailMessage message = new SimpleMailMessage();
@@ -110,7 +110,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void changeUsersRolesById(Map<Long, Long> changes) {
         for (Map.Entry<Long, Long> change : changes.entrySet()) {
-            User user = userRepository.findById(change.getKey());
+            User user = userRepository.findNonDeletedById(change.getKey());
             user.setRole(roleRepository.findById(change.getValue()));
             userRepository.update(user);
         }
@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDTO getUserById(Long id) {
-        return userConverter.toDTO(userRepository.findById(id));
+        return userConverter.toDTO(userRepository.findNonDeletedById(id));
     }
 
     @Override
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
     public int updateUserProfileAndPassword(UserDTO userDTO,
                                             String oldPassword,
                                             String newPassword) {
-        User user = userRepository.findById(userDTO.getId());
+        User user = userRepository.findNonDeletedById(userDTO.getId());
         user.setName(userDTO.getName());
         user.setSurname(userDTO.getSurname());
         user.getProfile().setAddress(userDTO.getProfileDTO().getAddress());
@@ -152,7 +152,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private List<UserDTO> getPageOfUsers(int page) {
-        return userRepository.findPage(page)
+        return userRepository.findNonDeletedPage(page)
                 .stream()
                 .map(userConverter::toDTO)
                 .collect(Collectors.toList());

@@ -3,7 +3,6 @@ package com.gmail.dedmikash.market.repository.model;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +17,6 @@ import java.util.Objects;
 @Entity
 @Table
 @SQLDelete(sql = "UPDATE profile SET deleted = 1 WHERE user_id = ?")
-@Where(clause = "deleted = 0")
 public class Profile {
     @GenericGenerator(name = "generator", strategy = "foreign",
             parameters = @Parameter(name = "property", value = "user"))

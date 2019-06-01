@@ -49,7 +49,7 @@ public class UserServiceUnitTest {
         user.setName("testname");
         user.setSurname("testsurname");
         user.setUsername("testusername");
-        when(userRepository.findByUsername("testusername")).thenReturn(user);
+        when(userRepository.findNonDeletedByUsername("testusername")).thenReturn(user);
         UserDTO userDTO = new UserDTO();
         userDTO.setName("testname");
         userDTO.setSurname("testsurname");
@@ -60,7 +60,7 @@ public class UserServiceUnitTest {
 
     @Test
     public void shouldReturnNullIfNullWhenReadUserByUsername() {
-        when(userRepository.findByUsername("testusername")).thenReturn(null);
+        when(userRepository.findNonDeletedByUsername("testusername")).thenReturn(null);
         Assert.assertNull(userService.readByUsername("testusername"));
     }
 

@@ -10,6 +10,7 @@ public class UserDTO {
     private RoleDTO roleDTO;
     private ProfileDTO profileDTO;
     private boolean blocked;
+    private boolean isDeleted;
 
     public Long getId() {
         return id;
@@ -81,6 +82,14 @@ public class UserDTO {
 
     public void setBlocked(boolean blocked) {
         this.blocked = blocked;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     @Override
