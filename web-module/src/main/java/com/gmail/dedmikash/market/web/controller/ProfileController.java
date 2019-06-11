@@ -49,21 +49,18 @@ public class ProfileController {
         Long id = ((AppUserPrincipal) userDetails).getId();
         userDTO.setId(id);
         profileValidator.validate(userDTO, result);
+        model.addAttribute("user", userDTO);
         if (result.hasErrors()) {
-            model.addAttribute("user", userService.getUserById(id));
             return "profile";
         }
         switch (userService.updateUserProfileAndPassword(userDTO, oldPassword, newPassword)) {
             case 1:
-                model.addAttribute("user", userService.getUserById(id));
                 model.addAttribute("password", "Password successfully changed");
                 return "profile";
             case 0:
-                model.addAttribute("user", userService.getUserById(id));
                 model.addAttribute("password", "Wrong password");
                 return "profile";
             case -1:
-                model.addAttribute("user", userService.getUserById(id));
                 return "profile";
             default:
                 return "#";

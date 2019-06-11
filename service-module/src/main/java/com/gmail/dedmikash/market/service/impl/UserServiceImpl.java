@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private int getUpdatingProfileSuccessCode(String oldPassword, String newPassword, User user) {
-        if (!newPassword.equals("") || !oldPassword.equals("")) {
+        if (!"".equals(newPassword) || !oldPassword.equals("")) {
             if (passwordEncoder.matches(oldPassword, user.getPassword())) {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 userRepository.update(user);

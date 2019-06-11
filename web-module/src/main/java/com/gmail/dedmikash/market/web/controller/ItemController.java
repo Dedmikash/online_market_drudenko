@@ -89,7 +89,6 @@ public class ItemController {
         model.addAttribute("item", itemService.getItemById(itemId));
         itemValidator.validate(itemDTO, result);
         if (result.hasErrors()) {
-            model.addAttribute("item", itemService.getItemById(itemId));
             return "copyitem";
         }
         itemService.saveItem(itemDTO);

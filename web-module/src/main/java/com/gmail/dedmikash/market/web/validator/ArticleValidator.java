@@ -71,7 +71,7 @@ public class ArticleValidator implements Validator {
             if (article.getUserDTO().getId() == null) {
                 errors.rejectValue("userDTO", "", ARTICLE_USER_ID_NULL);
             } else {
-                if (userService.getUserById(article.getId()) == null) {
+                if (userService.getUserById(article.getUserDTO().getId()) == null) {
                     errors.rejectValue("userDTO", "", NO_USER_WITH_ID_IN_DB);
                 }
             }

@@ -50,6 +50,14 @@ public class ItemRepositoryImpl extends GenericRepositoryImpl<Long, Item> implem
         return (int) Math.ceil(count / (double) BATCH_SIZE);
     }
 
+    @Override
+    @SuppressWarnings(value = "unchecked")
+    public List<Item> findAllNonDeleted() {
+        String selectHqlQuery = "from Item as a where a.isDeleted=0 ORDER BY a.name ";
+        Query selectQuery = entityManager.createQuery(selectHqlQuery);
+        return selectQuery.getResultList();
+    }
+
     private int getCountOfNonDeletedEntities() {
         String query = "SELECT COUNT(*) from Item as u where u.isDeleted=0";
         Query q = entityManager.createQuery(query);

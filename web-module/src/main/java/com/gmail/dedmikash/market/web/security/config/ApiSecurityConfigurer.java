@@ -32,7 +32,7 @@ public class ApiSecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.antMatcher("/rest/**")
+        http.antMatcher("/api/**")
                 .authorizeRequests()
                 .anyRequest()
                 .hasAuthority(SECURE_API)

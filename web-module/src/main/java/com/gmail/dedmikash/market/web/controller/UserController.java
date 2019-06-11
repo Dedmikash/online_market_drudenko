@@ -66,7 +66,7 @@ public class UserController {
         }
         Map<Long, Long> validChanges = new HashMap<>();
         for (String change : changes) {
-            String[] elements = change.split(",");
+            String[] elements = change.split("-");
             if (!elements[1].equals(elements[2])) {
                 validChanges.put(Long.parseLong(elements[0]), Long.parseLong(elements[2]));
             }
@@ -100,8 +100,7 @@ public class UserController {
             Model model) {
         userValidator.validate(userDTO, result);
         if (result.hasErrors()) {
-            List<RoleDTO> roleDTOList = roleService.getRoles();
-            model.addAttribute("roles", roleDTOList);
+            model.addAttribute("roles", roleService.getRoles());
             return "usersadd";
         }
         logger.info("Trying to add user: {} {} {} {} {}", userDTO.getSurname(), userDTO.getName(),

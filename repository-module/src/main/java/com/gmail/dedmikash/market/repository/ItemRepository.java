@@ -12,4 +12,6 @@ public interface ItemRepository extends GenericRepository<Long, Item> {
     Item findNonDeletedByUniqueNumber(String uniqueNumber);
 
     int getCountOfNonDeletedPages();
+
+    List<Item> findAllNonDeleted();
 }

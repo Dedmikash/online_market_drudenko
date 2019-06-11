@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public List<ItemDTO> getAllItems() {
-        return itemRepository.findAll().stream()
+        return itemRepository.findAllNonDeleted().stream()
                 .map(itemConverter::toDTO)
                 .collect(Collectors.toList());
     }

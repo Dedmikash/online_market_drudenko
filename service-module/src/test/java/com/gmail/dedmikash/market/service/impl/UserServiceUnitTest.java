@@ -9,6 +9,7 @@ import com.gmail.dedmikash.market.service.model.UserDTO;
 import com.gmail.dedmikash.market.service.util.RandomService;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -71,7 +72,7 @@ public class UserServiceUnitTest {
         User secondUser = new User();
         secondUser.setUsername("test2");
         List<User> userList = Arrays.asList(firstUser, secondUser);
-        when(userRepository.findPage(5)).thenReturn(userList);
+        when(userRepository.findNonDeletedPage(5)).thenReturn(userList);
         UserDTO firstUserDTO = new UserDTO();
         firstUserDTO.setUsername("test1");
         UserDTO secondUserDTO = new UserDTO();

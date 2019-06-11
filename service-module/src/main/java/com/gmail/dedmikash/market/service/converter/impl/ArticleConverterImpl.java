@@ -5,6 +5,7 @@ import com.gmail.dedmikash.market.service.converter.ArticleConverter;
 import com.gmail.dedmikash.market.service.converter.CommentConverter;
 import com.gmail.dedmikash.market.service.converter.UserConverter;
 import com.gmail.dedmikash.market.service.model.ArticleDTO;
+import com.gmail.dedmikash.market.service.model.UserDTO;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -28,11 +29,12 @@ public class ArticleConverterImpl implements ArticleConverter {
             ArticleDTO articleDTO = new ArticleDTO();
             articleDTO.setId(article.getId());
             articleDTO.setName(article.getName());
+            UserDTO userDTO = new UserDTO();
             if (article.getUser() != null) {
-                articleDTO.setUserDTO(userConverter.toDTO(article.getUser()));
-            } else {
-                articleDTO.setUserDTO(null);
+                userDTO.setName(article.getUser().getName());
+                userDTO.setSurname(article.getUser().getSurname());
             }
+            articleDTO.setUserDTO(userDTO);
             articleDTO.setText(article.getText());
             articleDTO.setCreated(article.getCreated().toString());
             articleDTO.setViews(article.getViews());
